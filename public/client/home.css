@@ -1,0 +1,264 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  body {
+    background-color: #f9fbfc;
+    color: #333;
+  }
+  
+  .container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+  }
+  
+  .hero {
+    padding: 60px 0;
+  }
+  
+  .hero-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 40px;
+  }
+  
+  .text-content {
+    flex: 1;
+    min-width: 300px;
+  }
+  
+  .text-content h1 {
+    font-size: 4rem;
+    font-weight: bold;
+    margin-bottom: 25px;
+    margin-left: 50px;
+  }
+  
+  .text-content p {
+    font-size: 1.5em;
+    margin-bottom: 30px;
+    max-width: 450px;
+    color: #555;
+    margin-left: 50px;
+    }
+  
+  .btn {
+    background-color: #3b82f6;
+    color: white;
+    padding: 14px 28px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1em;
+    margin-left: 50px;
+  
+  }
+  
+  .image {
+    flex: 1;
+    position: relative;
+    text-align: center;
+    min-width: 300px;
+  }
+  
+  .main-img {
+    width: 500px;
+    object-fit: cover;
+  }
+  
+  .learning-paths {
+    padding: 60px 0;
+    background-color: #fff;
+  }
+  
+  .section-title {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-align: left;
+  }
+  
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+  }
+  
+  .card {
+    background-color: #f8fafc;
+    padding: 20px;
+    border-radius: 12px;
+    flex: 1;
+    min-width: 220px;
+    max-width: 240px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .card-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 15px;
+  }
+  
+  .card h3 {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+  }
+  
+  .card p {
+    font-size: 0.95em;
+    color: #444;
+    margin-bottom: 15px;
+  }
+  
+  .badge {
+    background-color: #3b82f6;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.85em;
+    font-weight: bold;
+    margin-right: 5px;
+  }
+  
+  .view-link {
+    color: #3b82f6;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  
+  .testimonials {
+    padding: 60px 0;
+    background-color: #f9fbfc;
+  }
+  
+  .testimonial-container {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .testimonial-card {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    flex: 1;
+    min-width: 280px;
+    max-width: 32%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease;
+  }
+  
+  .testimonial-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .testimonial-text {
+    font-size: 1em;
+    color: #444;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+  
+  .testimonial-user {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .testimonial-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .testimonial-user h4 {
+    margin: 0;
+    font-size: 1em;
+    font-weight: 600;
+  }
+  
+  .testimonial-user span {
+    font-size: 0.9em;
+    color: #888;
+  }
+  .instructors-split {
+    padding: 60px 0;
+    background-color: #f8fafc;
+  }
+  
+  .section-title {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  .split-wrapper {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .split-left,
+  .split-right {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .instructor-box {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    transition: transform 0.2s ease;
+  }
+  
+  .instructor-box:hover {
+    transform: translateY(-5px);
+  }
+  
+  .photo {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .info h3 {
+    margin: 0;
+    font-size: 1.1em;
+    font-weight: 600;
+  }
+  
+  .info p {
+    margin: 6px 0;
+    color: #555;
+    font-size: 0.95em;
+  }
+  
