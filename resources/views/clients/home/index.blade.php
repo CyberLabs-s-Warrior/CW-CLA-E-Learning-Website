@@ -13,12 +13,12 @@
                 </h1>
                 <p>
                     Take your learning to the next level. Join our platform and explore
-                    a variety of online courses.
+                    a variety of online courses.`
                 </p>
                 <a href="#" class="btn">Get Started</a>
             </div>
             <div class="image">
-                <img src="image/iconpage.png" alt="Foto Profil" class="main-img" />
+                <img src="{{asset('image/iconpage.png')}}" alt="Foto Profil" class="main-img" />
             </div>
         </div>
     </main>
@@ -70,8 +70,7 @@
                         courses are very clear and easy to follow!”
                     </p>
                     <div class="testimonial-user">
-                        <img src="https://randomuser.me/api/portraits/women/49.jpg" alt="Student"
-                            class="testimonial-img" />
+                        <img src="https://randomuser.me/api/portraits/women/49.jpg" alt="Student" class="testimonial-img" />
                         <div>
                             <h4>Sarah Johnson</h4>
                             <span>Web Development Student</span>

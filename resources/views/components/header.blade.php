@@ -16,8 +16,8 @@
         <div class="container header-container">
             <div class="logo">LandPage</div>
             <div class="nav-center">
-                <a href="{{ route ('home.index')}}">Home</a>
-                <a href="{{ route ('course.index')}}">Course</a>
+                <a href="{{ route('home.index')}}">Home</a>
+                <a href="{{ route('course.index')}}">Course</a>
                 <a href="#">About</a>
             </div>
             <div class="nav-right">
