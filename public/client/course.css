@@ -1,0 +1,89 @@
+.course-page {
+    display: flex;
+    padding: 2rem;
+    gap: 2rem;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: white;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.sidebar h2 {
+    margin: 1rem 0 0.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.sidebar label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.courses {
+    flex: 1;
+}
+
+.courses h1 {
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
+}
+
+.courses p {
+    margin-bottom: 1.5rem;
+    color: #555;
+}
+
+.course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.course-card {
+    background: white;
+    padding: 1rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+
+.course-card:hover {
+    transform: translateY(-4px);
+}
+
+.course-card img {
+    max-width: 100px;
+    height: auto;
+    margin-bottom: 0.5rem;
+}
+
+.course-card h3 {
+    font-size: 1rem;
+    margin: 0.5rem 0;
+}
+
+.course-card .price {
+    color: #3b82f6;
+    font-weight: bold;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #f9f9f9;
+}
