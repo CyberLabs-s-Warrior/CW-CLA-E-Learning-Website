@@ -98,6 +98,7 @@
   .footer-contact {
     flex: 1;
     min-width: 200px;
+    margin-left: 15%;
   }
   
   .footer-links h4,
@@ -139,12 +140,12 @@
   .social-icons {
     margin-top: 15px;
     display: flex;
-    gap: 12px;
+    gap: 20px;
   }
   
   .social-icons img {
-    width: 24px;
-    height: 24px;
+    width: 40px;
+    height: 40px;
     transition: transform 0.3s ease;
   }
   
