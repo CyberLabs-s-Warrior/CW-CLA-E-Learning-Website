@@ -29,11 +29,11 @@
             <h1>All Courses</h1>
             <p>Browse our wide selection of online courses</p>
             <div class="course-grid">
-                <div class="course-card" data-id="1">
+                <a class="course-card" href="{{route('lesson.index')}}">
                     <img src="https://placehold.co/100x100?text=JS" alt="JavaScript Essentials" />
                     <h3>JavaScript Essentials</h3>
                     <p class="price">$39</p>
-                </div>
+                </a>
                 <div class="course-card">
                     <img src="https://placehold.co/100x100?text=React" alt="React Development" />
                     <h3>React Development</h3>
