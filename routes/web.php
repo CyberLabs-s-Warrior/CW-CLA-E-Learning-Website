@@ -1,12 +1,17 @@
     <?php
 
-    use App\Http\Controllers\Admin\DashboardController;
-    use Illuminate\Support\Facades\Route;
-    use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CourseClientController;
+use App\Http\Controllers\LessonClientController;
+use App\Http\Controllers\HomeClientController;
+use Illuminate\Support\Facades\Route;
 
-    Route::get('/', function () {
-        return view('welcome');
-    });
+Route::get('/', function () {
+    return view('welcome');
+});
 
-    Route::get('/home', [HomeController::class, 'index'])->name('home.index');
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+Route::get('/home', [HomeClientController::class, 'index'])->name('home.index');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+Route::get('/course', [CourseClientController::class, 'index'])->name('course.index');
+Route::get('/lesson', [LessonClientController::class, 'index'])->name('lesson.index');
