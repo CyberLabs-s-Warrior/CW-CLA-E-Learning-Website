@@ -16,6 +16,6 @@ Route::get('/', function () {
 Route::get('/home', [HomeClientController::class, 'index'])->name('home.index');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 Route::get('/course', [CourseClientController::class, 'index'])->name('course.index');
-Route::get('/lesson', [LessonClientController::class, 'index'])->name('lesson.index');
+Route::get('/lesson',  [LessonClientController::class, 'index'])->name('lesson.index');
 Route::get('/profile', [ProfileClientController::class, 'index'])->name('profile.index');
 Route::get('/login-client', [LoginClientController::class, 'index'])->name('login.index');
