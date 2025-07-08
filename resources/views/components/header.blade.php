@@ -21,8 +21,7 @@
                 <a href="#">About</a>
             </div>
             <div class="nav-right">
-                <a href="#">Sign Up</a>
-                <a href="#">Log In</a>
+                <a href="{{ route ('login.index') }}">Log In</a>
             </div>
         </div>
     </header>
