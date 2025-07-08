@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CourseClientController;
 use App\Http\Controllers\LessonClientController;
+use App\Http\Controllers\LoginClientController;
 use App\Http\Controllers\HomeClientController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,3 +16,4 @@ Route::get('/home', [HomeClientController::class, 'index'])->name('home.index');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 Route::get('/course', [CourseClientController::class, 'index'])->name('course.index');
 Route::get('/lesson', [LessonClientController::class, 'index'])->name('lesson.index');
+Route::get('/login-client', [LoginClientController::class, 'index'])->name('login.index');
