@@ -4,10 +4,10 @@
             <h3>LandPage</h3>
             <p>Belajar lebih mudah dan fleksibel di platform kami.</p>
             <div class="social-icons">
-                <a href="#" target="_blank"><img src="img/facebook.svg" alt="Facebook" /><i></i></a>
-                <a href="#" target="_blank"><img src="img/instagram.svg" alt="Instagram" /></a>
-                <a href="#" target="_blank"><img src="img/tiktok.svg" alt="TikTok" /></a>
-                <a href="#" target="_blank"><img src="img/twitter.svg" alt="Twitter" /></a>
+                <a href="#" target="_blank"><img src="{{asset('image/facebook.png')}}" alt="Facebook" /></a>
+                <a href="#" target="_blank"><img src="{{asset('image/instagram.png')}}" alt="Instagram" /></a>
+                <a href="#" target="_blank"><img src="{{asset('image/tiktok.png')}}" alt="TikTok" /></a>
+                <a href="#" target="_blank"><img src="{{asset('image/twitter.png')}}" alt="Twitter" /></a>
             </div>
         </div>
 
@@ -23,9 +23,9 @@
         <div class="footer-contact">
             <h4>Contact</h4>
             <ul>
-                <li>Email: support@landpage.com</li>
-                <li>Phone: +62 812-3456-7890</li>
-                <li>Location: Jakarta, Indonesia</li>
+                <li><i class="fas fa-envelope"></i> support@landpage.com</li>
+                <li><i class="fas fa-phone"></i> +62 812-3456-7890</li>
+                <li><i class="fas fa-map-marker-alt"></i> Jakarta, Indonesia</li>
             </ul>
         </div>
     </div>
@@ -34,7 +34,6 @@
         <p>&copy; 2025 LandPage. All rights reserved.</p>
     </div>
 </footer>
-
 <div class="chat-widget">
     <button class="chat-toggle" onclick="toggleChat()">💬 Live Chat</button>
     <div class="chat-box" id="chatBox">
@@ -50,4 +49,3 @@
         </div>
     </div>
 </div>
-
