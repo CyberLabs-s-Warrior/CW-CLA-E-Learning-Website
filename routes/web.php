@@ -8,7 +8,6 @@ use App\Http\Controllers\LessonClientController;
 use App\Http\Controllers\LoginClientController;
 use App\Http\Controllers\ProfileClientController;
 
-
 /*
 |--------------------------------------------------------------------------
 | Public Routes (Tidak Harus Login)
@@ -35,5 +34,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 });
 
-// Route login/register/logout dari Breeze
+/*
+|--------------------------------------------------------------------------
+| Auth Routes dari Breeze
+|--------------------------------------------------------------------------
+*/
 require __DIR__.'/auth.php';
