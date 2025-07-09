@@ -39,4 +39,5 @@ Route::middleware(['auth'])->group(function () {
 | Auth Routes dari Breeze
 |--------------------------------------------------------------------------
 */
-require __DIR__.'/auth.php';
+
+require __DIR__ . '/auth.php';
