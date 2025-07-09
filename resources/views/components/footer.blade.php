@@ -36,4 +36,5 @@
     <div class="footer-bottom">
         <p>&copy; 2025 LandPage. All rights reserved.</p>
     </div>
+
 </footer>
