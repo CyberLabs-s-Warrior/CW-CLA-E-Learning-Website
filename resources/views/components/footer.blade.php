@@ -34,25 +34,7 @@
                 </li>
             </ul>
         </div>
-
-
         <div class="footer-bottom">
             <p>&copy; 2025 LandPage. All rights reserved.</p>
         </div>
 </footer>
-
-<div class="chat-widget">
-    <button class="chat-toggle" onclick="toggleChat()">💬 Live Chat</button>
-    <div class="chat-box" id="chatBox">
-        <div class="chat-header">
-            <span>Chat with Support</span>
-            <button onclick="toggleChat()">✖️</button>
-        </div>
-        <div class="chat-body" id="chatBody">
-            <p><strong>Admin:</strong> Halo! Ada yang bisa kami bantu?</p>
-        </div>
-        <div class="chat-input">
-            <input type="text" id="chatInput" placeholder="Ketik pesan..." onkeypress="sendMessage(event)" />
-        </div>
-    </div>
-</div>
