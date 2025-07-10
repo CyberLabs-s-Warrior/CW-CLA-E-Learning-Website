@@ -69,4 +69,64 @@
 
         </div>
     </main>
+    @push('scripts')
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const profileBtn = document.getElementById("profile-btn");
+                const dropdown = document.getElementById("dropdown-menu");
+                const settingBtn = document.getElementById("setting-btn");
+                const settingModal = document.getElementById("setting-modal");
+                const settingContent = document.getElementById("setting-content");
+                const cancelBtn = document.getElementById("cancel-btn");
+
+                const profileInput = document.getElementById("profile-input");
+                const profilePreview = document.getElementById("profile-preview");
+
+                profilePreview.addEventListener("click", () => {
+                    profileInput.click();
+                });
+
+                profileInput.addEventListener("change", function () {
+                    const file = this.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            profilePreview.src = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+
+                profileBtn.addEventListener("click", () => {
+                    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+                });
+
+                settingBtn.addEventListener("click", () => {
+                    settingModal.style.display = "flex";
+                    setTimeout(() => {
+                        settingContent.style.opacity = "1";
+                        settingContent.style.transform = "scale(1)";
+                    }, 10);
+                    dropdown.style.display = "none";
+                });
+
+                cancelBtn.addEventListener("click", () => {
+                    settingContent.style.opacity = "0";
+                    settingContent.style.transform = "scale(0.9)";
+                    setTimeout(() => {
+                        settingModal.style.display = "none";
+                    }, 200);
+                });
+
+                window.addEventListener("click", function (e) {
+                    if (!profileBtn.contains(e.target) &&
+                        !dropdown.contains(e.target) &&
+                        !settingContent.contains(e.target)) {
+                        dropdown.style.display = "none";
+                    }
+                });
+            });
+        </script>
+    @endpush
 @endsection
