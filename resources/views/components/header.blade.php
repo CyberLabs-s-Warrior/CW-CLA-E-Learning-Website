@@ -74,10 +74,10 @@
         <div class="container header-container"
             style="display: flex; justify-content: space-between; align-items: center; padding: 20px 0;">
             <div class="logo">LandPage</div>
-
             <div class="nav-center" style="display: flex; gap: 30px;">
                 <a href="{{ route('home.index')}}">Home</a>
                 <a href="{{ route('course.index')}}">Course</a>
+
                 <a href="#">About</a>
             </div>
 
@@ -157,6 +157,40 @@
 
     @stack('scripts')
 
+    <script>
+        function toggleChat() {
+            const chat = document.getElementById("chatBox");
+            chat.classList.toggle("active");
+        }
+
+        function sendMessage(event) {
+            if (event.key === "Enter") {
+                const input = document.getElementById("chatInput");
+                const message = input.value.trim();
+                if (message !== "") {
+                    const body = document.getElementById("chatBody");
+                    body.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
+                    input.value = "";
+                    body.scrollTop = body.scrollHeight;
+                }
+            }
+        }
+    </script>
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+        var Tawk_API = Tawk_API || {},
+            Tawk_LoadStart = new Date();
+        (function() {
+            var s1 = document.createElement("script"),
+                s0 = document.getElementsByTagName("script")[0];
+            s1.async = true;
+            s1.src = 'https://embed.tawk.to/686c8a4a0f70621913af115a/1ivjvodsr';
+            s1.charset = 'UTF-8';
+            s1.setAttribute('crossorigin', '*');
+            s0.parentNode.insertBefore(s1, s0);
+        })();
+    </script>
+    <!--End of Tawk.to Script-->
 </body>
 
 </html>

@@ -12,6 +12,7 @@ header {
 .logo {
     font-weight: 700;
     font-size: 1.6em;
+    margin-left: 4.7rem;
 }
 
 .nav-center {
@@ -24,6 +25,7 @@ header {
     display: flex;
     gap: 20px;
     align-items: center;
+    margin-right: 4.7rem;
 }
 
 .nav-center a,

@@ -1,9 +1,68 @@
-@extends('components.header')
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('client/home.css') }}">
-@endpush
-@section('title', 'Learnify - Home')
-@section('content')
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@yield('title', 'Learnify')</title>
+    <link rel="stylesheet" href="{{ asset('client/home.css') }}" />
+    <link rel="stylesheet" href="{{ asset('client/footer.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    @stack('styles')
+    <style>
+        header {
+            padding: 20px 0;
+            background-color: #f9fbfc;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .title {
+            font-weight: 700;
+            font-size: 1.6em;
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-center a,
+        .nav-right a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            font-size: 1em;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="title">LandPage</div>
+            <div class="nav-center">
+                <a href="{{ route('home.index') }}">Home</a>
+                <a href="{{ route('course.index') }}">Course</a>
+                <a href="#">About</a>
+            </div>
+            <div class="nav-right">
+                <a href="{{ route('login.index') }}">Log In</a>
+            </div>
+        </div>
+    </header>
+
     <main class="hero">
         <div class="container hero-content">
             <div class="text-content">
@@ -18,7 +77,7 @@
                 <a href="#" class="btn">Get Started</a>
             </div>
             <div class="image">
-                <img src="{{asset('image/iconpage.png')}}" alt="Foto Profil" class="main-img" />
+                <img src="{{ asset('image/iconpage.png') }}" alt="Foto Profil" class="main-img" />
             </div>
         </div>
     </main>
@@ -70,7 +129,8 @@
                         courses are very clear and easy to follow!”
                     </p>
                     <div class="testimonial-user">
-                        <img src="https://randomuser.me/api/portraits/women/49.jpg" alt="Student" class="testimonial-img" />
+                        <img src="https://randomuser.me/api/portraits/women/49.jpg" alt="Student"
+                            class="testimonial-img" />
                         <div>
                             <h4>Sarah Johnson</h4>
                             <span>Web Development Student</span>
@@ -84,7 +144,8 @@
                         own pace and still get quality content.”
                     </p>
                     <div class="testimonial-user">
-                        <img src="https://randomuser.me/api/portraits/men/35.jpg" alt="Student" class="testimonial-img" />
+                        <img src="https://randomuser.me/api/portraits/men/35.jpg" alt="Student"
+                            class="testimonial-img" />
                         <div>
                             <h4>Michael Lee</h4>
                             <span>Mobile Development Student</span>
@@ -98,7 +159,8 @@
                         freelancing. Highly recommend this platform!”
                     </p>
                     <div class="testimonial-user">
-                        <img src="https://randomuser.me/api/portraits/men/65.jpg" alt="Student" class="testimonial-img" />
+                        <img src="https://randomuser.me/api/portraits/men/65.jpg" alt="Student"
+                            class="testimonial-img" />
                         <div>
                             <h4>David Kim</h4>
                             <span>Data Science Student</span>
@@ -145,7 +207,8 @@
                     </div>
 
                     <div class="instructor-box">
-                        <img src="https://randomuser.me/api/portraits/women/15.jpg" alt="Instructor" class="photo" />
+                        <img src="https://randomuser.me/api/portraits/women/15.jpg" alt="Instructor"
+                            class="photo" />
                         <div class="info">
                             <h3>Intan Fadilah, M.T</h3>
                             <p>Mobile Developer and UI/UX Design Expert.</p>
@@ -156,4 +219,26 @@
             </div>
         </div>
     </section>
-@endsection
+    @include('components.footer')
+    @stack('scripts')
+    <script>
+        function toggleChat() {
+            const chat = document.getElementById("chatBox");
+            chat.classList.toggle("active");
+        }
+
+        function sendMessage(event) {
+            if (event.key === "Enter") {
+                const input = document.getElementById("chatInput");
+                const message = input.value.trim();
+                if (message !== "") {
+                    const body = document.getElementById("chatBody");
+                    body.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
+                    input.value = "";
+                    body.scrollTop = body.scrollHeight;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
