@@ -11,6 +11,7 @@ use App\Http\Controllers\CourseClientController;
 use App\Http\Controllers\LessonClientController;
 use App\Http\Controllers\LoginClientController;
 use App\Http\Controllers\ProfileClientController;
+use App\Http\Controllers\DetailCourseClientController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,7 @@ Route::get('/course', [CourseClientController::class, 'index'])->name('course.in
 Route::get('/lesson', [LessonClientController::class, 'index'])->name('lesson.index');
 Route::get('/profile', [ProfileClientController::class, 'index'])->name('profile.index');
 Route::get('/login-client', [LoginClientController::class, 'index'])->name('login.index');
+Route::get('/detail-course', [DetailCourseClientController::class, 'index'])->name('detail.index');
 
 /*
 |--------------------------------------------------------------------------
