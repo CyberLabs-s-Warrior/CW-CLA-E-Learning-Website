@@ -2,6 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\UsersController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\AboutController;
+
 use App\Http\Controllers\HomeClientController;
 use App\Http\Controllers\CourseClientController;
 use App\Http\Controllers\LessonClientController;
@@ -10,7 +14,7 @@ use App\Http\Controllers\ProfileClientController;
 
 /*
 |--------------------------------------------------------------------------
-| Public Routes (Tidak Harus Login)
+| Public Routes 
 |--------------------------------------------------------------------------
 */
 
@@ -26,12 +30,16 @@ Route::get('/login-client', [LoginClientController::class, 'index'])->name('logi
 
 /*
 |--------------------------------------------------------------------------
-| Admin Routes (Hanya Bisa Diakses Setelah Login)
+| Admin Routes 
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/users', [UsersController::class, 'index'])->name('users.index');
+    Route::get('/role', [RoleController::class, 'index'])->name('role.index');
+    Route::get('/about', [AboutController::class, 'index'])->name('about.index');
+
 });
 
 /*
