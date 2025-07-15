@@ -6,7 +6,8 @@
     <div class="container-fluid py-4">
         <div class="d-flex align-items-center mb-4">
             <div class="me-2">
-                <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center"
+                    style="width: 40px; height: 40px;">
                     <i class="fas fa-address-book"></i>
                 </div>
             </div>
@@ -14,11 +15,21 @@
         </div>
 
         @if(session('success'))
-            <div class="alert alert-success d-flex align-items-center shadow-sm rounded-3">
-                <i class="fas fa-check-circle me-2"></i>
-                <span>{{ session('success') }}</span>
-            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: '{{ session('success') }}',
+                        confirmButtonColor: '#3085d6',
+                        timer: 2500,
+                        timerProgressBar: true,
+                        showConfirmButton: false,
+                    });
+                });
+            </script>
         @endif
+
 
         <div class="card border-0 shadow rounded-4">
             <div class="card-header bg-white border-bottom-0 rounded-top-4 pb-0">
@@ -30,7 +41,8 @@
             <div class="card-body pt-2">
                 <div class="mb-3 d-flex align-items-start">
                     <div class="me-3">
-                        <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+                        <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle d-flex align-items-center justify-content-center"
+                            style="width: 36px; height: 36px;">
                             <i class="fas fa-envelope"></i>
                         </div>
                     </div>
@@ -44,7 +56,8 @@
 
                 <div class="mb-3 d-flex align-items-start">
                     <div class="me-3">
-                        <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+                        <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle d-flex align-items-center justify-content-center"
+                            style="width: 36px; height: 36px;">
                             <i class="fas fa-phone"></i>
                         </div>
                     </div>
@@ -58,7 +71,8 @@
 
                 <div class="mb-3 d-flex align-items-start">
                     <div class="me-3">
-                        <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+                        <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle d-flex align-items-center justify-content-center"
+                            style="width: 36px; height: 36px;">
                             <i class="fas fa-map-marker-alt"></i>
                         </div>
                     </div>
@@ -66,7 +80,8 @@
                         <div class="fw-semibold">Lokasi</div>
                         <div class="text-muted">
                             @if($contact->location_url && $contact->location_label)
-                                <a href="{{ $contact->location_url }}" target="_blank" class="text-decoration-none text-primary">
+                                <a href="{{ $contact->location_url }}" target="_blank"
+                                    class="text-decoration-none text-primary">
                                     {{ $contact->location_label }}
                                     <i class="fas fa-external-link-alt ms-1" style="font-size: 0.8rem;"></i>
                                 </a>

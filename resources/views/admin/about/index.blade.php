@@ -33,12 +33,22 @@
     </a>
   </div>
 
-  @if(session('success'))
-    <div class="alert alert-success shadow-sm rounded-3 d-flex align-items-center">
-      <i class="fas fa-check-circle me-2"></i>
-      <span>{{ session('success') }}</span>
-    </div>
-  @endif
+@if(session('success'))
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: '{{ session('success') }}',
+        confirmButtonColor: '#3085d6',
+        timer: 2500,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
+    });
+  </script>
+@endif
+
 
   <div class="card shadow-sm border-0 rounded-4">
     <div class="card-body">
@@ -146,17 +156,15 @@
 
   document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
     if (deleteFormId) {
-      // Tampilkan spinner dan ubah teks tombol
       document.getElementById('deleteSpinner').classList.remove('d-none');
       document.getElementById('deleteBtnText').textContent = 'Menghapus...';
       document.getElementById('confirmDeleteBtn').disabled = true;
 
-      // Delay kecil agar spinner terlihat (opsional)
+      // Simulasi loading biar UX lebih halus
       setTimeout(() => {
         document.getElementById(deleteFormId).submit();
-      }, 400); // kamu bisa ubah ini kalau mau
+      }, 400);
     }
   });
 </script>
 @endsection
-

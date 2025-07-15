@@ -28,7 +28,8 @@ class AboutController extends Controller
 
     public function create()
     {
-        return view('admin.about.create');
+        $sections = About::select('section')->distinct()->pluck('section');
+        return view('admin.about.create', compact('sections'));
     }
 
     public function store(Request $request)
@@ -62,8 +63,10 @@ class AboutController extends Controller
     public function edit($id)
     {
         $content = About::findOrFail($id);
-        return view('admin.about.edit', compact('content'));
+        $sections = About::select('section')->distinct()->pluck('section');
+        return view('admin.about.edit', compact('content', 'sections'));
     }
+
 
     public function update(Request $request, $id)
     {
@@ -77,11 +80,21 @@ class AboutController extends Controller
         $content = About::findOrFail($id);
         $data = $request->only(['section', 'title', 'description']);
 
-        // Tidak mengupdate image pada edit
+        if ($request->hasFile('image')) {
+            // Hapus gambar lama jika ada
+            if ($content->image && Storage::disk('public')->exists($content->image)) {
+                Storage::disk('public')->delete($content->image);
+            }
+
+            // Simpan gambar baru
+            $data['image'] = $request->file('image')->store('about_images', 'public');
+        }
+
         $content->update($data);
 
         return redirect()->route('admin.about.index')->with('success', 'Konten berhasil diperbarui.');
     }
+
 
     public function destroy($id)
     {
