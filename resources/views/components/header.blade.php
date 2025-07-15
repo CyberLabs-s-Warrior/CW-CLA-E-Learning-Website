@@ -18,19 +18,16 @@
             <div class="nav-center">
                 <a href="{{ route('home.index')}}">Home</a>
                 <a href="{{ route('course.index')}}">Course</a>
-                <a href="#">About</a>
+                <a href="{{ route('about.index')}}">About</a>
             </div>
             <div class="nav-right">
-                <a href="{{ route ('login.index') }}">Log In</a>
+                <a href="{{ route('login.index') }}">Log In</a>
             </div>
         </div>
     </header>
     <section>
         @yield('content')
     </section>
-
-    @include('components.footer')
-
     @stack('scripts')
     <script>
         function toggleChat() {
@@ -51,6 +48,7 @@
             }
         }
     </script>
+    @include('components.footer')
 </body>
 
 </html>
