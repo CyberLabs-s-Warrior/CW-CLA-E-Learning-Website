@@ -28,12 +28,6 @@
         </a>
       </li>
 
-      <li class="nav-item">
-        <a href="{{ route('admin.role.index') }}" class="nav-link d-flex align-items-center">
-          <i class="nav-icon fas fa-user-shield me-2"></i>
-          <p class="m-0">Role</p>
-        </a>
-      </li>
 
       <li class="nav-item">
         <a href="{{ route('admin.about.index') }}" class="nav-link d-flex align-items-center">

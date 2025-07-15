@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\UsersController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\AboutController;
 
@@ -38,11 +38,14 @@ Route::get('/detail-course', [DetailCourseClientController::class, 'index'])->na
 
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
-    Route::get('/users', [UsersController::class, 'index'])->name('users.index');
-    Route::get('/role', [RoleController::class, 'index'])->name('role.index');
-    Route::get('/about', [AboutController::class, 'index'])->name('about.index');
 
+    Route::resource('/users', UserController::class)->except(['show']);
+    // Route::resource('/roles', RoleController::class)->except(['show']);
+
+    Route::get('/about', [AboutController::class, 'index'])->name('about.index');
 });
+
+
 
 /*
 |--------------------------------------------------------------------------
