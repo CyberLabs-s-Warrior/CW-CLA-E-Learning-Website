@@ -1,0 +1,237 @@
+body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #f9f9f9;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+.about-hero {
+    width: auto;
+    margin-left: calc(-50vw + 50%);
+    height: 330px;
+    background-image: url('/image/banner.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;    
+}
+
+.about-hero-overlay {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* overlay biar teks terlihat */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.about-hero-overlay h1 {
+    color: #ffffff;
+    font-size: 48px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* TENTANG KAMI SECTION */
+.about-section {
+    background: linear-gradient(to right, #f9fafb, #eef2ff);
+    padding: 100px 80px;
+    display: flex;
+    flex-wrap: wra;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+    margin-top: -50px;
+    margin-bottom: 0;
+    border-radius: 10px;
+}
+
+.about-text {
+    flex: 1;
+    max-width: 50%;
+    padding-left: 20px;
+    border-left: 4px solid #3b82f6;
+    position: relative;
+}
+
+.about-text h2 {
+    font-size: 40px;
+    color: #1d4ed8;
+    margin-bottom: 16px;
+    font-family: sans-serif;
+}
+
+.about-text p {
+    font-size: 18px;
+    color: #4b5563;
+    line-height: 1.8;
+    margin-bottom: 12px;
+    position: relative;
+}
+
+.about-text p::before {
+    content: "❝";
+    color: #3b82f6;
+    font-size: 24px;
+    position: absolute;
+    left: -24px;
+    top: -5px;
+}
+
+.about-image {
+    flex: 1;
+    max-width: 40%;
+}
+
+.about-image img {
+    width: 100%;
+    border-radius: 20px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.about-image img:hover {
+    transform: scale(1.03);
+}
+
+/* TIM KAMI SECTION */
+.timkami-section {
+    background-color: white;
+    padding: 60px 20px 80px;
+    text-align: center;
+    margin-top: -90px;
+}
+
+.timkami-section h3 {
+    font-size: 32px;
+    color: #1f2937;
+    margin-bottom: 12px;
+}
+
+.timkami-section p {
+    max-width: 600px;
+    margin: 0 auto 30px;
+    color: #6b7280;
+    font-size: 16px;
+}
+
+.timkami-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 kolom */
+    gap: 30px;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.timkami-grid img {
+    width: 100%;
+    aspect-ratio: 1 / 1; /* Membuat gambar berbentuk kotak */
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.timkami-grid img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+.pagination-nav {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.pagination-nav button {
+    padding: 8px 14px;
+    border: none;
+    background-color: #3b82f6;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.pagination-nav button.active {
+    background-color: #1e40af;
+}
+
+.pagination-nav button:hover {
+    background-color: #2563eb;
+}
+
+.sejarah-section {
+    background-color: #f2f2f2; /* soft gray */
+    min-height: 400px; /* agar setinggi layar */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 20px;
+    position: relative;
+}
+
+.sejarah-content {
+    max-width: 900px;
+    position: absolute;
+}
+
+.sejarah-content h3 {
+    font-size: 32px;
+    color: #1f2937;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.sejarah-content p {
+    font-size: 18px;
+    color: #4b5563;
+    line-height: 1.8;
+}
+    
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+    .about-section {
+        flex-wrap: wrap;
+        flex-direction: column;
+        padding: 60px 20px;
+    }
+
+    .about-text,
+    .about-image {
+        max-width: 100%;
+    }
+
+    .about-text {
+        border-left: none;
+        padding-left: 0;
+        text-align: center;
+    }
+
+    .about-text h2 {
+        font-size: 32px;
+    }
+
+    .about-text p {
+        font-size: 16px;
+    }
+
+    .about-text p::before {
+        display: none;
+    }
+
+    .about-image img {
+        max-height: 300px;
+    }
+}

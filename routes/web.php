@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\RoleController;
@@ -19,9 +18,9 @@ use App\Http\Controllers\DetailCourseClientController;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+    Route::get('/', function () {
+        return view('welcome');
+    });
 
 Route::get('/home', [HomeClientController::class, 'index'])->name('home.index');
 Route::get('/course', [CourseClientController::class, 'index'])->name('course.index');
@@ -51,3 +50,4 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 */
 
 require __DIR__ . '/auth.php';
+

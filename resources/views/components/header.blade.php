@@ -77,8 +77,8 @@
             <div class="nav-center" style="display: flex; gap: 30px;">
                 <a href="{{ route('home.index')}}">Home</a>
                 <a href="{{ route('course.index')}}">Course</a>
+                <a href="{{ route('about.index')}}">About</a>
 
-                <a href="#">About</a>
             </div>
 
             {{-- login button --}}
@@ -152,9 +152,6 @@
     <section>
         @yield('content')
     </section>
-
-    @include('components.footer')
-
     @stack('scripts')
 
     <script>
@@ -176,6 +173,7 @@
             }
         }
     </script>
+    @include('components.footer')
     <!--Start of Tawk.to Script-->
     <script type="text/javascript">
         var Tawk_API = Tawk_API || {},
