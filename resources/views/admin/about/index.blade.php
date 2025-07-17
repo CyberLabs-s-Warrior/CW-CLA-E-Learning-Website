@@ -13,7 +13,6 @@
     <h1 class="h4 fw-semibold mb-0">Kelola Konten About</h1>
   </div>
 
-  {{-- Filter dan tombol tambah --}}
   <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2">
     <form method="GET" action="{{ route('admin.about.index') }}" id="filter-form" class="d-flex align-items-end gap-2 flex-wrap">
       <label for="section" class="form-label mb-0 fw-semibold">Filter Section:</label>
@@ -104,7 +103,6 @@
         </table>
       </div>
 
-      {{-- Pagination --}}
       <div class="mt-4">
         {{ $contents->withQueryString()->links('vendor.pagination.bootstrap-5') }}
       </div>
@@ -112,7 +110,6 @@
   </div>
 </div>
 
-{{-- MODAL KONFIRMASI --}}
 <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content rounded-4 shadow">
@@ -145,7 +142,6 @@
     deleteFormId = `delete-form-${id}`;
     document.getElementById('itemToDelete').textContent = title;
 
-    // Reset tombol saat buka modal
     document.getElementById('deleteSpinner').classList.add('d-none');
     document.getElementById('deleteBtnText').textContent = 'Ya, Hapus';
     document.getElementById('confirmDeleteBtn').disabled = false;
@@ -160,7 +156,6 @@
       document.getElementById('deleteBtnText').textContent = 'Menghapus...';
       document.getElementById('confirmDeleteBtn').disabled = true;
 
-      // Simulasi loading biar UX lebih halus
       setTimeout(() => {
         document.getElementById(deleteFormId).submit();
       }, 400);

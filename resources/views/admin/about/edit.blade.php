@@ -13,7 +13,6 @@
     <h1 class="h4 fw-semibold mb-0">Edit Konten About</h1>
   </div>
 
-  {{-- Error validation --}}
   @if ($errors->any())
     <div class="alert alert-danger rounded-3 shadow-sm">
       <ul class="mb-0">
@@ -30,7 +29,6 @@
         @csrf
         @method('PUT')
 
-        {{-- Section --}}
         <div class="mb-4">
           <label class="form-label fw-semibold">Section <span class="text-danger">*</span></label>
           <input list="section-list" name="section" id="section"
@@ -49,7 +47,6 @@
           <div class="form-text text-muted mt-1">Anda bisa memilih dari daftar atau mengetik section baru.</div>
         </div>
 
-        {{-- Title --}}
         <div class="mb-4">
           <label class="form-label fw-semibold">Judul <span class="text-muted">(opsional)</span></label>
           <input type="text" name="title"
@@ -62,7 +59,6 @@
           @enderror
         </div>
 
-        {{-- Description --}}
         <div class="mb-4">
           <label class="form-label fw-semibold">Deskripsi <span class="text-muted">(opsional)</span></label>
           <textarea name="description" rows="4"
@@ -74,7 +70,6 @@
           @enderror
         </div>
 
-        {{-- Current Image --}}
         <div class="mb-4">
           <label class="form-label fw-semibold">Gambar Saat Ini</label><br>
           @if($content->image)
@@ -84,7 +79,6 @@
           @endif
         </div>
 
-        {{-- Upload New Image --}}
         <div class="mb-4">
           <label class="form-label fw-semibold">Ganti Gambar (opsional)</label>
           <input type="file" name="image"
@@ -96,7 +90,6 @@
           @enderror
         </div>
 
-        {{-- Tombol Aksi --}}
         <div class="d-flex justify-content-end mt-4">
           <button type="submit" id="submitBtn" class="btn btn-success rounded-pill px-4 me-2 d-flex align-items-center gap-2">
             <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
