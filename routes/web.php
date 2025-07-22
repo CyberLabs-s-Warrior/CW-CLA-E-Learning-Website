@@ -19,9 +19,9 @@ use App\Http\Controllers\DetailCourseClientController;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+    Route::get('/', function () {
+        return view('welcome');
+    });
 
 Route::get('/home', [HomeClientController::class, 'index'])->name('home.index');
 Route::get('/course', [CourseClientController::class, 'index'])->name('course.index');
@@ -74,3 +74,4 @@ Route::middleware(['auth'])
 */
 
 require __DIR__ . '/auth.php';
+
