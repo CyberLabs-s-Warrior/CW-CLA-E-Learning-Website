@@ -10,6 +10,8 @@
   <meta name="author" content="ColorlibHQ">
   <meta name="description" content="AdminLTE is a Free Bootstrap 5 Admin Dashboard">
   <meta name="keywords" content="admin dashboard, bootstrap 5, adminlte">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+
 
   <title>@yield('title', 'Dashboard')</title>
   
@@ -31,4 +33,8 @@
 
 
 </body>
+<script src="..."></script>
+@yield('scripts')
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </html>

@@ -1,10 +1,10 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\AboutController;
+use App\Http\Controllers\Admin\ContactController;
 
 use App\Http\Controllers\HomeClientController;
 use App\Http\Controllers\CourseClientController;
@@ -36,16 +36,36 @@ Route::get('/detail-course', [DetailCourseClientController::class, 'index'])->na
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+Route::middleware(['auth'])
+     ->prefix('admin')
+     ->name('admin.')
+     ->group(function () {
+         
+    // Dashboard (semua user ter-auth bisa akses)
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+         ->name('dashboard.index');
 
-    Route::resource('/users', UserController::class)->except(['show']);
-    // Route::resource('/roles', RoleController::class)->except(['show']);
+    // About (butuh permission kelola_about)
+    Route::resource('/about', AboutController::class)
+         ->names('about')
+         ->middleware('can:kelola_about');
 
-    Route::get('/about', [AboutController::class, 'index'])->name('about.index');
+    // Contact (butuh permission kelola_contact)
+    Route::get('/contact',      [ContactController::class, 'index'])
+         ->name('contact.index')
+         ->middleware('can:kelola_contact');
+    Route::get('/contact/edit', [ContactController::class, 'edit'])
+         ->name('contact.edit')
+         ->middleware('can:kelola_contact');
+    Route::post('/contact/update', [ContactController::class, 'update'])
+         ->name('contact.update')
+         ->middleware('can:kelola_contact');
+
+    Route::resource('/users', UserController::class)
+        ->except(['show'])
+        ->middleware('is_superadmin');
+
 });
-
-
 
 /*
 |--------------------------------------------------------------------------
