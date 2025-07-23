@@ -14,7 +14,6 @@
     <h1 class="h4 fw-semibold mb-0">Tambah Konten About</h1>
     </div>
 
-    {{-- Tampilkan semua error secara global --}}
     @if ($errors->any())
     <div class="alert alert-danger rounded-3 shadow-sm">
     <ul class="mb-0">
@@ -30,7 +29,6 @@
       <form action="{{ route('admin.about.store') }}" method="POST" enctype="multipart/form-data" id="createForm">
       @csrf
 
-      {{-- Section --}}
       <div class="mb-4">
         <label class="form-label fw-semibold">Section</label>
         <input list="section-list" name="section"
@@ -50,7 +48,6 @@
       @enderror
       </div>
 
-      {{-- Title --}}
       <div class="mb-4">
         <label class="form-label fw-semibold">Judul <span class="text-muted">(opsional)</span></label>
         <input type="text" name="title" class="form-control rounded-3 shadow-sm @error('title') is-invalid @enderror"
@@ -62,7 +59,6 @@
       @enderror
       </div>
 
-      {{-- Description --}}
       <div class="mb-4">
         <label class="form-label fw-semibold">Deskripsi <span class="text-muted">(opsional)</span></label>
         <textarea name="description" rows="4"
@@ -74,7 +70,6 @@
       @enderror
       </div>
 
-      {{-- Image --}}
       <div class="mb-4">
         <label class="form-label fw-semibold">Gambar <span class="text-muted">(opsional)</span></label>
         <input type="file" name="image" class="form-control rounded-3 shadow-sm @error('image') is-invalid @enderror">
@@ -85,7 +80,6 @@
       @enderror
       </div>
 
-      {{-- Tombol Aksi --}}
       <div class="d-flex justify-content-end mt-4">
         <button type="submit" class="btn btn-success rounded-pill px-4 me-2" id="submitBtn">
         <span id="btnText"><i class="fas fa-save me-2"></i>Simpan</span>

@@ -13,7 +13,6 @@
     <h1 class="h4 fw-semibold mb-0">Edit Konten About</h1>
   </div>
 
-  {{-- Error validation --}}
   @if ($errors->any())
     <div class="alert alert-danger rounded-3 shadow-sm">
       <ul class="mb-0">
@@ -30,7 +29,6 @@
         @csrf
         @method('PUT')
 
-        {{-- Section --}}
         <div class="mb-4">
           <label class="form-label fw-semibold">Section <span class="text-danger">*</span></label>
           <input list="section-list" name="section" id="section"
@@ -81,7 +79,6 @@
           @endif
         </div>
 
-     
         <div class="mb-4">
           <label class="form-label fw-semibold">Ganti Gambar (opsional)</label>
           <input type="file" name="image"
@@ -93,7 +90,6 @@
           @enderror
         </div>
 
-        {{-- Tombol Aksi --}}
         <div class="d-flex justify-content-end mt-4">
           <button type="submit" id="submitBtn" class="btn btn-success rounded-pill px-4 me-2 d-flex align-items-center gap-2">
             <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>

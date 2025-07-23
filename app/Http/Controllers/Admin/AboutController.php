@@ -17,7 +17,6 @@ class AboutController extends Controller
             $query->where('section', $request->section);
         }
 
-        // ✅ Gunakan paginate, bukan get()
         $contents = $query->orderBy('created_at', 'asc')->paginate(10);
 
         $sections = About::select('section')->distinct()->pluck('section');
@@ -34,7 +33,6 @@ class AboutController extends Controller
 
     public function store(Request $request)
     {
-        // ✅ Validasi input
         $request->validate([
             'section' => 'required|string|max:255',
             'title' => 'nullable|string|max:255',
@@ -42,20 +40,16 @@ class AboutController extends Controller
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        // ✅ Ambil data yang relevan, buang null/kosong
         $data = array_filter($request->only(['section', 'title', 'description']), function ($value) {
             return $value !== null && $value !== '';
         });
 
-        // ✅ Simpan gambar jika ada file
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('about_images', 'public');
         }
 
-        // ✅ Simpan ke database
         About::create($data);
 
-        // ✅ Redirect dengan flash message
         return redirect()->route('admin.about.index')->with('success', 'Konten berhasil ditambahkan.');
     }
 
@@ -81,12 +75,10 @@ class AboutController extends Controller
         $data = $request->only(['section', 'title', 'description']);
 
         if ($request->hasFile('image')) {
-            // Hapus gambar lama jika ada
             if ($content->image && Storage::disk('public')->exists($content->image)) {
                 Storage::disk('public')->delete($content->image);
             }
 
-            // Simpan gambar baru
             $data['image'] = $request->file('image')->store('about_images', 'public');
         }
 
@@ -100,7 +92,6 @@ class AboutController extends Controller
     {
         $content = About::findOrFail($id);
 
-        // Hapus file gambar dari storage (jika ada)
         if ($content->image && Storage::disk('public')->exists($content->image)) {
             Storage::disk('public')->delete($content->image);
         }

@@ -14,7 +14,6 @@
         <h1 class="h4 fw-semibold mb-0">Edit Kontak</h1>
     </div>
 
-    {{-- Tampilkan semua error validasi jika ada --}}
     @if ($errors->any())
         <div class="alert alert-danger rounded-3 shadow-sm">
             <ul class="mb-0">
