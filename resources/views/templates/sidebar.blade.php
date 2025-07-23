@@ -6,7 +6,7 @@
   <!-- Brand -->
   <div class="sidebar-brand">
     <a href="{{ url('/') }}" class="brand-link">
-      <span class="brand-text fw-light">e-learning</span>
+      <span class="brand-text fw-light">e‑learning</span>
     </a>
   </div>
 
@@ -22,37 +22,37 @@
           </a>
         </li>
 
+        {{-- User Management (hanya superadmin) --}}
+        @role('superadmin')
         <li class="nav-item">
           <a href="{{ route('admin.users.index') }}" class="nav-link d-flex align-items-center">
             <i class="nav-icon fas fa-users me-2"></i>
-            <p class="m-0">Users</p>
+            <p class="m-0">User Management</p>
           </a>
         </li>
+        @endrole
 
-        <li class="nav-item">
-          <a href="{{ route('admin.role.index') }}" class="nav-link d-flex align-items-center">
-            <i class="nav-icon fas fa-user-shield me-2"></i>
-            <p class="m-0">Role</p>
-          </a>
-        </li>
-
+        {{-- About (butuh permission kelola_about) --}}
+        @can('kelola_about')
         <li class="nav-item">
           <a href="{{ route('admin.about.index') }}" class="nav-link d-flex align-items-center">
             <i class="nav-icon fas fa-info-circle me-2"></i>
             <p class="m-0">About</p>
           </a>
         </li>
+        @endcan
 
+        {{-- Contact (butuh permission kelola_contact) --}}
+        @can('kelola_contact')
         <li class="nav-item">
           <a href="{{ route('admin.contact.index') }}" class="nav-link d-flex align-items-center">
             <i class="nav-icon fas fa-envelope me-2"></i>
             <p class="m-0">Contact</p>
           </a>
         </li>
-
+        @endcan
 
       </ul>
     </nav>
   </div>
-
 </aside>

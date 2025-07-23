@@ -3,8 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Database\Seeders\PermissionSeeder as SeedersPermissionSeeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use PermissionSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,10 +17,15 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => bcrypt('password123'), // Ensure to hash the password
+        // User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        //     'password' => bcrypt('password123'), 
+        // ]);
+        $this->call([
+            // RoleSeeder::class,
+            // SuperadminSeeder::class,
         ]);
+
     }
 }
