@@ -9,29 +9,25 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
 
 <style>
-/* Gaya umum tombol logout agar serasi dengan item lain tapi tetap berbeda */
 .dropdown-item.logout-button {
-  color: #dc3545 !important;               /* merah tua */
+  color: #dc3545 !important;               
   font-weight: 500;
-  border-left: 4px solid #dc3545;          /* garis kiri */
+  border-left: 4px solid #dc3545;          
   transition: background-color 0.3s ease;
   padding-left: 1rem !important;
 }
 
-/* Hover: latar merah muda halus, teks tetap merah */
 .dropdown-item.logout-button:hover {
-  background-color: #f8d7da !important;    /* merah muda terang */
+  background-color: #f8d7da !important;     
   color: #a71d2a !important;
 }
 
-/* Ikon Logout ikut menyesuaikan */
 .dropdown-item.logout-button i {
   color: #dc3545 !important;
 }
 
 
 </style>
-<!-- SweetAlert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Navbar -->
@@ -47,10 +43,8 @@
       </li>
     </ul>
 
-    <!-- Right Menu -->
     <ul class="navbar-nav ms-auto align-items-center">
 
-      <!-- Fullscreen Toggle -->
       <li class="nav-item me-2">
         <a class="nav-link" href="#" data-lte-toggle="fullscreen">
           <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen fs-5"></i>
@@ -58,7 +52,6 @@
         </a>
       </li>
 
-      <!-- User Dropdown -->
       <li class="nav-item dropdown me-2">
         <a class="nav-link d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
           <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=6c757d&color=fff&size=32"
@@ -66,13 +59,7 @@
           <span class="fw-semibold">{{ Auth::user()->name }}</span>
         </a>
 
-        <!-- Dropdown -->
         <ul class="dropdown-menu dropdown-menu-end animate__animated animate__fadeIn" style="min-width: 200px;">
-          <li>
-            <a class="dropdown-item" href="#">
-              <i class="bi bi-person-circle me-2 text-primary"></i> Profil
-            </a>
-          </li>
           <li><hr class="dropdown-divider"></li>
           <li>
             <a class="dropdown-item logout-button d-flex align-items-center gap-2" href="#" id="logout-link">
