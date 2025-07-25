@@ -3,6 +3,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\ProfileController;
+
 use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\ContactController;
 
@@ -76,6 +78,9 @@ Route::middleware(['auth'])
     Route::resource('/users', UserController::class)
         ->except(['show'])
         ->middleware('is_superadmin');
+     // Profil Admin (akses oleh admin yang login)
+     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+
 
 });
 

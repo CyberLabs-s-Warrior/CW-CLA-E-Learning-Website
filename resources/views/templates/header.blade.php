@@ -60,7 +60,14 @@
         </a>
 
         <ul class="dropdown-menu dropdown-menu-end animate__animated animate__fadeIn" style="min-width: 200px;">
-          <li><hr class="dropdown-divider"></li>
+          <li><hr class="dropdown-divider">
+          </li>
+          <li>
+            <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('admin.profile.show') }}">
+              <i class="bi bi-person-circle"></i> Profile
+            </a>
+
+          </li>
           <li>
             <a class="dropdown-item logout-button d-flex align-items-center gap-2" href="#" id="logout-link">
               <i class="bi bi-box-arrow-right"></i> Logout
