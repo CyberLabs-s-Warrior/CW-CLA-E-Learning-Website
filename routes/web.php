@@ -8,6 +8,9 @@ use App\Http\Controllers\Admin\ContactController;
 
 use App\Http\Controllers\HomeClientController;
 use App\Http\Controllers\CourseClientController;
+
+use App\Http\Controllers\Auth\StudentAuthController;
+
 use App\Http\Controllers\LessonClientController;
 use App\Http\Controllers\LoginClientController;
 use App\Http\Controllers\ProfileClientController;
@@ -19,7 +22,7 @@ use App\Http\Controllers\DetailCourseClientController;
 |--------------------------------------------------------------------------
 */
 
-    Route::get('/', function () {
+Route::get('/', function () {
         return view('welcome');
     });
 
@@ -27,8 +30,17 @@ Route::get('/home', [HomeClientController::class, 'index'])->name('home.index');
 Route::get('/course', [CourseClientController::class, 'index'])->name('course.index');
 Route::get('/lesson', [LessonClientController::class, 'index'])->name('lesson.index');
 Route::get('/profile', [ProfileClientController::class, 'index'])->name('profile.index');
-Route::get('/login-client', [LoginClientController::class, 'index'])->name('login.index');
+ 
 Route::get('/detail-course', [DetailCourseClientController::class, 'index'])->name('detail.index');
+
+
+// login client/student
+Route::get('/login-client', [LoginClientController::class, 'index'])->name('login.index');
+
+// Tambahkan route login & register student
+Route::post('/student/login', [StudentAuthController::class, 'login'])->name('student.login');
+Route::post('/student/register', [StudentAuthController::class, 'register'])->name('student.register');
+Route::post('/student/logout', [StudentAuthController::class, 'logout'])->name('student.logout');
 
 /*
 |--------------------------------------------------------------------------

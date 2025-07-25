@@ -32,8 +32,13 @@
                         <td>
                             <div class="mb-2">
                                 @foreach($user->roles as $role)
-                                    <span class="badge bg-primary me-1">{{ ucfirst($role->name) }}</span>
+                                    @if($role->name === 'superadmin')
+                                        <span class="badge bg-danger text-white me-1">Superadmin</span>
+                                    @else
+                                        <span class="badge bg-primary text-white me-1">{{ ucfirst($role->name) }}</span>
+                                    @endif
                                 @endforeach
+
                             </div>
 
                             @php
