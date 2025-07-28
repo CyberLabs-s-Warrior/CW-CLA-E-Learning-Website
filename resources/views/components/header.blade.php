@@ -80,7 +80,6 @@
                 {{-- <a href="{{ route('')}}">About</a> --}}
                 <a>About</a>
 
-
             </div>
 
             {{-- login button --}}
