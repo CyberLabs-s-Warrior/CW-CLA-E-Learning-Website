@@ -24,9 +24,10 @@
                 <thead class="table-light text-center align-middle">
                     <tr>
                         <th style="width: 5%">#</th>
+                        <th>foto</th>
                         <th>Nama</th>
                         <th>Email</th>
-                        <th style="width: 30%">Role & Akses</th>
+                        <th style="width: 20%">Role & Akses</th>
                         <th>Dibuat</th>
                         <th style="width: 15%">Aksi</th>
                     </tr>
@@ -35,6 +36,11 @@
                     @forelse ($users as $index => $user)
                         <tr>
                             <td class="text-center">{{ $index + 1 }}</td>
+                            <td>
+                                <img src="{{ asset('storage/' . $user->foto) }}"
+                                        width="50" height="50" class="rounded-circle">
+                            </td>
+
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
                             <td>
