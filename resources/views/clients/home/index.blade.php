@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@yield('title', 'Learnify')</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="{{ asset('client/home.css') }}" />
     <link rel="stylesheet" href="{{ asset('client/footer.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -195,7 +196,6 @@
                     </div>
                 </div>
 
-                <!-- Kanan -->
                 <div class="split-right">
                     <div class="instructor-box">
                         <img src="https://randomuser.me/api/portraits/men/14.jpg" alt="Instructor" class="photo" />
@@ -254,7 +254,27 @@
             s0.parentNode.insertBefore(s1, s0);
         })();
     </script>
-    <!--End of Tawk.to Script-->
+
+ @if (session('status'))
+ 
+<script>
+    Swal.fire({
+        title: 'Akun Berhasil Dibuat 🎉',
+        text: '{{ session('status') }}',
+        icon: 'success',
+        iconColor: '#2196F3',  
+        background: '#E3F2FD',    
+        color: '#0D47A1',           
+        confirmButtonColor: '#2196F3', 
+        confirmButtonText: 'Oke!',
+        timer: 4000,
+        timerProgressBar: true,
+        showConfirmButton: true
+    });
+</script>
+@endif
+
+
 </body>
 
 </html>

@@ -15,10 +15,19 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::with('roles')->get();
-        return view('admin.users.index', compact('users'));
+        $role = $request->role;
+
+        $users = User::with('roles')
+            ->when($role, function ($query, $role) {
+                $query->whereHas('roles', function ($q) use ($role) {
+                    $q->where('name', $role);
+                });
+            })
+            ->get();
+
+        return view('admin.users.index', compact('users', 'role'));
     }
 
     /**
@@ -38,16 +47,16 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'        => 'required|string|max:255',
-            'email'       => 'required|email|unique:users,email',
-            'password'    => 'required|string|min:6|confirmed',
-            'role'        => 'required|exists:roles,name',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
+            'role' => 'required|exists:roles,name',
             'permissions' => 'array',
         ]);
 
         $user = User::create([
-            'name'     => $validated['name'],
-            'email'    => $validated['email'],
+            'name' => $validated['name'],
+            'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
 
@@ -58,7 +67,7 @@ class UserController extends Controller
         }
 
         return redirect()->route('admin.users.index')
-                         ->with('success', 'User berhasil ditambahkan.');
+            ->with('success', 'User berhasil ditambahkan.');
     }
 
     /**
@@ -88,14 +97,14 @@ class UserController extends Controller
         }
 
         $rules = [
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email,' . $user->id,
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
             'password' => 'nullable|min:6|confirmed',
             'permissions' => 'array',
         ];
 
         // Tambah rule 'role' hanya jika bukan superadmin
-        if (! $user->is_superadmin) {
+        if (!$user->is_superadmin) {
             $rules['role'] = 'required|string|exists:roles,name';
         }
 
@@ -103,15 +112,15 @@ class UserController extends Controller
 
         // Update data dasar
         $user->update([
-            'name'     => $validated['name'],
-            'email'    => $validated['email'],
+            'name' => $validated['name'],
+            'email' => $validated['email'],
             'password' => $validated['password']
                 ? Hash::make($validated['password'])
                 : $user->password,
         ]);
 
         // Sync role & permissions cuma untuk non-superadmin
-        if (! $user->is_superadmin) {
+        if (!$user->is_superadmin) {
             $user->syncRoles([$validated['role']]);
             $user->syncPermissions($validated['permissions'] ?? []);
         }

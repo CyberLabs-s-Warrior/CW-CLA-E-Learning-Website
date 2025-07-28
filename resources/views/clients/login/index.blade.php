@@ -12,33 +12,29 @@
 <body>
     <div class="container" id="container">
         <div class="form-container sign-up-container">
-            <form action="#">
+            <form action="{{ route('student.register') }}" method="POST">
+                @csrf
                 <h1>Create Account</h1>
-                <div class="social-container">
-                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
-                </div>
                 <span>or use your email for registration</span>
-                <input type="text" placeholder="Name" />
-                <input type="email" placeholder="Email" />
-                <input type="password" placeholder="Password" />
+                <input type="text" placeholder="Name" name="name" required />
+                <input type="email" name="email" placeholder="Email" required />
+                <input type="password" name="password" placeholder="Password" required/>
+                <input type="password" name="password_confirmation" placeholder="Confirm Password" required />
                 <button>Sign Up</button>
             </form>
         </div>
         <div class="form-container sign-in-container">
-            <form action="#">
+            <form action="{{ route('student.login') }}" method="POST">
+                @csrf 
                 <h1>Sign in</h1>
-                <div class="social-container">
-                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
-                </div>
-                <span>or use your account</span>
-                <input type="email" placeholder="Email" />
-                <input type="password" placeholder="Password" />
+                <input type="email" name="email" placeholder="Email" required />
+                    @error('email')
+                        <small style="color: red">{{ $message }}</small>
+                    @enderror
+                <input type="password" name="password" placeholder="Password" required />
+
                 <a href="#">Forgot your password?</a>
-                <button>Sign In</button>
+                <button type="submit">Sign In</button>
             </form>
         </div>
         <div class="overlay-container">
@@ -57,12 +53,7 @@
         </div>
     </div>
 
-    {{-- <footer>
-        <p>
-            Created with <i class="fa fa-heart"></i> by
-            - Read how I created this and how you can join the challenge here
-        </p>
-    </footer> --}}
+ 
         <script>
             const signUpButton = document.getElementById('signUp');
             const signInButton = document.getElementById('signIn');
