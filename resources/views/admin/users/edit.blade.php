@@ -28,7 +28,7 @@
                     </div>
                 @endif
 
-                <form action="{{ route('admin.users.update', $user->id) }}" method="POST">
+                <form action="{{ route('admin.users.update', $user->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -53,6 +53,15 @@
                             placeholder="Email aktif" required>
                         @error('email')
                             <div class="invalid-feedback">{{ $errors->first('email') }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="foto" class="form-label">Foto Profil Baru</label>
+                        <input type="file" name="foto" id="foto"
+                            class="form-control @error('foto') is-invalid @enderror">
+                        @error('foto')
+                            <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 

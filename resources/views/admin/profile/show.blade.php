@@ -12,7 +12,8 @@
 
                     <div class="d-flex align-items-center mb-4">
                         <div class="me-3">
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=0D8ABC&color=fff&size=100"
+                             <img src="{{ asset('storage/' . $user->foto) }}"
+                    
                                  alt="Avatar" class="rounded-circle shadow" width="80" height="80">
                         </div>
                         <div>

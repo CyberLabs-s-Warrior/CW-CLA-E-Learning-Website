@@ -6,9 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -20,11 +21,9 @@ class UserController extends Controller
         $role = $request->role;
 
         $users = User::with('roles')
-            ->when($role, function ($query, $role) {
-                $query->whereHas('roles', function ($q) use ($role) {
-                    $q->where('name', $role);
-                });
-            })
+            ->when($role, fn($query, $role) =>
+                $query->whereHas('roles', fn($q) => $q->where('name', $role))
+            )
             ->get();
 
         return view('admin.users.index', compact('users', 'role'));
@@ -35,7 +34,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles = Role::whereIn('name', ['admin', 'instructure'])->pluck('name');
+        $roles       = Role::whereIn('name', ['admin', 'instructure'])->pluck('name');
         $permissions = Permission::all();
 
         return view('admin.users.create', compact('roles', 'permissions'));
@@ -47,26 +46,32 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
-            'role' => 'required|exists:roles,name',
+            'name'        => 'required|string|max:255',
+            'email'       => 'required|email|unique:users,email',
+            'password'    => 'required|string|min:6|confirmed',
+            'role'        => 'required|exists:roles,name',
             'permissions' => 'array',
+            'foto'        => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
+        $userData = [
+            'name'     => $validated['name'],
+            'email'    => $validated['email'],
             'password' => Hash::make($validated['password']),
-        ]);
+        ];
 
+        if ($request->hasFile('foto')) {
+            $userData['foto'] = $request->file('foto')->store('foto_user', 'public');
+        }
+
+        $user = User::create($userData);
         $user->assignRole($validated['role']);
-
         if (!empty($validated['permissions'])) {
             $user->syncPermissions($validated['permissions']);
         }
 
-        return redirect()->route('admin.users.index')
+        return redirect()
+            ->route('admin.users.index')
             ->with('success', 'User berhasil ditambahkan.');
     }
 
@@ -75,13 +80,12 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        // Batasi: superadmin hanya bisa diedit oleh dirinya sendiri
         if ($user->is_superadmin && Auth::id() !== $user->id) {
             abort(403, 'Anda tidak diizinkan mengedit superadmin.');
         }
 
-        $roles = Role::whereIn('name', ['admin', 'instructure'])->pluck('name');
-        $permissions = Permission::all();
+        $roles           = Role::whereIn('name', ['admin', 'instructure'])->pluck('name');
+        $permissions     = Permission::all();
         $userPermissions = $user->permissions->pluck('name')->toArray();
 
         return view('admin.users.edit', compact('user', 'roles', 'permissions', 'userPermissions'));
@@ -97,29 +101,35 @@ class UserController extends Controller
         }
 
         $rules = [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|min:6|confirmed',
+            'name'        => 'required|string|max:255',
+            'email'       => 'required|email|unique:users,email,' . $user->id,
+            'password'    => 'nullable|min:6|confirmed',
             'permissions' => 'array',
+            'foto'        => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
-
-        // Tambah rule 'role' hanya jika bukan superadmin
         if (!$user->is_superadmin) {
             $rules['role'] = 'required|string|exists:roles,name';
         }
 
         $validated = $request->validate($rules);
 
-        // Update data dasar
-        $user->update([
-            'name' => $validated['name'],
+        $userData = [
+            'name'  => $validated['name'],
             'email' => $validated['email'],
-            'password' => $validated['password']
-                ? Hash::make($validated['password'])
-                : $user->password,
-        ]);
+        ];
+        if (!empty($validated['password'])) {
+            $userData['password'] = Hash::make($validated['password']);
+        }
 
-        // Sync role & permissions cuma untuk non-superadmin
+        if ($request->hasFile('foto')) {
+            if ($user->foto && Storage::disk('public')->exists($user->foto)) {
+                Storage::disk('public')->delete($user->foto);
+            }
+            $userData['foto'] = $request->file('foto')->store('foto_user', 'public');
+        }
+
+        $user->update($userData);
+
         if (!$user->is_superadmin) {
             $user->syncRoles([$validated['role']]);
             $user->syncPermissions($validated['permissions'] ?? []);
@@ -135,11 +145,12 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        // Batasi: superadmin tidak bisa dihapus
         if ($user->is_superadmin) {
             return back()->with('error', 'Tidak bisa menghapus superadmin.');
         }
-
+        if ($user->foto && Storage::disk('public')->exists($user->foto)) {
+            Storage::disk('public')->delete($user->foto);
+        }
         $user->delete();
 
         return back()->with('success', 'User berhasil dihapus.');

@@ -53,28 +53,36 @@
       </li>
 
       <li class="nav-item dropdown me-2">
-        <a class="nav-link d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=6c757d&color=fff&size=32"
-               alt="User Avatar" class="rounded-circle me-2" width="32" height="32">
-          <span class="fw-semibold">{{ Auth::user()->name }}</span>
-        </a>
+  <a class="nav-link d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    @if(Auth::user()->foto)
+      <img src="{{ asset('storage/' . Auth::user()->foto) }}"
+           alt="{{ Auth::user()->name }} Avatar"
+           class="rounded-circle me-2"
+           width="32" height="32">
+    @else
+      <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=6c757d&color=fff&size=32"
+           alt="{{ Auth::user()->name }} Avatar"
+           class="rounded-circle me-2"
+           width="32" height="32">
+    @endif
 
-        <ul class="dropdown-menu dropdown-menu-end animate__animated animate__fadeIn" style="min-width: 200px;">
-          <li><hr class="dropdown-divider">
-          </li>
-          <li>
-            <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('admin.profile.show') }}">
-              <i class="bi bi-person-circle"></i> Profile
-            </a>
+    <span class="fw-semibold">{{ Auth::user()->name }}</span>
+  </a>
+  <ul class="dropdown-menu dropdown-menu-end animate__animated animate__fadeIn" style="min-width: 200px;">
+    <li><hr class="dropdown-divider"></li>
+    <li>
+      <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('admin.profile.show') }}">
+        <i class="bi bi-person-circle"></i> Profile
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item logout-button d-flex align-items-center gap-2" href="#" id="logout-link">
+        <i class="bi bi-box-arrow-right"></i> Logout
+      </a>
+    </li>
+  </ul>
+</li>
 
-          </li>
-          <li>
-            <a class="dropdown-item logout-button d-flex align-items-center gap-2" href="#" id="logout-link">
-              <i class="bi bi-box-arrow-right"></i> Logout
-            </a>
-          </li>
-        </ul>
-      </li>
 
       <!-- Logout Form (Hidden) -->
       <form action="{{ route('logout') }}" method="POST" class="d-none" id="logout-form">
