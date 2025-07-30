@@ -259,6 +259,9 @@
         </li>
         @endcan
 
+        @can('kelola_course')
+        {{-- Course Management --}}
+          
         {{-- Course --}}
         <li class="nav-item has-treeview {{ request()->is('admin/course*') ? 'active' : '' }}">
           <a class="nav-link d-flex align-items-center" href="#courseSubmenu" data-bs-toggle="collapse"
@@ -283,6 +286,7 @@
             </li>
           </ul>
         </li>
+        @endcan
 
       </ul>
     </nav>
