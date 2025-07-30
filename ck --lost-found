@@ -1,0 +1,43 @@
+[33m6cdf2ad[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mtambah-akses[m[33m, [m[1;31morigin/dev[m[33m)[m HEAD@{0}: pull origin dev: Fast-forward
+[33m153ade0[m[33m ([m[1;32mdev[m[33m)[m HEAD@{1}: checkout: moving from dev to tambah-akses
+[33m153ade0[m[33m ([m[1;32mdev[m[33m)[m HEAD@{2}: pull origin dev: Fast-forward
+[33m279f911[m HEAD@{3}: checkout: moving from foto-admin to dev
+[33md547aab[m[33m ([m[1;31morigin/foto-admin[m[33m, [m[1;32mfoto-admin[m[33m)[m HEAD@{4}: commit: tambah foto profile admin
+[33mf812ecc[m HEAD@{5}: pull origin dev: Fast-forward
+[33m43a2dd6[m[33m ([m[1;32mprofile-admin[m[33m)[m HEAD@{6}: checkout: moving from profile-admin to foto-admin
+[33m43a2dd6[m[33m ([m[1;32mprofile-admin[m[33m)[m HEAD@{7}: pull origin dev: Fast-forward
+[33m00735eb[m[33m ([m[1;31morigin/profile-admin[m[33m)[m HEAD@{8}: commit: menambahkan profile admin
+[33m0760b7f[m[33m ([m[1;32mlogin-register-student[m[33m)[m HEAD@{9}: checkout: moving from login-register-student to profile-admin
+[33m0760b7f[m[33m ([m[1;32mlogin-register-student[m[33m)[m HEAD@{10}: pull origin dev: Fast-forward
+[33m03a317c[m[33m ([m[1;31morigin/login-register-student[m[33m)[m HEAD@{11}: commit: membuat login dan register student
+[33m279f911[m HEAD@{12}: checkout: moving from dev to login-register-student
+[33m279f911[m HEAD@{13}: pull origin dev: Fast-forward
+[33m72db932[m HEAD@{14}: pull origin dev: Fast-forward
+[33mb5afae6[m HEAD@{15}: checkout: moving from user-management to dev
+[33m3fafe48[m[33m ([m[1;31morigin/user-management[m[33m, [m[1;32muser-management[m[33m)[m HEAD@{16}: commit (merge): membuat crud user
+[33m904cff6[m HEAD@{17}: reset: moving to HEAD
+[33m904cff6[m HEAD@{18}: commit: progress terakhir fitur user management
+[33mb5afae6[m HEAD@{19}: checkout: moving from dev to user-management
+[33mb5afae6[m HEAD@{20}: pull origin dev: Fast-forward
+[33me0c52b5[m HEAD@{21}: checkout: moving from tambah-page-dan-route to dev
+[33mf2e9c52[m[33m ([m[1;31morigin/tambah-page-dan-route[m[33m, [m[1;32mtambah-page-dan-route[m[33m)[m HEAD@{22}: commit: menambahkan page role,about,user(admin) dan prefix di route
+[33me0c52b5[m HEAD@{23}: checkout: moving from dev to tambah-page-dan-route
+[33me0c52b5[m HEAD@{24}: pull origin dev: Fast-forward
+[33m97afd9f[m HEAD@{25}: checkout: moving from fix-footer-client to dev
+[33m88c830c[m[33m ([m[1;31morigin/fix-footer-client[m[33m, [m[1;32mfix-footer-client[m[33m)[m HEAD@{26}: commit: fix: memperbaiki ui footer client
+[33m97afd9f[m HEAD@{27}: checkout: moving from dev to fix-footer-client
+[33m97afd9f[m HEAD@{28}: checkout: moving from dev to dev
+[33m97afd9f[m HEAD@{29}: checkout: moving from dev to dev
+[33m97afd9f[m HEAD@{30}: pull origin dev: Fast-forward
+[33m8d69a09[m HEAD@{31}: checkout: moving from templating-admin to dev
+[33m54a0dcc[m[33m ([m[1;32mtemplating-admin[m[33m)[m HEAD@{32}: reset: moving to HEAD
+[33m54a0dcc[m[33m ([m[1;32mtemplating-admin[m[33m)[m HEAD@{33}: pull origin dev: Fast-forward
+[33m413254b[m HEAD@{34}: pull origin dev: Fast-forward
+[33mf71abea[m[33m ([m[1;31morigin/templating-admin[m[33m)[m HEAD@{35}: commit (merge): fix: conflict in routes/web.php
+[33m981a358[m HEAD@{36}: checkout: moving from dev to templating-admin
+[33m8d69a09[m HEAD@{37}: pull origin dev: Fast-forward
+[33m613d7e7[m[33m ([m[1;32mmain[m[33m)[m HEAD@{38}: checkout: moving from templating-admin to dev
+[33m981a358[m HEAD@{39}: commit: templating admin
+[33m613d7e7[m[33m ([m[1;32mmain[m[33m)[m HEAD@{40}: checkout: moving from main to templating-admin
+[33m613d7e7[m[33m ([m[1;32mmain[m[33m)[m HEAD@{41}: pull origin dev: Fast-forward
+[33med000c3[m HEAD@{42}: clone: from https://github.com/CyberLabs-s-Warrior/CW-CLA-E-Learning-Website.git
