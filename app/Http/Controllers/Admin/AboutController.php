@@ -4,6 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+class AboutController extends Controller
+{
+ 
+    public function index()
+    {
+        return view('admin.about.index');
+    }
 use App\Models\About;
 use Illuminate\Support\Facades\Storage;
 
@@ -100,5 +107,4 @@ class AboutController extends Controller
 
         return redirect()->route('admin.about.index')->with('success', 'Konten dan gambar berhasil dihapus.');
     }
-
 }

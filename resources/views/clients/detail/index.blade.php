@@ -7,6 +7,14 @@
 @section('content')
     <main class="content">
         <div class="lesson">
+            <div class="hero-img">
+                <img src="https://images.ctfassets.net/piwi0eufbb2g/4k3m7B1tegAEtCfQ3XJP13/eea1eae6fcaf7099e20cf7f41d5201b8/What_is_a_Callback_Function_in_JavaScript.jpg?w=1200&h=630"
+                    alt="JavaScript Essentials" />
+            </div>
+            <h1 class="section-title">JavaScript Essentials</h1>
+
+            <h2 class="material-title">Introduction</h2>
+            <p>
             <div class="hero-img" data-aos="zoom-in">
                 <img src="https://images.ctfassets.net/piwi0eufbb2g/4k3m7B1tegAEtCfQ3XJP13/eea1eae6fcaf7099e20cf7f41d5201b8/What_is_a_Callback_Function_in_JavaScript.jpg?w=1200&h=630"
                     alt="JavaScript Essentials" />
@@ -25,6 +33,8 @@
                 quidem explicabo at.
             </p>
 
+            <h2>Course Modules</h2>
+            <ul class="module-list">
             <h2 data-aos="fade-up" data-aos-delay="300">Course Modules</h2>
             <ul class="module-list" data-aos="fade-up" data-aos-delay="400">
                 <li>1. Introduction to JavaScript</li>
@@ -32,7 +42,7 @@
                 <li>3. Functions and Scope</li>
                 <li>4. DOM Manipulation</li>
             </ul>
-
+            <div class="comment-section">
             <div class="comment-section" data-aos="fade-up" data-aos-delay="500">
                 <h2>Comments</h2>
                 <form id="comment-form">
@@ -44,6 +54,11 @@
                     <!-- Komentar akan muncul di sini -->
                 </div>
             </div>
+            <a href="{{ route('course.index') }}" class="back-btn">← Back to Courses</a>
+            <a href="{{ route('lesson.index') }}" class="next-btn">Follow Courses →</a>
+        </div>
+    </main>
+    @push('scripts')
             <a href="{{ route('course.index') }}" class="back-btn" data-aos="fade-right" data-aos-delay="600">← Back to Courses</a>
             <a href="{{ route('lesson.index') }}" class="next-btn" data-aos="fade-left" data-aos-delay="600">Follow Courses →</a>
         </div>

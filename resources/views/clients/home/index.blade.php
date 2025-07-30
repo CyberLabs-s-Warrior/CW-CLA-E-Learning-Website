@@ -1,3 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@yield('title', 'Learnify')</title>
+    <link rel="stylesheet" href="{{ asset('client/home.css') }}" />
+    <link rel="stylesheet" href="{{ asset('client/footer.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    @stack('styles')
 @extends('components.header')
 
 @section('title', 'Learnify - Home')
@@ -43,9 +54,26 @@
             font-size: 1em;
         }
     </style>
+</head>
+
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="title">LandPage</div>
+            <div class="nav-center">
+                <a href="{{ route('home.index') }}">Home</a>
+                <a href="{{ route('course.index') }}">Course</a>
+                <a href="#">About</a>
+            </div>
+            <div class="nav-right">
+                <a href="{{ route('login.index') }}">Log In</a>
+            </div>
+        </div>
+    </header>
 @endpush
 
 @section('content')
+
 
 
     <main class="hero">
@@ -109,7 +137,8 @@
                 <div class="testimonial-card">
                     <p class="testimonial-text">“This platform helped me land my first job as a web developer. The courses are very clear and easy to follow!”</p>
                     <div class="testimonial-user">
-                        <img src="https://randomuser.me/api/portraits/women/49.jpg" alt="Student" class="testimonial-img" />
+                        <img src="https://randomuser.me/api/portraits/women/49.jpg" alt="Student"
+                            class="testimonial-img" />
                         <div>
                             <h4>Sarah Johnson</h4>
                             <span>Web Development Student</span>
@@ -120,7 +149,8 @@
                 <div class="testimonial-card">
                     <p class="testimonial-text">“I love how flexible the learning schedule is. I can study at my own pace and still get quality content.”</p>
                     <div class="testimonial-user">
-                        <img src="https://randomuser.me/api/portraits/men/35.jpg" alt="Student" class="testimonial-img" />
+                        <img src="https://randomuser.me/api/portraits/men/35.jpg" alt="Student"
+                            class="testimonial-img" />
                         <div>
                             <h4>Michael Lee</h4>
                             <span>Mobile Development Student</span>
@@ -131,7 +161,8 @@
                 <div class="testimonial-card">
                     <p class="testimonial-text">“The data science path was exactly what I needed to start freelancing. Highly recommend this platform!”</p>
                     <div class="testimonial-user">
-                        <img src="https://randomuser.me/api/portraits/men/65.jpg" alt="Student" class="testimonial-img" />
+                        <img src="https://randomuser.me/api/portraits/men/65.jpg" alt="Student"
+                            class="testimonial-img" />
                         <div>
                             <h4>David Kim</h4>
                             <span>Data Science Student</span>
@@ -188,6 +219,8 @@
             </div>
         </div>
     </section>
+    @include('components.footer')
+    @stack('scripts')
 
 
     @if (session('status'))
@@ -229,6 +262,11 @@
             }
         }
     </script>
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+        var Tawk_API = Tawk_API || {},
+            Tawk_LoadStart = new Date();
+        (function () {
 
     <!-- Tawk.to -->
     <script type="text/javascript">
@@ -244,4 +282,34 @@
             s0.parentNode.insertBefore(s1, s0);
         })();
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const imageContainer = document.querySelector('.image');
+            const image = imageContainer.querySelector('.main-img');
+
+            imageContainer.addEventListener('mousemove', (e) => {
+                const rect = imageContainer.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotateX = -(y - centerY) / 20;
+                const rotateY = (x - centerX) / 20;
+
+                image.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+
+            imageContainer.addEventListener('mouseleave', () => {
+                image.style.transform = 'rotateX(0deg) rotateY(0deg)';
+            });
+        });
+    </script>
+    <!--End of Tawk.to Script-->
+</body>
+
+</html>
+=======
 @endpush

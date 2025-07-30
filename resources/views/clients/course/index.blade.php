@@ -6,6 +6,7 @@
 @section('title', 'Learnify - Courses')
 @section('content')
     <section class="course-page">
+        <div class="sidebar">
         <div class="sidebar" data-aos="fade-right">
             <h2>Course</h2>
             <label><input type="checkbox" /> All Courses</label>
@@ -34,6 +35,7 @@
             <h1 data-aos="fade-up">All Courses</h1>
             <p data-aos="fade-up" data-aos-delay="100">Browse our wide selection of online courses</p>
             <div class="course-grid">
+                <a class="course-card" href="{{route('detail.index')}}">
                 <a class="course-card" href="{{ route('detail.index') }}" data-aos="zoom-in">
                     <img src="https://placehold.co/100x100?text=JS" alt="JavaScript Essentials" />
                     <h3>JavaScript Essentials</h3>

@@ -1,5 +1,11 @@
 <?php
 
+use App\Http\Controllers\AboutClientController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\UsersController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\AboutController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
@@ -9,13 +15,24 @@ use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\CourseCategoryController;
 use App\Http\Controllers\Admin\CourseController;
-
 use App\Http\Controllers\HomeClientController;
 use App\Http\Controllers\CourseClientController;
 use App\Http\Controllers\LessonClientController;
 use App\Http\Controllers\LoginClientController;
 use App\Http\Controllers\ProfileClientController;
 use App\Http\Controllers\DetailCourseClientController;
+use App\Http\Controllers\DatanClientController;
+use App\Http\Controllers\PendataanClientController;
+
+/*
+|--------------------------------------------------------------------------
+| Public Routes 
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/', function () {
+    return view('welcome');
+});
 
 use App\Http\Controllers\Auth\StudentAuthController;
 
@@ -31,6 +48,23 @@ Route::get('/home', [HomeClientController::class, 'index'])->name('home.index');
 Route::get('/course', [CourseClientController::class, 'index'])->name('course.index');
 Route::get('/lesson', [LessonClientController::class, 'index'])->name('lesson.index');
 Route::get('/profile', [ProfileClientController::class, 'index'])->name('profile.index');
+Route::get('/login-client', [LoginClientController::class, 'index'])->name('login.index');
+Route::get('/detail-course', [DetailCourseClientController::class, 'index'])->name('detail.index');
+Route::get('/about', [AboutClientController::class, 'index'])->name('about.index');
+Route::get('/data', [PendataanClientController::class, 'index'])->name('pendataan.index');
+
+/*
+|--------------------------------------------------------------------------
+| Admin Routes 
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/users', [UsersController::class, 'index'])->name('users.index');
+    Route::get('/role', [RoleController::class, 'index'])->name('role.index');
+    Route::get('/about', [AboutController::class, 'index'])->name('about.index');
+});
 Route::get('/detail-course', [DetailCourseClientController::class, 'index'])->name('detail.index');
 
 // Login Client / Student
@@ -100,7 +134,6 @@ Route::middleware(['auth'])
         Route::put('/course/{course}', [CourseController::class, 'update'])->name('course.update');
         Route::delete('/course/{course}', [CourseController::class, 'destroy'])->name('course.destroy');
     });
-
 /*
 |--------------------------------------------------------------------------
 | Auth Routes dari Breeze

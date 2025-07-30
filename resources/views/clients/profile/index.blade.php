@@ -60,6 +60,10 @@
     <main class="dashboard-container">
 
         <!-- Profile Header -->
+        <div class="profile-header">
+            <img src="{{ asset('image/avatar.jpg') }}" alt="User Avatar" class="avatar">
+            <div class="user-info">
+                <h2>Hi, Nugraha 👋</h2>
         <div class="profile-header" data-aos="fade-up">
             <img src="{{ asset('image/avatar.jpg') }}" alt="User Avatar" class="avatar">
 
@@ -74,10 +78,18 @@
         <div class="dashboard-grid">
 
             <!-- Left Panel -->
+            <div class="left-panel">
             <div class="left-panel" data-aos="fade-right">
                 <div class="overview-card">
                     <p><i class="fas fa-book-open"></i> Active Courses</p>
                     <h3>3</h3>
+                </div>
+                <div class="overview-card">
+                    <p><i class="fas fa-chart-line"></i> Learning Progress</p>
+                    <h3>45%</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 45%"></div>
+                    </div>
                 </div>
 
                 <div class="swiper mySwiper" style="max-width: 100%; overflow: hidden;">
@@ -121,7 +133,10 @@
                     <p><i class="fas fa-lightbulb"></i> Tetap semangat belajar!</p>
                     <div class="loading-bar"></div>
                 </div>
+            </div>
 
+            <!-- Right Panel -->
+            <div class="right-panel">
             </div>
 
             <!-- Right Panel -->
@@ -157,6 +172,9 @@
         </div>
     </main>
     @push('scripts')
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
         <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
         <script>
             AOS.init({
@@ -197,7 +215,11 @@
                 profilePreview.addEventListener("click", () => {
                     profileInput.click();
                 });
-
+                profileInput.addEventListener("change", function () {
+                    const file = this.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
                 profileInput.addEventListener("change", function() {
                     const file = this.files[0];
                     if (file) {
@@ -230,6 +252,7 @@
                     }, 200);
                 });
 
+                window.addEventListener("click", function (e) {
                 window.addEventListener("click", function(e) {
                     if (!profileBtn.contains(e.target) &&
                         !dropdown.contains(e.target) &&
@@ -240,4 +263,5 @@
             });
         </script>
     @endpush
+@endsection
 @endsection
