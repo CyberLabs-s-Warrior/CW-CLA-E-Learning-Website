@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
-
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
 
 class SuperadminSeeder extends Seeder
 {
@@ -20,8 +19,12 @@ class SuperadminSeeder extends Seeder
             [
                 'name' => 'superadmin',
                 'password'=> hash::make('password123'),
+                'is_superadmin' => true,
             ]
             );
             $user->assignRole('superadmin'); 
+
+            $permissions = [Permission::pluck('name')->toArray()];
+            $user->syncPermissions(($permissions));
          }
 }

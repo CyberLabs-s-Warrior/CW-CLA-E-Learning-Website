@@ -9,8 +9,8 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-            // 'kelola_about',
-            // 'kelola_contact',
+            'kelola_about',
+            'kelola_contact',
             'kelola_course',
         ];
 
