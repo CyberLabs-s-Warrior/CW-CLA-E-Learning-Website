@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="{{ asset('client/profile.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
     <style>
         .swiper-button-prev,
         .swiper-button-next {
@@ -59,11 +60,11 @@
     <main class="dashboard-container">
 
         <!-- Profile Header -->
-        <div class="profile-header">
+        <div class="profile-header" data-aos="fade-up">
             <img src="{{ asset('image/avatar.jpg') }}" alt="User Avatar" class="avatar">
 
             <div class="user-info">
-                <h2 class="mb-1">Hi,{{ $user->name }}  👋</h2>
+                <h2 class="mb-1">Hi,{{ $user->name }} 👋</h2>
                 <p class="text-muted mb-0">{{ $user->email }}</p>
                 <p>Selamat datang kembali! Ayo lanjutkan belajar.</p>
             </div>
@@ -73,7 +74,7 @@
         <div class="dashboard-grid">
 
             <!-- Left Panel -->
-            <div class="left-panel">
+            <div class="left-panel" data-aos="fade-right">
                 <div class="overview-card">
                     <p><i class="fas fa-book-open"></i> Active Courses</p>
                     <h3>3</h3>
@@ -124,7 +125,7 @@
             </div>
 
             <!-- Right Panel -->
-            <div class="right-panel">
+            <div class="right-panel" data-aos="fade-left">
                 <select id="filter" name="filter" class="custom-select">
                     <option value="all">Semua Kursus</option>
                     <option value="ongoing">Belum Selesai</option>
@@ -156,11 +157,19 @@
         </div>
     </main>
     @push('scripts')
+        <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+        <script>
+            AOS.init({
+                once: true,
+                duration: 700,
+                easing: 'ease-out'
+            });
+        </script>
         <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
         <script>
             const swiper = new Swiper('.mySwiper', {
                 slidesPerView: 'auto',
-                loop: true, // boleh true kalo mau loop
+                loop: true,
                 pagination: {
                     el: '.swiper-pagination',
                     clickable: true,
@@ -169,7 +178,7 @@
                     nextEl: '.swiper-button-next',
                     prevEl: '.swiper-button-prev',
                 },
-                watchOverflow: false, // <--- PENTING
+                watchOverflow: false,
             });
         </script>
 
