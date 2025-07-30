@@ -1,15 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('components.header')
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@yield('title', 'Learnify')</title>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@section('title', 'Learnify - Home')
+
+@push('styles')
     <link rel="stylesheet" href="{{ asset('client/home.css') }}" />
     <link rel="stylesheet" href="{{ asset('client/footer.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    @stack('styles')
     <style>
         header {
             padding: 20px 0;
@@ -47,22 +43,10 @@
             font-size: 1em;
         }
     </style>
-</head>
+@endpush
 
-<body>
-    <header>
-        <div class="container header-container">
-            <div class="title">LandPage</div>
-            <div class="nav-center">
-                <a href="{{ route('home.index') }}">Home</a>
-                <a href="{{ route('course.index') }}">Course</a>
-                <a href="#">About</a>
-            </div>
-            <div class="nav-right">
-                <a href="{{ route('login.index') }}">Log In</a>
-            </div>
-        </div>
-    </header>
+@section('content')
+
 
     <main class="hero">
         <div class="container hero-content">
@@ -82,37 +66,34 @@
             </div>
         </div>
     </main>
+
     <section class="learning-paths">
         <div class="container">
             <h2 class="section-title">Learning Paths</h2>
             <div class="card-container">
                 <div class="card">
-                    <img src="https://cdn-icons-png.flaticon.com/512/1055/1055687.png" alt="Web Development"
-                        class="card-icon" />
+                    <img src="https://cdn-icons-png.flaticon.com/512/1055/1055687.png" alt="Web Development" class="card-icon" />
                     <h3>Web Development</h3>
                     <p><span class="badge">49k</span> students</p>
                     <a href="#" class="view-link">View Path</a>
                 </div>
 
                 <div class="card">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2920/2920257.png" alt="Mobile Development"
-                        class="card-icon" />
+                    <img src="https://cdn-icons-png.flaticon.com/512/2920/2920257.png" alt="Mobile Development" class="card-icon" />
                     <h3>Mobile Development</h3>
                     <p><span class="badge">138k</span> students</p>
                     <a href="#" class="view-link">View Path</a>
                 </div>
 
                 <div class="card">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3799/3799931.png" alt="Data Science"
-                        class="card-icon" />
+                    <img src="https://cdn-icons-png.flaticon.com/512/3799/3799931.png" alt="Data Science" class="card-icon" />
                     <h3>Data Science</h3>
                     <p><span class="badge">164k</span> students</p>
                     <a href="#" class="view-link">View Path</a>
                 </div>
 
                 <div class="card">
-                    <img src="https://cdn-icons-png.flaticon.com/512/5977/5977585.png" alt="Machine Learning"
-                        class="card-icon" />
+                    <img src="https://cdn-icons-png.flaticon.com/512/5977/5977585.png" alt="Machine Learning" class="card-icon" />
                     <h3>Machine Learning</h3>
                     <p><span class="badge">191k</span> students</p>
                     <a href="#" class="view-link">View Path</a>
@@ -120,18 +101,15 @@
             </div>
         </div>
     </section>
+
     <section class="testimonials">
         <div class="container">
             <h2 class="section-title">What Our Students Say</h2>
             <div class="testimonial-container">
                 <div class="testimonial-card">
-                    <p class="testimonial-text">
-                        “This platform helped me land my first job as a web developer. The
-                        courses are very clear and easy to follow!”
-                    </p>
+                    <p class="testimonial-text">“This platform helped me land my first job as a web developer. The courses are very clear and easy to follow!”</p>
                     <div class="testimonial-user">
-                        <img src="https://randomuser.me/api/portraits/women/49.jpg" alt="Student"
-                            class="testimonial-img" />
+                        <img src="https://randomuser.me/api/portraits/women/49.jpg" alt="Student" class="testimonial-img" />
                         <div>
                             <h4>Sarah Johnson</h4>
                             <span>Web Development Student</span>
@@ -140,13 +118,9 @@
                 </div>
 
                 <div class="testimonial-card">
-                    <p class="testimonial-text">
-                        “I love how flexible the learning schedule is. I can study at my
-                        own pace and still get quality content.”
-                    </p>
+                    <p class="testimonial-text">“I love how flexible the learning schedule is. I can study at my own pace and still get quality content.”</p>
                     <div class="testimonial-user">
-                        <img src="https://randomuser.me/api/portraits/men/35.jpg" alt="Student"
-                            class="testimonial-img" />
+                        <img src="https://randomuser.me/api/portraits/men/35.jpg" alt="Student" class="testimonial-img" />
                         <div>
                             <h4>Michael Lee</h4>
                             <span>Mobile Development Student</span>
@@ -155,13 +129,9 @@
                 </div>
 
                 <div class="testimonial-card">
-                    <p class="testimonial-text">
-                        “The data science path was exactly what I needed to start
-                        freelancing. Highly recommend this platform!”
-                    </p>
+                    <p class="testimonial-text">“The data science path was exactly what I needed to start freelancing. Highly recommend this platform!”</p>
                     <div class="testimonial-user">
-                        <img src="https://randomuser.me/api/portraits/men/65.jpg" alt="Student"
-                            class="testimonial-img" />
+                        <img src="https://randomuser.me/api/portraits/men/65.jpg" alt="Student" class="testimonial-img" />
                         <div>
                             <h4>David Kim</h4>
                             <span>Data Science Student</span>
@@ -171,11 +141,11 @@
             </div>
         </div>
     </section>
+
     <section class="instructors-split">
         <div class="container">
             <h2 class="section-title">Meet Our Instructors</h2>
             <div class="split-wrapper">
-                <!-- Kiri -->
                 <div class="split-left">
                     <div class="instructor-box">
                         <img src="https://randomuser.me/api/portraits/men/10.jpg" alt="Instructor" class="photo" />
@@ -207,8 +177,7 @@
                     </div>
 
                     <div class="instructor-box">
-                        <img src="https://randomuser.me/api/portraits/women/15.jpg" alt="Instructor"
-                            class="photo" />
+                        <img src="https://randomuser.me/api/portraits/women/15.jpg" alt="Instructor" class="photo" />
                         <div class="info">
                             <h3>Intan Fadilah, M.T</h3>
                             <p>Mobile Developer and UI/UX Design Expert.</p>
@@ -219,8 +188,28 @@
             </div>
         </div>
     </section>
-    @include('components.footer')
-    @stack('scripts')
+
+
+    @if (session('status'))
+        <script>
+            Swal.fire({
+                title: 'Akun Berhasil Dibuat 🎉',
+                text: '{{ session('status') }}',
+                icon: 'success',
+                iconColor: '#2196F3',
+                background: '#E3F2FD',
+                color: '#0D47A1',
+                confirmButtonColor: '#2196F3',
+                confirmButtonText: 'Oke!',
+                timer: 4000,
+                timerProgressBar: true,
+                showConfirmButton: true
+            });
+        </script>
+    @endif
+@endsection
+
+@push('scripts')
     <script>
         function toggleChat() {
             const chat = document.getElementById("chatBox");
@@ -240,7 +229,8 @@
             }
         }
     </script>
-    <!--Start of Tawk.to Script-->
+
+    <!-- Tawk.to -->
     <script type="text/javascript">
         var Tawk_API = Tawk_API || {},
             Tawk_LoadStart = new Date();
@@ -254,27 +244,4 @@
             s0.parentNode.insertBefore(s1, s0);
         })();
     </script>
-
- @if (session('status'))
- 
-<script>
-    Swal.fire({
-        title: 'Akun Berhasil Dibuat 🎉',
-        text: '{{ session('status') }}',
-        icon: 'success',
-        iconColor: '#2196F3',  
-        background: '#E3F2FD',    
-        color: '#0D47A1',           
-        confirmButtonColor: '#2196F3', 
-        confirmButtonText: 'Oke!',
-        timer: 4000,
-        timerProgressBar: true,
-        showConfirmButton: true
-    });
-</script>
-@endif
-
-
-</body>
-
-</html>
+@endpush

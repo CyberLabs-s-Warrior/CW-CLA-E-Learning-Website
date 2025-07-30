@@ -13,8 +13,10 @@
         <!-- Profile Header -->
         <div class="profile-header">
             <img src="{{ asset('image/avatar.jpg') }}" alt="User Avatar" class="avatar">
+
             <div class="user-info">
-                <h2>Hi, Nugraha 👋</h2>
+                <h2 class="mb-1">Hi,{{ $user->name }}  👋</h2>
+                <p class="text-muted mb-0">{{ $user->email }}</p>
                 <p>Selamat datang kembali! Ayo lanjutkan belajar.</p>
             </div>
         </div>

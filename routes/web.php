@@ -72,12 +72,12 @@ Route::middleware(['auth'])
         // ------------------------------
 
         // Course Categories
-        Route::get('/course-categories', [CourseCategoryController::class, 'index'])->name('course-categories.index');
-        Route::get('/course-categories/create', [CourseCategoryController::class, 'create'])->name('course-categories.create');
-        Route::post('/course-categories', [CourseCategoryController::class, 'store'])->name('course-categories.store');
-        Route::get('/course-categories/{id}/edit', [CourseCategoryController::class, 'edit'])->name('course-categories.edit');
-        Route::put('/course-categories/{id}', [CourseCategoryController::class, 'update'])->name('course-categories.update');
-        Route::delete('/course-categories/{id}', [CourseCategoryController::class, 'destroy'])->name('course-categories.destroy');
+        Route::get('/course-categories', [CourseCategoryController::class, 'index'])->name('course-categories.index')->middleware('can:kelola_course');
+        Route::get('/course-categories/create', [CourseCategoryController::class, 'create'])->name('course-categories.create')->middleware('can:kelola_course');
+        Route::post('/course-categories', [CourseCategoryController::class, 'store'])->name('course-categories.store')->middleware('can:kelola_course');
+        Route::get('/course-categories/{id}/edit', [CourseCategoryController::class, 'edit'])->name('course-categories.edit')->middleware('can:kelola_course');
+        Route::put('/course-categories/{id}', [CourseCategoryController::class, 'update'])->name('course-categories.update')->middleware('can:kelola_course');
+        Route::delete('/course-categories/{id}', [CourseCategoryController::class, 'destroy'])->name('course-categories.destroy')->middleware('can:kelola_course');
 
         // Course Levels
         Route::get('/course-levels/{id}/edit', [CourseCategoryController::class, 'editLevel'])->name('course-levels.edit');
