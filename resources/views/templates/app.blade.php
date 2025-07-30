@@ -12,6 +12,7 @@
   <meta name="keywords" content="admin dashboard, bootstrap 5, adminlte">
 
   <title>@yield('title', 'Dashboard')</title>
+  
 
 </head>
 

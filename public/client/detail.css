@@ -1,0 +1,169 @@
+body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+}
+
+.lesson {
+    max-width: 900px;
+    margin: auto;
+    padding: 30px;
+}
+
+.section-title {
+    font-size: 30px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+.course-details li,
+.module-list li {
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+}
+.module-dropdown {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    margin-bottom: 24px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.material-title {
+    font-size: 28px;
+    margin-bottom: 16px;
+    color: #222;
+}
+
+.video-lesson {
+    margin-bottom: 24px;
+}
+
+video {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 12px;
+    background: #000;
+}
+
+h2 {
+    font-size: 20px;
+    margin-bottom: 12px;
+    margin-top: 32px;
+}
+
+p {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.6;
+}
+
+.back-btn {
+    display: inline-block;
+    margin-top: 32px;
+    text-decoration: none;
+    color: #3366cc;
+    font-weight: 500;
+}
+.back-btn:hover {
+    text-decoration: underline;
+}
+.next-btn {
+    /* display: inline-block; */
+    margin-top: 32px;
+    text-decoration: none;
+    color: #3366cc;
+    font-weight: 500;
+    float: right;
+}
+.next-btn:hover {
+    text-decoration: underline;
+}
+.comment-section {
+    margin-top: 40px;
+}
+
+.comment-section h2 {
+    font-size: 20px;
+    margin-bottom: 12px;
+}
+
+#comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+#comment-input {
+    /* width: 100%; */
+    /* min-height: 80px; */
+    padding: 12px;
+    font-size: 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    resize: vertical;
+}
+
+#comment-form button {
+    align-self: flex-end;
+    padding: 8px 16px;
+    font-size: 14px;
+    background-color: #3366cc;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+#comment-form button:hover {
+    background-color: #255bb5;
+}
+
+#comment-list .comment {
+    padding: 12px;
+    border-radius: 5px;
+}
+
+.comment p {
+    margin: 0;
+    font-size: 15px;
+    color: #333;
+}
+.comment {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background: #fff;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    /* position: relative; */
+}
+
+.comment p {
+    margin: 0;
+    flex: 1;
+}
+
+.comment button.delete {
+    background: none;
+    border: none;
+    color: red;
+    font-weight: bold;
+    cursor: pointer;
+    padding-left: 10px;
+}
+
+.hero-img {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.hero-img img {
+    width: 100%;
+    max-height: 280px;
+    object-fit: cover;
+    border-radius: 12px;
+    display: block;
+    margin: 0 auto;
+}

@@ -6,6 +6,10 @@
 @section('content')
     <section class="course-page">
         <div class="sidebar">
+            <h2>Course</h2>
+            <label><input type="checkbox" /> All Courses</label>
+            <label><input type="checkbox" /> My Courses</label>
+            <label><input type="checkbox" /> Available Courses</label>
             <h2>Category</h2>
             <label><input type="checkbox" /> Web Development</label>
             <label><input type="checkbox" /> Mobile Development</label>
@@ -29,7 +33,7 @@
             <h1>All Courses</h1>
             <p>Browse our wide selection of online courses</p>
             <div class="course-grid">
-                <a class="course-card" href="{{route('lesson.index')}}">
+                <a class="course-card" href="{{route('detail.index')}}">
                     <img src="https://placehold.co/100x100?text=JS" alt="JavaScript Essentials" />
                     <h3>JavaScript Essentials</h3>
                     <p class="price">$39</p>

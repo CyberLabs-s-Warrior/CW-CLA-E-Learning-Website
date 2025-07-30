@@ -4,7 +4,7 @@
   </div>
   <strong>
     Copyright &copy;2025
-    <a href="https://adminlte.io" class="text-decoration-none">e-learning</a>.
+    <a href="" class="text-decoration-none">e-learning</a>.
   </strong>
   All rights reserved.
     <!-- JS -->

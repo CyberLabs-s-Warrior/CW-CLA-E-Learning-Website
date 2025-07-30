@@ -59,17 +59,20 @@
     margin-left: 50px;
   
   }
-  
   .image {
     flex: 1;
     position: relative;
     text-align: center;
     min-width: 300px;
+    perspective: 1000px;
   }
   
   .main-img {
     width: 500px;
     object-fit: cover;
+    transition: transform 0.2s ease;
+    transform-style: preserve-3d;
+    will-change: transform;
   }
   
   .learning-paths {
