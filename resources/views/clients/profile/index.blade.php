@@ -5,8 +5,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
     <style>
-
-
         .swiper-button-prev,
         .swiper-button-next {
             /* background-color: white; */
@@ -125,6 +123,11 @@
 
             <!-- Right Panel -->
             <div class="right-panel">
+                <select id="filter" name="filter" class="custom-select">
+                    <option value="all">Semua Kursus</option>
+                    <option value="ongoing">Belum Selesai</option>
+                    <option value="finished">Sudah Selesai</option>
+                </select>
                 <h2 class="section-title">Continue Learning</h2>
                 <div class="course-grid">
                     <div class="course-card">
