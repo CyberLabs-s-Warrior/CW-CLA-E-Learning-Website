@@ -2,18 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-class AboutController extends Controller
-{
- 
-    public function index()
-    {
-        return view('admin.about.index');
-    }
 use App\Models\About;
 use Illuminate\Support\Facades\Storage;
-
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 class AboutController extends Controller
 {
     public function index(Request $request)
