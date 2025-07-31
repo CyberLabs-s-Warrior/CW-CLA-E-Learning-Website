@@ -1,127 +1,111 @@
 @extends('templates.app')
 
-@section('title', 'users')
-
-@section('content')
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-lg-6">
-      <h1></h1>users management</h1>
-    </div>
-  </div>
-</div>
-@endsection
-
-@push('scripts')
-@endpush
 @section('title', 'User Management')
 
 @section('content')
-    <div class="container py-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="fw-bold mb-0">Manajemen User</h4>
-            <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
-                <i class="bi bi-plus-circle me-1"></i> Tambah User
-            </a>
-        </div>
 
 
-        @if(request()->has('role'))
-            <div class="alert alert-info">
-                Menampilkan user dengan role: <strong>{{ ucfirst(request()->role) }}</strong>
-                <a href="{{ route('admin.users.index') }}" class="btn btn-sm btn-secondary ms-2">Reset</a>
-            </div>
-        @endif
-
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover align-middle shadow-sm rounded overflow-hidden">
-                <thead class="table-light text-center align-middle">
-                    <tr>
-                        <th style="width: 5%">#</th>
-                        <th>foto</th>
-                        <th>Nama</th>
-                        <th>Email</th>
-                        <th style="width: 20%">Role & Akses</th>
-                        <th>Dibuat</th>
-                        <th style="width: 15%">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($users as $index => $user)
-                        <tr>
-                            <td class="text-center">{{ $index + 1 }}</td>
-                            <td>
-                                <img src="{{ asset('storage/' . $user->foto) }}"
-                                        width="50" height="50" class="rounded-circle">
-                            </td>
-
-                            <td>{{ $user->name }}</td>
-                            <td>{{ $user->email }}</td>
-                            <td>
-                                <div class="mb-2">
-                                    @foreach($user->roles as $role)
-                                        @if($role->name === 'superadmin')
-                                            <span class="badge bg-danger text-white me-1">Superadmin</span>
-                                        @else
-                                            <span class="badge bg-primary text-white me-1">{{ ucfirst($role->name) }}</span>
-                                        @endif
-                                    @endforeach
-
-                                </div>
-
-                                @php
-                                    $permissions = $user->getAllPermissions()->pluck('name')->toArray();
-                                @endphp
-
-                                @if ($permissions)
-                                    <button class="btn btn-sm btn-outline-secondary collapsed" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#perm-{{ $user->id }}" aria-expanded="false"
-                                        aria-controls="perm-{{ $user->id }}">
-                                        <i class="bi bi-eye me-1"></i> Tampilkan Akses
-                                    </button>
-                                    <div class="collapse mt-2" id="perm-{{ $user->id }}">
-                                        <div class="border rounded p-2 bg-light">
-                                            @foreach ($permissions as $permission)
-                                                <span class="badge bg-secondary text-light me-1 mb-1">
-                                                    {{ str_replace('_', ' ', $permission) }}
-                                                </span>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                @endif
-                            </td>
-                            <td>{{ $user->created_at->timezone('Asia/Jakarta')->format('d-m-Y H:i') }}</td>
-                            <td class="text-center">
-                                @if (!($user->is_superadmin && auth()->id() !== $user->id))
-                                    <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-warning me-1"
-                                        data-bs-toggle="tooltip" title="Edit User">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                @endif
-
-                                @unless ($user->is_superadmin)
-                                    <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
-                                        class="d-inline form-delete" data-nama="{{ $user->name }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" class="btn btn-sm btn-danger btn-delete" data-bs-toggle="tooltip"
-                                            title="Hapus User">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                @endunless
-                            </td>
-
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center text-muted">Belum ada user</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold mb-0">Manajemen User</h4>
+        <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i> Tambah User
+        </a>
     </div>
+
+    @if(request()->has('role'))
+        <div class="alert alert-info">
+            Menampilkan user dengan role: <strong>{{ ucfirst(request()->role) }}</strong>
+            <a href="{{ route('admin.users.index') }}" class="btn btn-sm btn-secondary ms-2">Reset</a>
+        </div>
+    @endif
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle shadow-sm rounded overflow-hidden">
+            <thead class="table-light text-center align-middle">
+                <tr>
+                    <th style="width: 5%">#</th>
+                    <th>Foto</th>
+                    <th>Nama</th>
+                    <th>Email</th>
+                    <th style="width: 20%">Role & Akses</th>
+                    <th>Dibuat</th>
+                    <th style="width: 15%">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($users as $index => $user)
+                    <tr>
+                        <td class="text-center">{{ $index + 1 }}</td>
+                        <td>
+                            <img src="{{ asset('storage/' . $user->foto) }}"
+                                 width="50" height="50" class="rounded-circle">
+                        </td>
+                        <td>{{ $user->name }}</td>
+                        <td>{{ $user->email }}</td>
+                        <td>
+                            <div class="mb-2">
+                                @foreach($user->roles as $role)
+                                    @if($role->name === 'superadmin')
+                                        <span class="badge bg-danger text-white me-1">Superadmin</span>
+                                    @else
+                                        <span class="badge bg-primary text-white me-1">{{ ucfirst($role->name) }}</span>
+                                    @endif
+                                @endforeach
+                            </div>
+
+                            @php
+                                $permissions = $user->getAllPermissions()->pluck('name')->toArray();
+                            @endphp
+
+                            @if ($permissions)
+                                <button class="btn btn-sm btn-outline-secondary collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#perm-{{ $user->id }}"
+                                        aria-expanded="false" aria-controls="perm-{{ $user->id }}">
+                                    <i class="bi bi-eye me-1"></i> Tampilkan Akses
+                                </button>
+                                <div class="collapse mt-2" id="perm-{{ $user->id }}">
+                                    <div class="border rounded p-2 bg-light">
+                                        @foreach ($permissions as $permission)
+                                            <span class="badge bg-secondary text-light me-1 mb-1">
+                                                {{ str_replace('_', ' ', $permission) }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+                        </td>
+                        <td>{{ $user->created_at->timezone('Asia/Jakarta')->format('d-m-Y H:i') }}</td>
+                        <td class="text-center">
+                            @if (!($user->is_superadmin && auth()->id() !== $user->id))
+                                <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-warning me-1"
+                                   data-bs-toggle="tooltip" title="Edit User">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                            @endif
+
+                            @unless ($user->is_superadmin)
+                                <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
+                                      class="d-inline form-delete" data-nama="{{ $user->name }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" class="btn btn-sm btn-danger btn-delete"
+                                            data-bs-toggle="tooltip" title="Hapus User">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            @endunless
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">Belum ada user</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
 @endsection
 
 @push('styles')
