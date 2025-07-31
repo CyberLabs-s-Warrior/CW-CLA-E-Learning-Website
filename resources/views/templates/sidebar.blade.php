@@ -1,14 +1,9 @@
-{{-- link --}}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="..." crossorigin="anonymous" />
-
-<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
 {{-- Font Awesome --}}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
-
 {{-- Inter Font --}}
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
-<!-- Sidebar Custom Style -->
+<!-- Custom Style -->
 <style>
   body {
     font-family: 'Inter', sans-serif;
@@ -19,8 +14,8 @@
     color: #ffffff;
     box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(6px);
-    border-right: none !important;
     transition: all 0.3s ease;
+    min-height: 100vh;
   }
 
   .sidebar-brand {
@@ -32,7 +27,7 @@
     font-size: 1.25rem;
     font-weight: 600;
     color: #ffffff;
-    transition: color 0.3s ease, transform 0.3s ease;
+    transition: 0.3s ease;
   }
 
   .sidebar-brand a:hover {
@@ -40,12 +35,7 @@
     transform: scale(1.02);
   }
 
-  .sidebar-wrapper {
-    padding: 1rem;
-  }
-
   .nav-sidebar .nav-link {
-    background-color: transparent;
     color: #cfd8dc;
     border-radius: 8px;
     padding: 0.65rem 1rem;
@@ -54,37 +44,26 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    position: relative;
   }
 
   .nav-sidebar .nav-link:hover {
     background-color: rgba(255, 255, 255, 0.08);
     color: #ffffff;
-    transform: translateX(3px);
-  }
-
-  .nav-sidebar .nav-link i {
-    transition: transform 0.3s ease, color 0.3s ease;
-  }
-
-  .nav-sidebar .nav-link:hover i {
-    transform: rotate(5deg) scale(1.1);
-    color: #4fc3f7;
   }
 
   .nav-sidebar .nav-link.active {
-    background-color: #007bff !important;
-    color: #ffffff !important;
+    background-color: #007bff;
+    color: #ffffff;
     font-weight: 600;
     box-shadow: 0 2px 8px rgba(0, 123, 255, 0.4);
   }
 
   .nav-treeview {
     display: none;
-    margin-left: 0.25rem;
+    margin-left: 0.5rem;
   }
 
-  .nav-item.active .nav-treeview {
+  .nav-item.active > .nav-treeview {
     display: block;
     animation: fadeIn 0.3s ease-in-out;
   }
@@ -104,40 +83,24 @@
   }
 
   .nav-treeview .nav-link.active {
+    background-color: rgba(0, 123, 255, 0.15);
     color: #ffffff;
     font-weight: 500;
-    background-color: rgba(0, 123, 255, 0.15);
   }
 
-  /* Collapse Icons (click only) */
-  .icon-collapsed,
-  .icon-expanded {
-    transition: transform 0.3s ease;
+  .icon-collapsed, .icon-expanded {
+    transition: 0.3s ease;
     color: #aaa;
   }
 
-  .icon-expanded {
-    display: none;
-  }
+  .icon-expanded { display: none; }
+  .nav-item.active .icon-expanded { display: inline; color: #fff; }
+  .nav-item.active .icon-collapsed { display: none; }
 
-  .nav-item.active .icon-expanded {
-    display: inline-block;
-    transform: rotate(0);
-    color: #fff;
-  }
-
-  .nav-item.active .icon-collapsed {
-    display: none;
-  }
-
-  /* Dot Icon */
   .nav-icon.dot-toggle::before {
     content: '\f111';
     font-family: 'Font Awesome 6 Free';
     font-weight: 400;
-    display: inline-block;
-    width: 1.25rem;
-    transition: all 0.3s ease;
     color: #999;
   }
 
@@ -147,95 +110,31 @@
     color: #ffffff;
   }
 
-  /* Fade animation */
   @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-5px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Animated icon on hover */
-  .animated-icon {
-    transition: transform 0.4s ease;
-  }
-
-  .nav-link:hover .animated-icon {
-    transform: rotate(-5deg) scale(1.1);
-    color: #8bc34a;
-  }
-
-  .nav-treeview .nav-link i {
-    transition: all 0.2s ease;
-  }
-
-  .nav-treeview .nav-link:hover i {
-    color: #66bb6a;
-    transform: scale(1.15);
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 </style>
 
-<aside class="app-sidebar bg-body shadow-sm border-end" style="min-height: 100vh;" data-bs-theme="dark">
+<aside class="app-sidebar" data-bs-theme="dark">
   <!-- Brand -->
-  <div class="sidebar-brand p-3 border-bottom">
-    <a href="{{ url('/') }}" class="text-decoration-none text-white d-flex align-items-center">
+  <div class="sidebar-brand p-3">
+    <a href="{{ url('/') }}" class="text-decoration-none d-flex align-items-center">
       <i class="fas fa-graduation-cap me-2 text-primary"></i>
-      <span class="fw-semibold fs-5">e‑Larning</span>
+      <span class="fw-semibold">e‑Larning</span>
     </a>
   </div>
 
-<!-- Sidebar Menu -->
-<div class="sidebar-wrapper">
-  <nav class="mt-2">
-    <ul class="nav nav-pills nav-sidebar flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
-
-      <li class="nav-item">
-        <a href="{{ route('admin.dashboard.index') }}" class="nav-link d-flex align-items-center">
-          <i class="nav-icon fas fa-tachometer-alt me-2"></i>
-          <p class="m-0">Dashboard</p>
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a href="{{ route('admin.users.index') }}" class="nav-link d-flex align-items-center">
-          <i class="nav-icon fas fa-users me-2"></i>
-          <p class="m-0">Users</p>
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a href="{{ route('admin.role.index') }}" class="nav-link d-flex align-items-center">
-          <i class="nav-icon fas fa-user-shield me-2"></i>
-          <p class="m-0">Role</p>
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a href="{{ route('admin.about.index') }}" class="nav-link d-flex align-items-center">
-          <i class="nav-icon fas fa-info-circle me-2"></i>
-          <p class="m-0">About</p>
-        </a>
-      </li>
-
-    </ul>
-  </nav>
-</div>
   <!-- Sidebar Menu -->
   <div class="sidebar-wrapper p-3">
-    <nav class="mt-2">
-      <ul class="nav nav-pills nav-sidebar flex-column gap-1" data-lte-toggle="treeview" role="menu"
-        data-accordion="false">
+    <nav>
+      <ul class="nav nav-pills nav-sidebar flex-column" role="menu" data-accordion="false">
 
         {{-- Dashboard --}}
         <li class="nav-item">
           <a href="{{ route('admin.dashboard.index') }}"
-            class="nav-link {{ request()->routeIs('admin.dashboard.index') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-tachometer-alt me-2"></i>
-            <span>Dashboard</span>
+             class="nav-link {{ request()->routeIs('admin.dashboard.index') ? 'active' : '' }}">
+            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
           </a>
         </li>
 
@@ -243,36 +142,25 @@
         @role('superadmin')
         <li class="nav-item has-treeview {{ request()->is('admin/users*') ? 'active' : '' }}">
           <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-users me-2"></i>
-            <span>User Management</span>
+            <i class="fas fa-users me-2"></i> User Management
             <i class="fas fa-caret-right ms-auto icon-collapsed"></i>
             <i class="fas fa-caret-down ms-auto icon-expanded"></i>
           </a>
-          <ul class="nav nav-treeview ms-3 mt-1">
+          <ul class="nav nav-treeview">
             <li class="nav-item">
               <a href="{{ route('admin.users.index') }}"
-                class="nav-link {{ request()->fullUrlIs(route('admin.users.index')) ? 'active' : '' }}">
+                 class="nav-link {{ request()->routeIs('admin.users.index') && !request('role') ? 'active' : '' }}">
                 <i class="nav-icon dot-toggle me-2"></i> Semua User
               </a>
             </li>
-            <li class="nav-item">
-              <a href="{{ route('admin.users.index', ['role' => 'superadmin']) }}"
-                class="nav-link {{ request()->fullUrlIs(route('admin.users.index', ['role' => 'superadmin'])) ? 'active' : '' }}">
-                <i class="nav-icon dot-toggle me-2"></i> Superadmin
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="{{ route('admin.users.index', ['role' => 'admin']) }}"
-                class="nav-link {{ request()->fullUrlIs(route('admin.users.index', ['role' => 'admin'])) ? 'active' : '' }}">
-                <i class="nav-icon dot-toggle me-2"></i> Admin
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="{{ route('admin.users.index', ['role' => 'student']) }}"
-                class="nav-link {{ request()->fullUrlIs(route('admin.users.index', ['role' => 'student'])) ? 'active' : '' }}">
-                <i class="nav-icon dot-toggle me-2"></i> Student
-              </a>
-            </li>
+            @foreach(['superadmin', 'admin', 'student'] as $role)
+              <li class="nav-item">
+                <a href="{{ route('admin.users.index', ['role' => $role]) }}"
+                   class="nav-link {{ request()->fullUrlIs(route('admin.users.index', ['role' => $role])) ? 'active' : '' }}">
+                  <i class="nav-icon dot-toggle me-2"></i> {{ ucfirst($role) }}
+                </a>
+              </li>
+            @endforeach
           </ul>
         </li>
         @endrole
@@ -281,9 +169,8 @@
         @can('kelola_about')
         <li class="nav-item">
           <a href="{{ route('admin.about.index') }}"
-            class="nav-link {{ request()->routeIs('admin.about.*') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-info-circle me-2"></i>
-            <span>About</span>
+             class="nav-link {{ request()->routeIs('admin.about.*') ? 'active' : '' }}">
+            <i class="fas fa-info-circle me-2"></i> About
           </a>
         </li>
         @endcan
@@ -292,36 +179,31 @@
         @can('kelola_contact')
         <li class="nav-item">
           <a href="{{ route('admin.contact.index') }}"
-            class="nav-link {{ request()->routeIs('admin.contact.*') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-envelope me-2"></i>
-            <span>Contact</span>
+             class="nav-link {{ request()->routeIs('admin.contact.*') ? 'active' : '' }}">
+            <i class="fas fa-envelope me-2"></i> Contact
           </a>
         </li>
         @endcan
 
-        @can('kelola_course')
-        {{-- Course Management --}}
-          
         {{-- Course --}}
+        @can('kelola_course')
         <li class="nav-item has-treeview {{ request()->is('admin/course*') ? 'active' : '' }}">
-          <a class="nav-link d-flex align-items-center" href="#courseSubmenu" data-bs-toggle="collapse"
-            aria-expanded="{{ request()->is('admin/course*') ? 'true' : 'false' }}">
-            <i class="fas fa-book-reader me-2 animated-icon"></i>
-            <span>Course</span>
+          <a href="#" class="nav-link">
+            <i class="fas fa-book-reader me-2"></i> Course
             <i class="fas fa-caret-right ms-auto icon-collapsed"></i>
             <i class="fas fa-caret-down ms-auto icon-expanded"></i>
           </a>
-          <ul id="courseSubmenu" class="collapse list-unstyled ps-3 {{ request()->is('admin/course*') ? 'show' : '' }}">
-            <li>
-              <a class="nav-link" href="{{ route('admin.course-categories.index') }}">
-                <i class="fas fa-layer-group me-2 text-secondary"></i>
-                Category
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{ route('admin.course-categories.index') }}"
+                 class="nav-link {{ request()->routeIs('admin.course-categories.index') ? 'active' : '' }}">
+                <i class="fas fa-layer-group me-2 text-secondary"></i> Category
               </a>
             </li>
-            <li>
-              <a class="nav-link" href="{{ route('admin.course.index') }}">
-                <i class="fas fa-list-ul me-2 text-secondary"></i>
-                List
+            <li class="nav-item">
+              <a href="{{ route('admin.course.index') }}"
+                 class="nav-link {{ request()->routeIs('admin.course.index') ? 'active' : '' }}">
+                <i class="fas fa-list-ul me-2 text-secondary"></i> List
               </a>
             </li>
           </ul>
@@ -333,15 +215,13 @@
   </div>
 </aside>
 
-<!-- Sidebar Toggle Script -->
+<!-- Treeview Toggle Script -->
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const treeviews = document.querySelectorAll('.nav-item.has-treeview > .nav-link');
-
-    treeviews.forEach(link => {
-      link.addEventListener('click', function (e) {
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.nav-item.has-treeview > .nav-link').forEach(link => {
+      link.addEventListener('click', e => {
         e.preventDefault();
-        const parent = this.closest('.nav-item');
+        const parent = link.closest('.nav-item');
         parent.classList.toggle('active');
       });
     });

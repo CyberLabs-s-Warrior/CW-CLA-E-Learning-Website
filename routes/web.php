@@ -57,8 +57,6 @@ Route::get('/data', [PendataanClientController::class, 'index'])->name('pendataa
 
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
-    Route::get('/users', [UsersController::class, 'index'])->name('users.index');
-    Route::get('/role', [RoleController::class, 'index'])->name('role.index');
     Route::get('/about', [AboutController::class, 'index'])->name('about.index');
 });
 Route::get('/detail-course', [DetailCourseClientController::class, 'index'])->name('detail.index');

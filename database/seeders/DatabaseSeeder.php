@@ -9,18 +9,11 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => bcrypt('password123'), // Ensure to hash the password
-        ]);
-
         $this->call([
             RoleSeeder::class,
             PermissionSeeder::class, 
             SuperadminSeeder::class,
+            ContactSeeder::class,
         ]);
     }
 }
