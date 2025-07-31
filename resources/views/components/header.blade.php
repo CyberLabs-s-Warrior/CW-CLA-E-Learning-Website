@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ asset('client/header.css') }}" />
     <link rel="stylesheet" href="{{ asset('client/footer.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
     <style>
         .form-field {
             width: 100%;
@@ -70,13 +71,13 @@
 </head>
 
 <body>
-    <header>
+    <header data-aos="fade-down" data-aos-duration="500">
         <div class="container header-container"
             style="display: flex; justify-content: space-between; align-items: center; padding: 20px 0;">
             <div class="logo">LandPage</div>
             <div class="nav-center" style="display: flex; gap: 30px;">
-                <a href="{{ route('home.index')}}">Home</a>
-                <a href="{{ route('course.index')}}">Course</a>
+                <a href="{{ route('home.index') }}">Home</a>
+                <a href="{{ route('course.index') }}">Course</a>
                 {{-- <a href="{{ route('')}}">About</a> --}}
                 <a>About</a>
 
@@ -109,10 +110,12 @@
     </header>
 
     <!-- Setting Modal -->
-    <div id="setting-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    <div id="setting-modal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
         background-color: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
 
-        <div id="setting-content" style="background: white; padding: 30px; border-radius: 10px;
+        <div id="setting-content"
+            style="background: white; padding: 30px; border-radius: 10px;
             width: 90%; max-width: 500px; position: relative; transform: scale(0.9); opacity: 0;
             transition: all 0.3s ease;">
 
@@ -155,6 +158,14 @@
         @yield('content')
     </section>
     @stack('scripts')
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            once: true,
+            duration: 700,
+            easing: 'ease-out'
+        });
+    </script>
 
     <script>
         function toggleChat() {
@@ -168,7 +179,7 @@
                 const message = input.value.trim();
                 if (message !== "") {
                     const body = document.getElementById("chatBody");
-                    body.innerHTML += <p><strong>You:</strong> ${message}</p>;
+                    body.innerHTML += < p > < strong > You: < /strong> ${message}</p > ;
                     input.value = "";
                     body.scrollTop = body.scrollHeight;
                 }
