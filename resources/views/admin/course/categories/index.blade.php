@@ -8,8 +8,9 @@
   {{-- Heading --}}
   <div class="d-flex align-items-center mb-4">
     <div class="me-3">
-      <div class="bg-gradient rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 50px; height: 50px; background: linear-gradient(135deg, #3f51b5, #2196f3);">
-        <i class="fas fa-sliders-h text-black"></i>
+      <div class="bg-gradient rounded-circle d-flex align-items-center justify-content-center shadow-sm"
+           style="width: 50px; height: 50px; background: linear-gradient(135deg, #3f51b5, #2196f3);">
+        <i class="fas fa-sliders-h text-white"></i>
       </div>
     </div>
     <div>
@@ -140,58 +141,64 @@
   </div>
 
 </div>
-
-{{-- Modal Konfirmasi --}}
-<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content rounded-4 shadow">
-      <div class="modal-header border-0">
-        <h5 class="modal-title fw-semibold" id="deleteConfirmModalLabel">
-          <i class="fas fa-trash-alt me-2 text-danger"></i>Konfirmasi Hapus
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-      </div>
-      <div class="modal-body">
-        <p class="mb-0">Anda yakin ingin menghapus <span id="itemToDelete" class="fw-bold text-danger"></span>?</p>
-      </div>
-      <div class="modal-footer border-0">
-        <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
-        <button type="button" class="btn btn-danger rounded-pill px-4 d-flex align-items-center gap-2" id="confirmDeleteBtn">
-          <span class="spinner-border spinner-border-sm d-none" id="deleteSpinner" role="status" aria-hidden="true"></span>
-          <span id="deleteBtnText">Ya, Hapus</span>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
 @endsection
 
 @section('scripts')
+{{-- SweetAlert2 CDN (jika belum ditambahkan di layout utama) --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-  let deleteFormId = null;
-
-  function confirmDelete(formId, label) {
-    deleteFormId = formId;
-    document.getElementById('itemToDelete').textContent = label;
-
-    document.getElementById('deleteSpinner').classList.add('d-none');
-    document.getElementById('deleteBtnText').textContent = 'Ya, Hapus';
-    document.getElementById('confirmDeleteBtn').disabled = false;
-
-    const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
-    modal.show();
+  function confirmDelete(formId, itemName) {
+    Swal.fire({
+      title: 'Yakin ingin menghapus?',
+      html: `<span class="fw-semibold text-danger">${itemName}</span> akan dihapus secara permanen.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Ya, Hapus',
+      cancelButtonText: 'Batal',
+      customClass: {
+        confirmButton: 'btn btn-danger rounded-pill px-4 me-2',
+        cancelButton: 'btn btn-secondary rounded-pill px-4'
+      },
+      buttonsStyling: false,
+      showLoaderOnConfirm: true,
+      preConfirm: () => {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            document.getElementById(formId).submit();
+            resolve();
+          }, 300);
+        });
+      }
+    });
   }
 
-  document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
-    if (deleteFormId) {
-      document.getElementById('deleteSpinner').classList.remove('d-none');
-      document.getElementById('deleteBtnText').textContent = 'Menghapus...';
-      document.getElementById('confirmDeleteBtn').disabled = true;
-
-      setTimeout(() => {
-        document.getElementById(deleteFormId).submit();
-      }, 500);
-    }
+  // Show SweetAlert if session has 'success' or 'error'
+  document.addEventListener('DOMContentLoaded', function () {
+    @if(session('success'))
+      Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: @json(session('success')),
+        showConfirmButton: false,
+        timer: 2500,
+        timerProgressBar: true
+      });
+    @elseif(session('error'))
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal!',
+        text: @json(session('error')),
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
+      });
+    @endif
   });
 </script>
+@endsection
+
 @endsection

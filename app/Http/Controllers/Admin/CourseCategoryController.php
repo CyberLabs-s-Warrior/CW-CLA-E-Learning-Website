@@ -10,69 +10,36 @@ use App\Models\CoursePriceRange;
 
 class CourseCategoryController extends Controller
 {
-    // INDEX
+    // ====================== INDEX ======================
     public function index()
     {
         return view('admin.course.categories.index', [
             'categories' => CourseCategory::all(),
-            'levels' => CourseLevel::all(),
-            'prices' => CoursePriceRange::all(),
+            'levels'     => CourseLevel::all(),
+            'prices'     => CoursePriceRange::all(),
         ]);
     }
 
-    // CREATE FORM
+    // ====================== CREATE MENU ======================
     public function create()
     {
-        return view('admin.course.categories.create');
+        return view('admin.course.categories.create'); // halaman pemilih menu tambah
     }
 
-    // STORE: Category / Level / Price
-    public function store(Request $request)
+    // ====================== CATEGORY ======================
+    public function createCategory()
     {
-        if ($request->has('category')) {
-            $request->validate([
-                'category' => 'required|string|max:255'
-            ]);
+        return view('admin.course.categories.create_category');
+    }
 
-            CourseCategory::create(['category' => $request->category]);
-
-            return redirect()->route('admin.course-categories.index')
-                ->with('success', 'Kategori berhasil ditambahkan!');
-        }
-
-        if ($request->has('level')) {
-            $request->validate([
-                'level' => 'required|string|max:255'
-            ]);
-
-            CourseLevel::create(['level' => $request->level]);
-
-            return redirect()->route('admin.course-categories.index')
-                ->with('success', 'Level berhasil ditambahkan!');
-        }
-
-        if ($request->has('min_price') && $request->has('max_price')) {
-            $request->validate([
-                'min_price' => 'required|numeric|min:0',
-                'max_price' => 'required|numeric|gt:min_price'
-            ]);
-
-            CoursePriceRange::create([
-                'min_price' => $request->min_price,
-                'max_price' => $request->max_price,
-            ]);
-
-            return redirect()->route('admin.course-categories.index')
-                ->with('success', 'Rentang harga berhasil ditambahkan!');
-        }
+    public function storeCategory(Request $request)
+    {
+        $request->validate(['category' => 'required|string|max:255']);
+        CourseCategory::create(['category' => $request->category]);
 
         return redirect()->route('admin.course-categories.index')
-            ->with('error', 'Data tidak valid atau tidak lengkap.');
+                         ->with('success', 'Kategori berhasil ditambahkan!');
     }
-
-    // ======================
-    // KATEGORI METHODS
-    // ======================
 
     public function edit($id)
     {
@@ -82,28 +49,34 @@ class CourseCategoryController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'category' => 'required|string|max:255',
-        ]);
-
-        $category = CourseCategory::findOrFail($id);
-        $category->update(['category' => $request->category]);
+        $request->validate(['category' => 'required|string|max:255']);
+        CourseCategory::findOrFail($id)->update(['category' => $request->category]);
 
         return redirect()->route('admin.course-categories.index')
-            ->with('success', 'Kategori berhasil diperbarui!');
+                         ->with('success', 'Kategori berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
         CourseCategory::findOrFail($id)->delete();
-
         return redirect()->route('admin.course-categories.index')
-            ->with('success', 'Kategori berhasil dihapus.');
+                         ->with('success', 'Kategori berhasil dihapus!');
     }
 
-    // ======================
-    // LEVEL METHODS
-    // ======================
+    // ====================== LEVEL ======================
+    public function createLevel()
+    {
+        return view('admin.course.categories.create_level');
+    }
+
+    public function storeLevel(Request $request)
+    {
+        $request->validate(['level' => 'required|string|max:255']);
+        CourseLevel::create(['level' => $request->level]);
+
+        return redirect()->route('admin.course-categories.index')
+                         ->with('success', 'Level berhasil ditambahkan!');
+    }
 
     public function editLevel($id)
     {
@@ -113,15 +86,11 @@ class CourseCategoryController extends Controller
 
     public function updateLevel(Request $request, $id)
     {
-        $request->validate([
-            'level' => 'required|string|max:255',
-        ]);
-
-        $level = CourseLevel::findOrFail($id);
-        $level->update(['level' => $request->level]);
+        $request->validate(['level' => 'required|string|max:255']);
+        CourseLevel::findOrFail($id)->update(['level' => $request->level]);
 
         return redirect()->route('admin.course-categories.index')
-            ->with('success', 'Level berhasil diperbarui!');
+                         ->with('success', 'Level berhasil diperbarui!');
     }
 
     public function destroyLevel($id)
@@ -129,12 +98,30 @@ class CourseCategoryController extends Controller
         CourseLevel::findOrFail($id)->delete();
 
         return redirect()->route('admin.course-categories.index')
-            ->with('success', 'Level berhasil dihapus.');
+                         ->with('success', 'Level berhasil dihapus!');
     }
 
-    // ======================
-    // PRICE METHODS
-    // ======================
+    // ====================== PRICE RANGE ======================
+    public function createPrice()
+    {
+        return view('admin.course.categories.create_price');
+    }
+
+    public function storePrice(Request $request)
+    {
+        $request->validate([
+            'min_price' => 'required|numeric|min:0',
+            'max_price' => 'required|numeric|gt:min_price',
+        ]);
+
+        CoursePriceRange::create([
+            'min_price' => $request->min_price,
+            'max_price' => $request->max_price,
+        ]);
+
+        return redirect()->route('admin.course-categories.index')
+                         ->with('success', 'Rentang harga berhasil ditambahkan!');
+    }
 
     public function editPrice($id)
     {
@@ -149,14 +136,13 @@ class CourseCategoryController extends Controller
             'max_price' => 'required|numeric|gt:min_price',
         ]);
 
-        $price = CoursePriceRange::findOrFail($id);
-        $price->update([
+        CoursePriceRange::findOrFail($id)->update([
             'min_price' => $request->min_price,
             'max_price' => $request->max_price,
         ]);
 
         return redirect()->route('admin.course-categories.index')
-            ->with('success', 'Rentang harga berhasil diperbarui!');
+                         ->with('success', 'Rentang harga berhasil diperbarui!');
     }
 
     public function destroyPrice($id)
@@ -164,6 +150,6 @@ class CourseCategoryController extends Controller
         CoursePriceRange::findOrFail($id)->delete();
 
         return redirect()->route('admin.course-categories.index')
-            ->with('success', 'Rentang harga berhasil dihapus.');
+                         ->with('success', 'Rentang harga berhasil dihapus!');
     }
 }
