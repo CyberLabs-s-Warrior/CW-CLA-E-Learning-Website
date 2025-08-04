@@ -18,13 +18,14 @@ use App\Http\Controllers\LoginClientController;
 use App\Http\Controllers\ProfileClientController;
 use App\Http\Controllers\DetailCourseClientController;
 use App\Http\Controllers\AboutClientController;
+use App\Http\Controllers\PaymentClientController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\PendataanClientController;
 
 // --------------------------
 // Public Routes
 // --------------------------
-Route::get('/', fn () => view('welcome'));
+Route::get('/', fn() => view('welcome'));
 
 Route::get('/home', [HomeClientController::class, 'index'])->name('home.index');
 Route::get('/course', [CourseClientController::class, 'index'])->name('course.index');
@@ -34,6 +35,7 @@ Route::get('/profile', [ProfileClientController::class, 'index'])->name('profile
 Route::get('/detail-course', [DetailCourseClientController::class, 'index'])->name('detail.index');
 Route::get('/about', [AboutClientController::class, 'index'])->name('about.index');
 Route::get('/data', [PendataanClientController::class, 'index'])->name('pendataan.index');
+Route::get('/payment', [PaymentClientController::class, 'index'])->name('payment.index');
 
 // --------------------------
 // Student Auth
