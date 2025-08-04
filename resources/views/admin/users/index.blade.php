@@ -58,7 +58,7 @@
                                 $permissions = $user->getAllPermissions()->pluck('name')->toArray();
                             @endphp
 
-                            @if ($permissions)
+                            @if (!$user->hasRole('superadmin') && $permissions)
                                 <button class="btn btn-sm btn-outline-secondary collapsed" type="button"
                                         data-bs-toggle="collapse" data-bs-target="#perm-{{ $user->id }}"
                                         aria-expanded="false" aria-controls="perm-{{ $user->id }}">
@@ -74,6 +74,7 @@
                                     </div>
                                 </div>
                             @endif
+
                         </td>
                         <td>{{ $user->created_at->timezone('Asia/Jakarta')->format('d-m-Y H:i') }}</td>
                         <td class="text-center">
