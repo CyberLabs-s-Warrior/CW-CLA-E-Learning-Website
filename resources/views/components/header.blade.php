@@ -87,8 +87,23 @@
             {{-- login button --}}
 
             <div class="nav-right">
-                <a href="{{ route('login.index') }}">Log In</a>
+                <a href="{{ route('login') }}">Log in</a>
+                @auth
+                    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        Logout
+                    </a>
+
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                @endauth
+
+                
+                
             </div>
+
+  
+
 
 
             {{-- <div class="nav-right" style="position: relative;">

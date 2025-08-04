@@ -18,60 +18,28 @@ use App\Http\Controllers\LoginClientController;
 use App\Http\Controllers\ProfileClientController;
 use App\Http\Controllers\DetailCourseClientController;
 use App\Http\Controllers\AboutClientController;
-use App\Http\Controllers\PaymentClientController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\PendataanClientController;
 
 // --------------------------
 // Public Routes
 // --------------------------
-Route::get('/', fn() => view('welcome'));
+Route::get('/', fn () => view('welcome'));
 
 Route::get('/home', [HomeClientController::class, 'index'])->name('home.index');
 Route::get('/course', [CourseClientController::class, 'index'])->name('course.index');
 Route::get('/lesson', [LessonClientController::class, 'index'])->name('lesson.index');
 Route::get('/profile', [ProfileClientController::class, 'index'])->name('profile.index');
-// Route::get('/login-client', [LoginClientController::class, 'index'])->name('login.index');
+Route::get('/login-client', [LoginClientController::class, 'index'])->name('login.index');
 Route::get('/detail-course', [DetailCourseClientController::class, 'index'])->name('detail.index');
 Route::get('/about', [AboutClientController::class, 'index'])->name('about.index');
 Route::get('/data', [PendataanClientController::class, 'index'])->name('pendataan.index');
-Route::get('/payment', [PaymentClientController::class, 'index'])->name('payment.index');
 
 // --------------------------
 // Student Auth
 // --------------------------
-// --------------------------
-Route::middleware('guest')->group(function () {
-    // Tampilkan form login & register student
-    Route::get('/login', [StudentAuthController::class, 'showLoginRegisterForm'])
-        ->name('login');
-    // Proses login student
-    Route::post('/login', [StudentAuthController::class, 'login'])
-        ->name('login.submit');
-
-    // Tampilkan form register (bisa digabung dengan login page jika satu view)
-    Route::get('/register', [StudentAuthController::class, 'showLoginRegisterForm'])
-        ->name('register');
-    // Proses register student
-    Route::post('/register', [StudentAuthController::class, 'register'])
-        ->name('register.submit');
-});
-
-// Logout student
-Route::middleware('auth')->post('/logout', [StudentAuthController::class, 'logout'])
-    ->name('logout');
-
-
-// Admin Login
-Route::get('/login-admin', [AuthenticatedSessionController::class, 'create'])
-    ->name('admin.login');
-
-Route::post('/login-admin', [AuthenticatedSessionController::class, 'store'])
-    ->name('admin.login.submit');
-
-// Logout admin
-Route::post('/logout-admin', [AuthenticatedSessionController::class, 'destroy'])
-    ->name('admin.logout');
+Route::post('/student/login', [StudentAuthController::class, 'login'])->name('student.login');
+Route::post('/student/register', [StudentAuthController::class, 'register'])->name('student.register');
+Route::post('/student/logout', [StudentAuthController::class, 'logout'])->name('student.logout');
 
 // --------------------------
 // Admin Routes

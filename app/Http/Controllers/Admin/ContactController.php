@@ -11,6 +11,7 @@ class ContactController extends Controller
     public function index()
     {
         $contact = Contact::first();
+        
 
         return view('admin.contact.index', compact('contact'));
     }

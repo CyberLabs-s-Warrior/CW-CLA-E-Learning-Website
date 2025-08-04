@@ -12,7 +12,8 @@
 <body>
     <div class="container" id="container">
         <div class="form-container sign-up-container">
-            <form action="{{ route('student.register') }}" method="POST">
+            <form action="{{ route('register.submit') }}" method="POST">
+
                 @csrf
                 <h1>Create Account</h1>
                 <span>or use your email for registration</span>
@@ -24,7 +25,8 @@
             </form>
         </div>
         <div class="form-container sign-in-container">
-            <form action="{{ route('student.login') }}" method="POST">
+            <form action="{{ route('login.submit') }}" method="POST">
+
                 @csrf 
                 <h1>Sign in</h1>
                 <input type="email" name="email" placeholder="Email" required />

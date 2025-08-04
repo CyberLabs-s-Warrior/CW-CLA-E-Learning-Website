@@ -13,7 +13,7 @@
                     <div class="d-flex align-items-center mb-4">
                         <div class="me-3">
                              <img src="{{ asset('storage/' . $user->foto) }}"  alt="Avatar" class="rounded-circle shadow" width="80" height="80">
-                                
+                               
                         </div>
                         <div>
                             <h4 class="mb-1">{{ $user->name }}</h4>
