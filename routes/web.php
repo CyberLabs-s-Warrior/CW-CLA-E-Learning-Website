@@ -2,17 +2,19 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\StudentAuthController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+
 use App\Http\Controllers\Admin\{
     DashboardController, UsersController, RoleController, AboutController,
     UserController, ProfileController, ContactController, CourseController,
     CourseCategoryController, DetailCourseController, LessonController, CommentController
 };
+
 use App\Http\Controllers\{
     HomeClientController, CourseClientController, LessonClientController,
     LoginClientController, ProfileClientController, DetailCourseClientController,
-    AboutClientController, PendataanClientController
+    AboutClientController, PendataanClientController, PaymentClientController
 };
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 // --------------------------
 // Public Client Routes
@@ -25,6 +27,7 @@ Route::get('/profile', [ProfileClientController::class, 'index'])->name('profile
 Route::get('/detail-course', [DetailCourseClientController::class, 'index'])->name('detail.index');
 Route::get('/about', [AboutClientController::class, 'index'])->name('about.index');
 Route::get('/data', [PendataanClientController::class, 'index'])->name('pendataan.index');
+Route::get('/payment', [PaymentClientController::class, 'index'])->name('payment.index');
 
 // --------------------------
 // Student Auth Routes
@@ -97,7 +100,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     // Lessons
     Route::resource('/lessons', LessonController::class);
-    
 
     // AJAX - Fetch modules by DetailCourse ID
     Route::get('/detail-courses/{id}/modules', function ($id) {
