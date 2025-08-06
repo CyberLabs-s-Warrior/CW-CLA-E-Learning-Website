@@ -14,18 +14,19 @@
     <h1 class="h4 fw-semibold mb-0">Daftar Materi</h1>
   </div>
 
-  {{-- Tambah Materi --}}
+  {{-- Tombol Tambah --}}
   <div class="d-flex justify-content-end mb-3">
-    <a href="{{ route('admin.lessons.create') }}" class="btn btn-primary rounded-pill px-4">
+    <a href="{{ route('admin.lessons.create') }}" class="btn btn-primary rounded-pill px-4 shadow-sm">
       <i class="fas fa-plus me-2"></i>Tambah Materi
     </a>
   </div>
 
   {{-- Alert Sukses --}}
   @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-      <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <div class="alert alert-success alert-dismissible fade show shadow-sm d-flex align-items-center gap-2" role="alert">
+      <i class="fas fa-check-circle"></i>
+      <div>{{ session('success') }}</div>
+      <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
   @endif
 
@@ -53,39 +54,40 @@
                   <td>{{ $lesson->module_name }}</td>
                   <td>{{ $lesson->title }}</td>
                   <td>
-                    @if($lesson->media)
-                      @php
-                        $mediaExt = pathinfo($lesson->media, PATHINFO_EXTENSION);
-                        $isImage = in_array(strtolower($mediaExt), ['jpg', 'jpeg', 'png', 'webp']);
-                        $isVideo = in_array(strtolower($mediaExt), ['mp4', 'mov', 'avi']);
-                      @endphp
+                    @php
+                      $mediaExt = pathinfo($lesson->media, PATHINFO_EXTENSION);
+                      $isImage = in_array(strtolower($mediaExt), ['jpg', 'jpeg', 'png', 'webp']);
+                      $isVideo = in_array(strtolower($mediaExt), ['mp4', 'mov', 'avi']);
+                    @endphp
 
+                    @if($lesson->media)
                       @if($isImage)
                         <img src="{{ asset('storage/' . $lesson->media) }}" alt="{{ $lesson->title }}" class="img-thumbnail rounded shadow-sm" style="width: 80px; height: auto;">
                       @elseif($isVideo)
-                        <video width="140" height="90" controls class="rounded shadow-sm">
+                        <video width="130" height="80" controls class="rounded shadow-sm">
                           <source src="{{ asset('storage/' . $lesson->media) }}" type="video/{{ $mediaExt }}">
-                          Browser tidak mendukung tag video.
+                          Browser tidak mendukung video.
                         </video>
                       @else
-                        <span class="text-muted">Format tidak didukung</span>
+                        <span class="text-muted small fst-italic">Format tidak didukung</span>
                       @endif
                     @else
-                      <span class="text-muted">Tidak ada media</span>
+                      <span class="text-muted small fst-italic">Tidak ada media</span>
                     @endif
                   </td>
                   <td class="text-center">
-                    <div class="d-flex justify-content-center gap-1 flex-wrap">
-                      <a href="{{ route('admin.lessons.show', $lesson) }}" class="btn btn-sm btn-info rounded-pill px-3">
+                    <div class="d-flex justify-content-center gap-2 flex-wrap">
+                      <a href="{{ route('admin.lessons.show', $lesson) }}" class="btn btn-sm btn-info rounded-pill px-3 shadow-sm">
                         <i class="fas fa-eye me-1"></i>Show
                       </a>
-                      <a href="{{ route('admin.lessons.edit', $lesson) }}" class="btn btn-sm btn-warning rounded-pill px-3">
+                      <a href="{{ route('admin.lessons.edit', $lesson) }}" class="btn btn-sm btn-warning rounded-pill px-3 shadow-sm">
                         <i class="fas fa-edit me-1"></i>Edit
                       </a>
-                      <form action="{{ route('admin.lessons.destroy', $lesson) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus materi ini?')" class="d-inline">
+                      {{-- Hapus dengan SweetAlert2 --}}
+                      <form id="formHapus-{{ $lesson->id }}" action="{{ route('admin.lessons.destroy', $lesson) }}" method="POST" class="d-inline">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger rounded-pill px-3">
+                        <button type="button" class="btn btn-sm btn-danger rounded-pill px-3 shadow-sm btn-confirm" data-id="{{ $lesson->id }}" data-title="{{ $lesson->title }}">
                           <i class="fas fa-trash-alt me-1"></i>Hapus
                         </button>
                       </form>
@@ -106,3 +108,39 @@
   @endif
 </div>
 @endsection
+
+@push('scripts')
+{{-- SweetAlert2 --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const buttons = document.querySelectorAll('.btn-confirm');
+
+    buttons.forEach(button => {
+      button.addEventListener('click', function () {
+        const id = this.dataset.id;
+        const title = this.dataset.title;
+
+        Swal.fire({
+          title: 'Yakin ingin menghapus?',
+          html: `Materi <strong>"${title}"</strong> akan dihapus secara permanen.`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Ya, Hapus!',
+          cancelButtonText: 'Batal',
+          reverseButtons: true,
+          buttonsStyling: false,
+          customClass: {
+            confirmButton: 'btn btn-danger rounded-pill me-2',
+            cancelButton: 'btn btn-secondary rounded-pill'
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            document.getElementById('formHapus-' + id).submit();
+          }
+        });
+      });
+    });
+  });
+</script>
+@endpush

@@ -31,21 +31,19 @@
       <form action="{{ route('admin.detail_courses.store') }}" method="POST" enctype="multipart/form-data" class="row g-3">
         @csrf
 
+        {{-- Judul --}}
         <div class="col-12">
           <label for="title" class="form-label fw-semibold">Judul Kursus</label>
           <input type="text" name="title" id="title" class="form-control shadow-sm" required value="{{ old('title') }}">
         </div>
 
+        {{-- Deskripsi --}}
         <div class="col-12">
           <label for="description" class="form-label fw-semibold">Deskripsi</label>
-          <textarea name="description" id="description" class="form-control shadow-sm" rows="4">{{ old('description') }}</textarea>
+          <textarea name="description" id="description" class="form-control shadow-sm" rows="4" required>{{ old('description') }}</textarea>
         </div>
 
-        <div class="col-12">
-          <label for="media" class="form-label fw-semibold">Upload Media (Gambar / Video)</label>
-          <input type="file" name="media" id="media" class="form-control shadow-sm" accept="image/*,video/*">
-        </div>
-
+        {{-- Modul --}}
         <div class="col-12">
           <label class="form-label fw-semibold">Modul</label>
           <div id="modules-list">
@@ -56,6 +54,14 @@
           </button>
         </div>
 
+        {{-- Media --}}
+        <div class="col-12">
+          <label for="media" class="form-label fw-semibold">Upload Media (Gambar / Video)</label>
+          <input type="file" name="media" id="media" class="form-control shadow-sm" accept="image/*,video/*">
+          <small class="text-muted fst-italic">Format yang didukung: JPG, PNG, MP4, dll.</small>
+        </div>
+
+        {{-- Aksi --}}
         <div class="col-12 d-flex gap-2 mt-4">
           <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm">
             <i class="fas fa-save me-2"></i>Simpan
