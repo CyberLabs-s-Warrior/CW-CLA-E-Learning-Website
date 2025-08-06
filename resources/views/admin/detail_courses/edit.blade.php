@@ -1,6 +1,6 @@
 @extends('templates.app')
 
-@section('title', 'Edit Kursus')
+@section('title', 'Edit Kursus Detail')
 
 @section('content')
 <div class="container-fluid py-4">
@@ -8,7 +8,7 @@
   <div class="d-flex align-items-center mb-4">
     <div class="me-2">
       <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 44px; height: 44px;">
-        <i class="fas fa-pen-to-square"></i>
+        <i class="fas fa-edit"></i>
       </div>
     </div>
     <h1 class="h4 fw-semibold mb-0">Edit Kursus</h1>
@@ -28,62 +28,55 @@
   {{-- Form --}}
   <div class="card border-0 shadow-sm rounded-4">
     <div class="card-body">
-      <form action="{{ route('admin.detail_courses.update', $detailCourse) }}" method="POST" enctype="multipart/form-data" class="row g-3">
+      <form action="{{ route('admin.detail_courses.update', $course->id) }}" method="POST" enctype="multipart/form-data" class="row g-3">
         @csrf
         @method('PUT')
 
+        {{-- Judul --}}
         <div class="col-12">
           <label for="title" class="form-label fw-semibold">Judul Kursus</label>
-          <input type="text" name="title" id="title" class="form-control shadow-sm" required value="{{ old('title', $detailCourse->title) }}">
+          <input type="text" name="title" id="title" class="form-control shadow-sm" required value="{{ old('title', $course->title) }}">
         </div>
 
+        {{-- Deskripsi --}}
         <div class="col-12">
           <label for="description" class="form-label fw-semibold">Deskripsi</label>
-          <textarea name="description" id="description" class="form-control shadow-sm" rows="4">{{ old('description', $detailCourse->description) }}</textarea>
+          <textarea name="description" id="description" class="form-control shadow-sm" rows="4" required>{{ old('description', $course->description) }}</textarea>
         </div>
 
-        <div class="col-12">
-          <label class="form-label fw-semibold">Media Saat Ini</label><br>
-          @php
-              $ext = pathinfo($detailCourse->media, PATHINFO_EXTENSION);
-              $ext = strtolower($ext);
-          @endphp
-
-          @if($detailCourse->media)
-            @if(in_array($ext, ['jpg', 'jpeg', 'png', 'webp']))
-              <img src="{{ asset('storage/' . $detailCourse->media) }}" class="img-thumbnail mb-2 shadow-sm" width="150">
-            @elseif(in_array($ext, ['mp4', 'mov', 'avi']))
-              <video width="200" controls class="shadow-sm rounded">
-                <source src="{{ asset('storage/' . $detailCourse->media) }}" type="video/{{ $ext }}">
-              </video>
-            @else
-              <p class="text-muted">Format media tidak dikenali</p>
-            @endif
-          @else
-            <p class="text-muted">Tidak ada media</p>
-          @endif
-        </div>
-
-        <div class="col-12">
-          <label for="media" class="form-label fw-semibold">Ganti Media (Gambar / Video)</label>
-          <input type="file" name="media" id="media" class="form-control shadow-sm" accept="image/*,video/*">
-        </div>
-
+        {{-- Modul --}}
         <div class="col-12">
           <label class="form-label fw-semibold">Modul</label>
           <div id="modules-list">
-            @foreach(old('modules', $detailCourse->modules) as $module)
-              <input type="text" name="modules[]" class="form-control mb-2 shadow-sm" value="{{ $module }}">
-            @endforeach
+            @php
+              $modules = old('modules', $course->modules ?? []);
+            @endphp
+            @forelse($modules as $mod)
+              <input type="text" name="modules[]" class="form-control mb-2 shadow-sm" value="{{ $mod }}">
+            @empty
+              <input type="text" name="modules[]" class="form-control mb-2 shadow-sm" placeholder="Modul 1">
+            @endforelse
           </div>
           <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 mt-1" onclick="addModule()">
             <i class="fas fa-plus me-1"></i>Tambah Modul
           </button>
         </div>
 
+        {{-- Media --}}
+        <div class="col-12">
+          <label for="media" class="form-label fw-semibold">Upload Media Baru (Opsional)</label>
+          <input type="file" name="media" id="media" class="form-control shadow-sm" accept="image/*,video/*">
+          @if($course->media)
+            <small class="d-block text-muted mt-1">Media saat ini:
+              <a href="{{ asset('storage/' . $course->media) }}" target="_blank">Lihat</a>
+            </small>
+          @endif
+        </div>
+
+        {{-- Tombol --}}
         <div class="col-12 d-flex gap-2 mt-4">
           <button type="submit" class="btn btn-warning rounded-pill px-4 shadow-sm">
-            <i class="fas fa-save me-2"></i>Update
+            <i class="fas fa-save me-2"></i>Perbarui
           </button>
           <a href="{{ route('admin.detail_courses.index') }}" class="btn btn-secondary rounded-pill px-4 shadow-sm">
             <i class="fas fa-arrow-left me-2"></i>Kembali
@@ -94,7 +87,7 @@
   </div>
 </div>
 
-{{-- Script --}}
+{{-- JS for dynamic modules --}}
 <script>
   function addModule() {
     const input = document.createElement('input');

@@ -23,9 +23,10 @@
 
   {{-- Flash Message --}}
   @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
-      <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="alert alert-success alert-dismissible fade show shadow-sm d-flex align-items-center gap-2" role="alert">
+      <i class="fas fa-check-circle"></i>
+      <div>{{ session('success') }}</div>
+      <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
   @endif
 
@@ -37,11 +38,11 @@
           <table class="table table-hover align-middle text-nowrap">
             <thead class="table-light">
               <tr>
-                <th style="width: 50px;">#</th>
+                <th style="width: 50px;">No</th>
                 <th>Judul</th>
-                <th>Media</th>
                 <th>Deskripsi</th>
                 <th>Modul</th>
+                <th>Media</th>
                 <th class="text-center">Aksi</th>
               </tr>
             </thead>
@@ -50,6 +51,18 @@
                 <tr>
                   <td>{{ $loop->iteration }}</td>
                   <td class="fw-semibold">{{ \Illuminate\Support\Str::limit($course->title, 40) }}</td>
+                  <td>{{ \Illuminate\Support\Str::limit($course->description, 80) }}</td>
+                  <td>
+                    @if($course->modules && count($course->modules))
+                      <ul class="mb-0 ps-3 small">
+                        @foreach($course->modules as $module)
+                          <li>{{ $module }}</li>
+                        @endforeach
+                      </ul>
+                    @else
+                      <span class="text-muted small fst-italic">-</span>
+                    @endif
+                  </td>
                   <td>
                     @php
                       $ext = strtolower(pathinfo($course->media, PATHINFO_EXTENSION));
@@ -72,18 +85,6 @@
                       <span class="text-muted small fst-italic">Tidak ada media</span>
                     @endif
                   </td>
-                  <td>{{ \Illuminate\Support\Str::limit($course->description, 80) }}</td>
-                  <td>
-                    @if($course->modules && count($course->modules))
-                      <ul class="mb-0 ps-3 small">
-                        @foreach($course->modules as $module)
-                          <li>{{ $module }}</li>
-                        @endforeach
-                      </ul>
-                    @else
-                      <span class="text-muted small fst-italic">-</span>
-                    @endif
-                  </td>
                   <td class="text-center">
                     <div class="d-flex flex-wrap justify-content-center gap-2">
                       <a href="{{ route('admin.detail_courses.show', $course) }}" class="btn btn-sm btn-info rounded-pill px-3 shadow-sm">
@@ -92,13 +93,39 @@
                       <a href="{{ route('admin.detail_courses.edit', $course) }}" class="btn btn-sm btn-warning rounded-pill px-3 shadow-sm">
                         <i class="fas fa-edit me-1"></i>Edit
                       </a>
-                      <form action="{{ route('admin.detail_courses.destroy', $course) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus kursus ini?')">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn btn-sm btn-danger rounded-pill px-3 shadow-sm">
-                          <i class="fas fa-trash-alt me-1"></i>Hapus
-                        </button>
-                      </form>
+
+                      {{-- Tombol Hapus dengan Modal --}}
+                      <button class="btn btn-sm btn-danger rounded-pill px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalHapus{{ $course->id }}">
+                        <i class="fas fa-trash-alt me-1"></i>Hapus
+                      </button>
+
+                      {{-- Modal Konfirmasi Hapus --}}
+                      <div class="modal fade" id="modalHapus{{ $course->id }}" tabindex="-1" aria-labelledby="modalHapusLabel{{ $course->id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                          <div class="modal-content rounded-4 shadow">
+                            <div class="modal-header border-0">
+                              <h5 class="modal-title" id="modalHapusLabel{{ $course->id }}">
+                                <i class="fas fa-exclamation-triangle text-danger me-2"></i>Konfirmasi Hapus
+                              </h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                            </div>
+                            <div class="modal-body">
+                              <p class="mb-0">Apakah Anda yakin ingin menghapus kursus <strong>{{ $course->title }}</strong>?</p>
+                            </div>
+                            <div class="modal-footer border-0">
+                              <button type="button" class="btn btn-secondary rounded-pill px-3" data-bs-dismiss="modal">Batal</button>
+                              <form action="{{ route('admin.detail_courses.destroy', $course) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger rounded-pill px-3">
+                                  <i class="fas fa-trash-alt me-1"></i>Ya, Hapus
+                                </button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {{-- End Modal --}}
                     </div>
                   </td>
                 </tr>

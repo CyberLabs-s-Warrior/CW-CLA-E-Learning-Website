@@ -6,58 +6,71 @@
 <div class="container-fluid py-4">
   {{-- Header --}}
   <div class="d-flex align-items-center mb-4">
-    <div class="me-2">
-      <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 44px; height: 44px;">
-        <i class="fas fa-eye"></i>
+    <div class="me-3">
+      <div class="bg-primary bg-opacity-25 text-primary rounded-circle d-flex align-items-center justify-content-center shadow" style="width: 48px; height: 48px;">
+        <i class="fas fa-eye fa-lg"></i>
       </div>
     </div>
-    <h1 class="h4 fw-semibold mb-0">Detail Kursus</h1>
+    <div>
+      <h1 class="h4 fw-bold mb-0">Detail Kursus</h1>
+      <small class="text-muted">Informasi lengkap tentang kursus ini</small>
+    </div>
   </div>
 
   {{-- Content Card --}}
   <div class="card border-0 shadow-sm rounded-4">
     <div class="card-body">
-      <h4 class="fw-semibold text-dark">{{ $detailCourse->title }}</h4>
-      <p class="text-muted">{{ $detailCourse->description }}</p>
+      {{-- Judul & Deskripsi --}}
+      <div class="text-center mb-4">
+        <h4 class="fw-semibold text-dark">{{ $detailCourse->title }}</h4>
+        <p class="text-muted mb-0" style="font-size: 0.95rem;">{{ $detailCourse->description }}</p>
+      </div>
 
-      {{-- Media --}}
+      {{-- Media Centered --}}
       @if($detailCourse->media)
-        <div class="mb-4">
-          @php
-              $ext = strtolower(pathinfo($detailCourse->media, PATHINFO_EXTENSION));
-          @endphp
-
+        @php
+          $ext = strtolower(pathinfo($detailCourse->media, PATHINFO_EXTENSION));
+        @endphp
+        <div class="d-flex justify-content-center mb-4">
           @if(in_array($ext, ['jpg', 'jpeg', 'png', 'webp']))
-            <img src="{{ asset('storage/' . $detailCourse->media) }}" alt="Media Gambar" class="img-fluid rounded shadow-sm" style="max-width: 400px;">
+            <img src="{{ asset('storage/' . $detailCourse->media) }}" alt="Media Gambar" class="img-fluid rounded-3 shadow-sm" style="max-width: 600px;">
           @elseif(in_array($ext, ['mp4', 'mov', 'avi']))
-            <video controls class="rounded shadow-sm" style="width: 100%; max-width: 500px;">
+            <video controls class="rounded-3 shadow-sm" style="width: 100%; max-width: 720px;">
               <source src="{{ asset('storage/' . $detailCourse->media) }}" type="video/{{ $ext }}">
               Browser tidak mendukung video ini.
             </video>
           @else
-            <p class="text-muted">Format media tidak dikenali</p>
+            <div class="alert alert-warning py-2 px-3 small rounded-3 text-center">
+              <i class="fas fa-exclamation-circle me-1"></i> Format media tidak dikenali
+            </div>
           @endif
         </div>
       @endif
 
       {{-- Modules --}}
-      <h5 class="fw-semibold">Modul:</h5>
-      <ul class="list-group list-group-flush mb-4">
-        @forelse($detailCourse->modules as $modul)
-          <li class="list-group-item">{{ $modul }}</li>
-        @empty
-          <li class="list-group-item text-muted">Belum ada modul.</li>
-        @endforelse
-      </ul>
-
-      {{-- Created at --}}
-      <div class="text-muted small mb-3">
-        <i class="fas fa-calendar-alt me-1"></i> Dibuat pada: {{ \Carbon\Carbon::parse($detailCourse->created_at)->translatedFormat('d F Y H:i') }}
+      <div class="mb-4">
+        <h5 class="fw-semibold mb-3">Modul:</h5>
+        <ul class="list-group list-group-flush border rounded-3 shadow-sm">
+          @forelse($detailCourse->modules as $modul)
+            <li class="list-group-item">{{ $modul }}</li>
+          @empty
+            <li class="list-group-item text-muted fst-italic">Belum ada modul.</li>
+          @endforelse
+        </ul>
       </div>
 
-      <a href="{{ route('admin.detail_courses.index') }}" class="btn btn-secondary rounded-pill px-4">
-        <i class="fas fa-arrow-left me-2"></i>Kembali
-      </a>
+      {{-- Created At --}}
+      <p class="text-muted small d-flex align-items-center mt-3">
+        <i class="fas fa-calendar-alt me-2"></i>
+        Dibuat pada: {{ \Carbon\Carbon::parse($detailCourse->created_at)->translatedFormat('d F Y - H:i') }}
+      </p>
+
+      {{-- Back Button --}}
+      <div class="text-end mt-4">
+        <a href="{{ route('admin.detail_courses.index') }}" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
+          <i class="fas fa-arrow-left me-2"></i>Kembali
+        </a>
+      </div>
     </div>
   </div>
 </div>
