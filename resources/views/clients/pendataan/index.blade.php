@@ -5,18 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form Data Diri</title>
-    <link rel="stylesheet" href="client/userdata.css">
+    <link rel="stylesheet" href="{{ asset('client/userdata.css') }}">
 </head>
 
 <body>
 
     <div class="form-container">
         <h2 class="form-title">Lengkapi Data Diri Anda</h2>
-        <p class="form-subtitle">Isi data berikut untuk melanjutkan ke pembayaran kursus</p>
+        <p class="form-subtitle">Isi data berikut untuk melanjutkan ke dashboard</p>
 
         <!-- Upload Foto Profil -->
         <div class="profile-picture-wrapper">
-            <input type="file" id="profile-upload" accept="image/*" hidden>
+            <input type="file" id="profile-upload" accept="image/*" name="foto" hidden form="form-userdata">
             <label for="profile-upload" class="profile-label">
                 <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Foto Profil" id="profile-preview">
                 <div class="overlay">
@@ -26,25 +26,27 @@
         </div>
 
         <!-- Form Data Diri -->
-        <form action="#" method="POST" class="userdata-form">
+        <form action="{{ route('pendataan.store') }}" method="POST" enctype="multipart/form-data" id="form-userdata" class="userdata-form">
+            @csrf
+
             <div class="form-group">
-                <label for="nama">Nama Lengkap</label>
-                <input type="text" id="nama" name="nama" placeholder="Contoh: Razzan Aditya Pangestu" required>
+                <label for="nama_lengkap">Nama Lengkap</label>
+                <input type="text" id="nama_lengkap" name="nama_lengkap" placeholder="Contoh: Razzan Aditya Pangestu" required>
             </div>
 
             <div class="form-group">
-                <label for="email">Email Aktif</label>
-                <input type="email" id="email" name="email" placeholder="Contoh: email@contoh.com" required>
-            </div>
-
-            <div class="form-group">
-                <label for="phone">Nomor WhatsApp</label>
-                <input type="tel" id="phone" name="phone" placeholder="08xxxxxxxxxx" required>
+                <label for="no_hp">Nomor WhatsApp</label>
+                <input type="tel" id="no_hp" name="no_hp" placeholder="08xxxxxxxxxx" required>
             </div>
 
             <div class="form-group">
                 <label for="alamat">Alamat Lengkap</label>
                 <textarea id="alamat" name="alamat" rows="3" placeholder="Masukkan alamat rumah..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="status">Status (Pelajar/Mahasiswa/dll)</label>
+                <input type="text" id="status" name="status" placeholder="Contoh: Mahasiswa" required>
             </div>
 
             <div class="form-group">
@@ -55,8 +57,8 @@
             <div class="form-group">
                 <label>Jenis Kelamin</label>
                 <div class="radio-group">
-                    <label><input type="radio" name="gender" value="Laki-laki" required> Laki-laki</label>
-                    <label><input type="radio" name="gender" value="Perempuan"> Perempuan</label>
+                    <label><input type="radio" name="jenis_kelamin" value="Laki-laki" required> Laki-laki</label>
+                    <label><input type="radio" name="jenis_kelamin" value="Perempuan"> Perempuan</label>
                 </div>
             </div>
 

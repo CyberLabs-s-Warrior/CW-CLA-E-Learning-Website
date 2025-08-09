@@ -77,9 +77,7 @@
             <div class="logo">LandPage</div>
             <div class="nav-center" style="display: flex; gap: 30px;">
                 <a href="{{ route('home.index') }}">Home</a>
-                <a href="{{ route('course.index') }}">Course</a>
-                {{-- <a href="{{ route('')}}">About</a> --}}
-                <a>About</a>
+                <a href="{{ route('about.index')}}">About</a>
 
 
             </div>

@@ -171,7 +171,7 @@
                 <i class="nav-icon dot-toggle me-2"></i> Semua User
               </a>
             </li>
-            @foreach(['superadmin', 'admin', 'student'] as $role)
+            @foreach(['superadmin', 'admin', 'student','instructure'] as $role)
         <li class="nav-item">
           <a href="{{ route('admin.users.index', ['role' => $role]) }}"
           class="nav-link {{ request()->fullUrlIs(route('admin.users.index', ['role' => $role])) ? 'active' : '' }}">

@@ -23,10 +23,17 @@ use App\Http\Controllers\{
 Route::get('/', [HomeClientController::class, 'index'])->name('home.index');
 Route::get('/course', [CourseClientController::class, 'index'])->name('course.index');
 Route::get('/lesson', [LessonClientController::class, 'index'])->name('lesson.index');
-Route::get('/profile', [ProfileClientController::class, 'index'])->name('profile.index');
+Route::middleware(['auth', \App\Http\Middleware\CheckUserProfileMiddleware::class])
+    ->get('/dashboard', [ProfileClientController::class, 'index'])->name('dashboard.index');
+
 Route::get('/detail-course', [DetailCourseClientController::class, 'index'])->name('detail.index');
 Route::get('/about', [AboutClientController::class, 'index'])->name('about.index');
-Route::get('/data', [PendataanClientController::class, 'index'])->name('pendataan.index');
+Route::middleware('auth')->group(function () {
+    Route::get('/data', [PendataanClientController::class, 'index'])->name('pendataan.index');
+    Route::post('/data', [PendataanClientController::class, 'store'])->name('pendataan.store');
+});
+
+
 Route::get('/payment', [PaymentClientController::class, 'index'])->name('payment.index');
 
 // --------------------------

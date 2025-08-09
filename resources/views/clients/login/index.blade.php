@@ -26,7 +26,6 @@
         </div>
         <div class="form-container sign-in-container">
             <form action="{{ route('login.submit') }}" method="POST">
-
                 @csrf 
                 <h1>Sign in</h1>
                 <input type="email" name="email" placeholder="Email" required />

@@ -10,6 +10,10 @@ class ProfileClientController extends Controller
     public function index()
     {
         $user = Auth::user();   
-        return view('clients.profile.index', compact('user'));
+
+        if($user->hasRole('student') && !$user->profile){
+            return redirect()->route('pendataan.index');
+        }
+        return view('clients.dashboard.index', compact('user'));
     }
 }

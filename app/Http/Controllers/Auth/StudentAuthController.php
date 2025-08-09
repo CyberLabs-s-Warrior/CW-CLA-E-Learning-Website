@@ -33,7 +33,7 @@ class StudentAuthController extends Controller
         $user->assignRole('student');
         
         Auth::login($user);
-        return redirect()->route('home.index')->with('status', 'Registration successful. Welcome!');
+        return redirect()->route('pendataan.index')->with('status', 'Registration successful. Welcome!');
      }
 
      public function login (Request $request)
@@ -47,7 +47,7 @@ class StudentAuthController extends Controller
             $user = Auth::user();
             if($user->hasRole('student')) {
                 $request->session()->regenerate();
-                return redirect()->route('home.index')->with('status', 'Login successful. Welcome back!');
+                return redirect()->route('dashboard.index')->with('status', 'Login successful. Welcome back!');
             } else {
                 Auth::logout();
                 return back()->withErrors(['email' => 'Only students can login from here']);
@@ -64,6 +64,6 @@ class StudentAuthController extends Controller
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('home.index')->with('status', 'You have been logged out successfully.');
+        return redirect()->route('login')->with('status', 'You have been logged out successfully.');
      }
 }

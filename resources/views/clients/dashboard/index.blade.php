@@ -1,7 +1,7 @@
 @extends('components.header')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('client/profile.css') }}">
+    <link rel="stylesheet" href="{{ asset('client/dashboard.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
     <style>
@@ -59,9 +59,13 @@
     <main class="dashboard-container">
 
         <div class="profile-header">
-            <img src="{{ asset('image/avatar.jpg') }}" alt="User Avatar" class="avatar">
+            <img src="{{ Auth::user()->profile && Auth::user()->profile->foto 
+             ? asset('storage/' . Auth::user()->profile->foto) 
+             : asset('image/avatar.jpg') }}" 
+               alt="User Avatar" class="avatar">
+
             <div class="user-info">
-                <h2>Hi, Nugraha 👋</h2>
+                <h2>Hi,{{ Auth::user()->profile->nama_lengkap ?? Auth::user()->name }} 👍</h2>
                 <p>Selamat datang kembali! Ayo lanjutkan belajar.</p>
             </div>
         </div>
