@@ -15,7 +15,7 @@ class CourseController extends Controller
     // ------------------- INDEX ------------------- //
     public function index()
     {
-        $courses = Course::with(['category', 'level', 'priceRange'])->latest()->get();
+        $courses = Course::with(['category', 'level', 'priceRange'])->latest()->paginate(10);
         return view('admin.course.list.index', compact('courses'));
     }
 

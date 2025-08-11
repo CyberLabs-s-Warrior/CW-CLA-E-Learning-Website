@@ -28,7 +28,7 @@
   {{-- Form --}}
   <div class="card border-0 shadow-sm rounded-4">
     <div class="card-body">
-      <form action="{{ route('admin.detail_courses.store') }}" method="POST" enctype="multipart/form-data" class="row g-3">
+      <form action="{{ route('admin.detail_courses.store') }}" method="POST" enctype="multipart/form-data" class="row g-3" id="course-form">
         @csrf
 
         {{-- Judul --}}
@@ -40,14 +40,14 @@
         {{-- Deskripsi --}}
         <div class="col-12">
           <label for="description" class="form-label fw-semibold">Deskripsi</label>
-          <textarea name="description" id="description" class="form-control shadow-sm" rows="4" required>{{ old('description') }}</textarea>
+          <textarea name="description" id="description" class="form-control shadow-sm editor" rows="4">{{ old('description') }}</textarea>
         </div>
 
         {{-- Modul --}}
         <div class="col-12">
           <label class="form-label fw-semibold">Modul</label>
           <div id="modules-list">
-            <input type="text" name="modules[]" class="form-control mb-2 shadow-sm" placeholder="Modul 1">
+            <input type="text" name="modules[]" class="form-control mb-2 shadow-sm" placeholder="Modul 1" required>
           </div>
           <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 mt-1" onclick="addModule()">
             <i class="fas fa-plus me-1"></i>Tambah Modul
@@ -63,8 +63,10 @@
 
         {{-- Aksi --}}
         <div class="col-12 d-flex gap-2 mt-4">
-          <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm">
-            <i class="fas fa-save me-2"></i>Simpan
+          <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm d-flex align-items-center">
+            <i class="fas fa-save me-2"></i>
+            <span class="btn-text">Simpan</span>
+            <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
           </button>
           <a href="{{ route('admin.detail_courses.index') }}" class="btn btn-secondary rounded-pill px-4 shadow-sm">
             <i class="fas fa-arrow-left me-2"></i>Kembali
@@ -74,16 +76,58 @@
     </div>
   </div>
 </div>
-
-{{-- JS for dynamic modules --}}
-<script>
-  function addModule() {
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.name = 'modules[]';
-    input.className = 'form-control mb-2 shadow-sm';
-    input.placeholder = 'Modul tambahan';
-    document.getElementById('modules-list').appendChild(input);
-  }
-</script>
 @endsection
+
+@push('scripts')
+  {{-- CKEditor --}}
+  <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+
+  {{-- Script Dinamis --}}
+  <script>
+    function addModule() {
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.name = 'modules[]';
+      input.className = 'form-control mb-2 shadow-sm';
+      input.placeholder = 'Modul tambahan';
+      input.required = true;
+      document.getElementById('modules-list').appendChild(input);
+    }
+
+    let editorInstance;
+
+    if (!window.hasInitializedEditor) {
+      window.hasInitializedEditor = true;
+
+      ClassicEditor
+        .create(document.querySelector('#description'))
+        .then(editor => {
+          editorInstance = editor;
+        })
+        .catch(error => {
+          console.error(error);
+        });
+
+      // Sync CKEditor data to textarea on submit, validasi kosong
+      document.getElementById('course-form').addEventListener('submit', function (e) {
+        if (editorInstance) {
+          const data = editorInstance.getData().trim();
+          document.querySelector('#description').value = data;
+
+          if (data === '') {
+            e.preventDefault();
+            alert('Deskripsi tidak boleh kosong.');
+          }
+        }
+      });
+    }
+
+    // Tambah spinner loading saat submit
+    document.getElementById('course-form').addEventListener('submit', function () {
+      const btn = this.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      btn.querySelector('.spinner-border').classList.remove('d-none');
+      btn.querySelector('.btn-text').textContent = 'Menyimpan...';
+    });
+  </script>
+@endpush

@@ -19,26 +19,56 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $role = $request->role;
+        $permission = $request->permission;
+        $search = $request->search; // Tambahan
 
-        $users = User::with('roles')
-            ->when($role, fn($query, $role) =>
-                $query->whereHas('roles', fn($q) => $q->where('name', $role))
-            )
-            ->get();
+        $query = User::with(['roles', 'permissions']);
 
-        return view('admin.users.index', compact('users', 'role'));
+        if ($search) {
+            $query->where('name', 'like', '%' . $search . '%');
+        }
+
+        if ($role) {
+            $query->whereHas('roles', function ($q) use ($role) {
+                $q->where('name', $role);
+            });
+        }
+
+        if ($permission) {
+            $query->whereHas('permissions', function ($q) use ($permission) {
+                $q->where('name', $permission);
+            });
+        }
+
+        $users = $query->paginate(10)->withQueryString();
+
+        // Semua permission untuk select option
+        $allPermissions = \Spatie\Permission\Models\Permission::all();
+
+        return view('admin.users.index', compact('users', 'role', 'permission', 'allPermissions', 'search'));
     }
+
+
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        $roles       = Role::whereIn('name', ['admin', 'instructure'])->pluck('name');
+        $roles = Role::whereIn('name', ['admin', 'instructor'])->pluck('name');
         $permissions = Permission::all();
 
-        return view('admin.users.create', compact('roles', 'permissions'));
+        // Biar bisa tahu default permission masing-masing role
+        $rolePermissions = [];
+        foreach ($roles as $roleName) {
+            $role = Role::where('name', $roleName)->first();
+            $rolePermissions[$roleName] = $role?->permissions->pluck('name')->toArray() ?? [];
+        }
+
+        return view('admin.users.create', compact('roles', 'permissions', 'rolePermissions'));
     }
+
+
 
     /**
      * Store a newly created resource in storage.
@@ -46,17 +76,17 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'        => 'required|string|max:255',
-            'email'       => 'required|email|unique:users,email',
-            'password'    => 'required|string|min:6|confirmed',
-            'role'        => 'required|exists:roles,name',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
+            'role' => 'required|exists:roles,name',
             'permissions' => 'array',
-            'foto'        => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $userData = [
-            'name'     => $validated['name'],
-            'email'    => $validated['email'],
+            'name' => $validated['name'],
+            'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ];
 
@@ -80,43 +110,48 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        if ($user->is_superadmin && Auth::id() !== $user->id) {
+        if ($user->hasRole('superadmin') && !auth()->user()->hasRole('superadmin')) {
             abort(403, 'Anda tidak diizinkan mengedit superadmin.');
         }
 
-        $roles           = Role::whereIn('name', ['admin', 'instructure'])->pluck('name');
-        $permissions     = Permission::all();
+        $roles = Role::whereIn('name', ['admin', 'instructor'])->pluck('name');
+        $permissions = Permission::all();
         $userPermissions = $user->permissions->pluck('name')->toArray();
 
         return view('admin.users.edit', compact('user', 'roles', 'permissions', 'userPermissions'));
     }
 
+
     /**
      * Update the specified resource in storage.
      */
+
+
     public function update(Request $request, User $user)
     {
-        if ($user->is_superadmin && Auth::id() !== $user->id) {
+        if ($user->hasRole('superadmin') && !auth()->user()->hasRole('superadmin')) {
             abort(403, 'Anda tidak diizinkan mengedit superadmin.');
         }
 
         $rules = [
-            'name'        => 'required|string|max:255',
-            'email'       => 'required|email|unique:users,email,' . $user->id,
-            'password'    => 'nullable|min:6|confirmed',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:6|confirmed',
             'permissions' => 'array',
-            'foto'        => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
-        if (!$user->is_superadmin) {
+
+        if (!$user->hasRole('superadmin')) {
             $rules['role'] = 'required|string|exists:roles,name';
         }
 
         $validated = $request->validate($rules);
 
         $userData = [
-            'name'  => $validated['name'],
+            'name' => $validated['name'],
             'email' => $validated['email'],
         ];
+
         if (!empty($validated['password'])) {
             $userData['password'] = Hash::make($validated['password']);
         }
@@ -130,15 +165,15 @@ class UserController extends Controller
 
         $user->update($userData);
 
-        if (!$user->is_superadmin) {
+        if (!$user->hasRole('superadmin')) {
             $user->syncRoles([$validated['role']]);
             $user->syncPermissions($validated['permissions'] ?? []);
         }
 
-        return redirect()
-            ->route('admin.users.index')
+        return redirect()->route('admin.users.index')
             ->with('success', 'User berhasil diupdate.');
     }
+
 
     /**
      * Remove the specified resource from storage.

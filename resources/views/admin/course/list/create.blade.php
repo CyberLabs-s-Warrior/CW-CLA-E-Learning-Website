@@ -18,7 +18,7 @@
   {{-- Form Card --}}
   <div class="card border-0 shadow-sm rounded-4">
     <div class="card-body">
-      <form action="{{ route('admin.course.store') }}" method="POST" enctype="multipart/form-data" class="row g-3">
+      <form id="addCourseForm" action="{{ route('admin.course.store') }}" method="POST" enctype="multipart/form-data" class="row g-3">
         @csrf
 
         <div class="col-md-6">
@@ -58,8 +58,10 @@
 
         {{-- Tombol --}}
         <div class="col-12 d-flex gap-2 mt-4">
-          <button type="submit" class="btn btn-success rounded-pill px-4">
-            <i class="fas fa-save me-2"></i>Simpan
+          <button id="submitBtn" type="submit" class="btn btn-success rounded-pill px-4 d-flex align-items-center">
+            <i class="fas fa-save me-2"></i>
+            <span class="btn-text">Simpan</span>
+            <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
           </button>
           <a href="{{ route('admin.course.index') }}" class="btn btn-secondary rounded-pill px-4">
             <i class="fas fa-arrow-left me-2"></i>Batal
@@ -75,7 +77,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    // Show success alert
+    // SweetAlert success
     @if(session('success'))
       Swal.fire({
         icon: 'success',
@@ -87,7 +89,7 @@
       });
     @endif
 
-    // Show error alert
+    // SweetAlert error
     @if(session('error'))
       Swal.fire({
         icon: 'error',
@@ -98,6 +100,18 @@
         timerProgressBar: true
       });
     @endif
+
+    // Spinner loading on submit
+    const form = document.getElementById('addCourseForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const spinner = submitBtn.querySelector('.spinner-border');
+    const btnText = submitBtn.querySelector('.btn-text');
+
+    form.addEventListener('submit', function () {
+      submitBtn.disabled = true;
+      spinner.classList.remove('d-none');
+      btnText.textContent = 'Menyimpan...';
+    });
   });
 </script>
 @endpush

@@ -10,23 +10,19 @@ use App\Models\CoursePriceRange;
 
 class CourseCategoryController extends Controller
 {
-    // ====================== INDEX ======================
     public function index()
     {
         return view('admin.course.categories.index', [
-            'categories' => CourseCategory::all(),
-            'levels'     => CourseLevel::all(),
-            'prices'     => CoursePriceRange::all(),
+            'categories' => CourseCategory::paginate(10),
+            'levels'     => CourseLevel::paginate(10),
+            'prices'     => CoursePriceRange::paginate(10),
         ]);
     }
 
-    // ====================== CREATE MENU ======================
     public function create()
     {
-        return view('admin.course.categories.create'); // halaman pemilih menu tambah
+        return view('admin.course.categories.create');
     }
-
-    // ====================== CATEGORY ======================
     public function createCategory()
     {
         return view('admin.course.categories.create_category');
@@ -63,7 +59,6 @@ class CourseCategoryController extends Controller
                          ->with('success', 'Kategori berhasil dihapus!');
     }
 
-    // ====================== LEVEL ======================
     public function createLevel()
     {
         return view('admin.course.categories.create_level');
@@ -101,7 +96,6 @@ class CourseCategoryController extends Controller
                          ->with('success', 'Level berhasil dihapus!');
     }
 
-    // ====================== PRICE RANGE ======================
     public function createPrice()
     {
         return view('admin.course.categories.create_price');

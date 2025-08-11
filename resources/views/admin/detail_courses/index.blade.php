@@ -7,7 +7,7 @@
   {{-- Header --}}
   <div class="d-flex align-items-center mb-4">
     <div class="me-2">
-      <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 44px; height: 44px;">
+      <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 40px; height: 40px;">
         <i class="fas fa-book-open"></i>
       </div>
     </div>
@@ -21,21 +21,36 @@
     </a>
   </div>
 
-  {{-- Flash Message --}}
+  {{-- Session Success (SweetAlert2) --}}
   @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show shadow-sm d-flex align-items-center gap-2" role="alert">
-      <i class="fas fa-check-circle"></i>
-      <div>{{ session('success') }}</div>
-      <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil!',
+          text: @json(session('success')),
+          timer: 2500,
+          timerProgressBar: true,
+          showConfirmButton: false,
+          background: 'linear-gradient(145deg, #e6f0ff, #f8fbff)',
+          color: '#1e3a8a',
+          iconColor: '#0d6efd',
+          customClass: {
+            popup: 'rounded-4 shadow-lg p-4',
+            title: 'fw-bold fs-4 text-primary',
+            htmlContainer: 'mt-2 fs-6',
+          }
+        });
+      });
+    </script>
   @endif
 
-  {{-- Tabel --}}
+  {{-- Table --}}
   <div class="card border-0 shadow-sm rounded-4">
-    <div class="card-body">
+    <div class="card-body p-0">
       @if($courses->count())
         <div class="table-responsive">
-          <table class="table table-hover align-middle text-nowrap">
+          <table class="table table-hover align-middle text-nowrap mb-0">
             <thead class="table-light">
               <tr>
                 <th style="width: 50px;">No</th>
@@ -49,9 +64,9 @@
             <tbody>
               @foreach($courses as $course)
                 <tr>
-                  <td>{{ $loop->iteration }}</td>
+                  <td>{{ $loop->iteration + ($courses->currentPage() - 1) * $courses->perPage() }}</td>
                   <td class="fw-semibold">{{ \Illuminate\Support\Str::limit($course->title, 40) }}</td>
-                  <td>{{ \Illuminate\Support\Str::limit($course->description, 80) }}</td>
+                  <td>{!! \Illuminate\Support\Str::limit($course->description, 80) !!}</td>
                   <td>
                     @if($course->modules && count($course->modules))
                       <ul class="mb-0 ps-3 small">
@@ -87,15 +102,15 @@
                   </td>
                   <td class="text-center">
                     <div class="d-flex flex-wrap justify-content-center gap-2">
-                      <a href="{{ route('admin.detail_courses.show', $course) }}" class="btn btn-sm btn-info rounded-pill px-3 shadow-sm">
+                      <a href="{{ route('admin.detail_courses.show', $course) }}" class="btn btn-sm btn-outline-info rounded-pill px-3 shadow-sm me-2">
                         <i class="fas fa-eye me-1"></i>Lihat
                       </a>
-                      <a href="{{ route('admin.detail_courses.edit', $course) }}" class="btn btn-sm btn-warning rounded-pill px-3 shadow-sm">
+                      <a href="{{ route('admin.detail_courses.edit', $course) }}" class="btn btn-sm btn-outline-warning rounded-pill px-3 shadow-sm me-2">
                         <i class="fas fa-edit me-1"></i>Edit
                       </a>
 
                       {{-- Tombol Hapus dengan Modal --}}
-                      <button class="btn btn-sm btn-danger rounded-pill px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalHapus{{ $course->id }}">
+                      <button class="btn btn-sm btn-outline-danger rounded-pill px-3 shadow-sm me-2" data-bs-toggle="modal" data-bs-target="#modalHapus{{ $course->id }}">
                         <i class="fas fa-trash-alt me-1"></i>Hapus
                       </button>
 
@@ -114,11 +129,12 @@
                             </div>
                             <div class="modal-footer border-0">
                               <button type="button" class="btn btn-secondary rounded-pill px-3" data-bs-dismiss="modal">Batal</button>
-                              <form action="{{ route('admin.detail_courses.destroy', $course) }}" method="POST">
+                              <form action="{{ route('admin.detail_courses.destroy', $course) }}" method="POST" class="m-0" onsubmit="return showSpinner(this, {{ $course->id }})">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger rounded-pill px-3">
-                                  <i class="fas fa-trash-alt me-1"></i>Ya, Hapus
+                                <button type="submit" class="btn btn-danger rounded-pill px-3 d-flex align-items-center gap-2" id="btnDelete{{ $course->id }}">
+                                  <span class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true" id="spinner{{ $course->id }}"></span>
+                                  <span>Ya, Hapus</span>
                                 </button>
                               </form>
                             </div>
@@ -133,8 +149,14 @@
             </tbody>
           </table>
         </div>
+
+        {{-- Pagination --}}
+        <div class="mt-4 px-3">
+          {{ $courses->links('vendor.pagination.bootstrap-5') }}
+        </div>
+
       @else
-        <div class="alert alert-secondary d-flex align-items-center gap-2 mb-0">
+        <div class="alert alert-secondary d-flex align-items-center gap-2 mb-0 rounded-3">
           <i class="fas fa-info-circle"></i>
           <span>Belum ada data kursus detail.</span>
         </div>
@@ -143,3 +165,21 @@
   </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  function showSpinner(form, id) {
+    const btn = form.querySelector(`#btnDelete${id}`);
+    const spinner = form.querySelector(`#spinner${id}`);
+    const btnText = btn.querySelector('span:last-child');
+
+    // Tampilkan spinner & disable tombol
+    spinner.classList.remove('d-none');
+    btnText.textContent = 'Menghapus...';
+    btn.disabled = true;
+
+    return true; // Submit form tetap lanjut
+  }
+</script>
+@endpush
