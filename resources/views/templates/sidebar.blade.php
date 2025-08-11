@@ -39,7 +39,7 @@
   .nav-sidebar .nav-link {
     color: #cfd8dc;
     border-radius: 8px;
-    padding: 0.65rem 1rem;
+    padding: 0.55rem 1rem;
     transition: all 0.25s ease;
     font-weight: 500;
     display: flex;
@@ -55,8 +55,8 @@
   .nav-sidebar .nav-link.active {
     background-color: #007bff;
     color: #ffffff;
-    font-weight: 600;
-    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.4);
+    font-weight: 400;
+    box-shadow: 0 2px 2px rgba(0, 123, 255, 0.4);
   }
 
   .nav-treeview {
@@ -156,15 +156,17 @@
           </a>
         </li>
 
-        {{-- User Management --}}
-        @role('superadmin')
-        <li class="nav-item">
-          <a href="{{ route('admin.users.index') }}"
-            class="nav-link {{ request()->routeIs('admin.users.index') ? 'active' : '' }}">
-            <i class="fas fa-users me-2"></i> User Management
-          </a>
-        </li>
-        @endrole
+{{-- User Management --}}
+@role('superadmin')
+<li class="nav-item">
+  <a href="{{ route('admin.users.index') }}"
+     class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+    <i class="fas fa-users me-2"></i> User Management
+  </a>
+</li>
+@endrole
+
+
 
 
         {{-- About --}}
