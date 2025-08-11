@@ -21,27 +21,35 @@
       <i class="fas fa-folder-tree me-2"></i>Form Edit Kategori
     </div>
     <div class="card-body">
-      <form method="POST" action="{{ route('admin.course-categories.update', $category->id) }}" class="d-flex flex-column gap-3">
+      <form id="editCategoryForm" method="POST" action="{{ route('admin.course-categories.update', $category->id) }}" class="d-flex flex-column gap-3">
         @csrf
         @method('PUT')
 
         {{-- Input --}}
         <div>
           <label for="category" class="form-label fw-semibold">Nama Kategori</label>
-          <input type="text" id="category" name="category" class="form-control shadow-sm @error('category') is-invalid @enderror"
-                 value="{{ old('category', $category->category) }}" required>
+          <input
+            type="text"
+            id="category"
+            name="category"
+            class="form-control shadow-sm @error('category') is-invalid @enderror"
+            value="{{ old('category', $category->category) }}"
+            required
+          >
           @error('category')
             <div class="invalid-feedback">{{ $message }}</div>
           @enderror
         </div>
 
         {{-- Buttons --}}
-        <div class="d-flex gap-2">
-          <button type="submit" class="btn btn-warning rounded-pill px-4">
-            <i class="fas fa-save me-1"></i> Update
+        <div class="d-flex gap-2 align-items-center">
+          <button type="submit" id="submitBtn" class="btn btn-warning rounded-pill px-4 d-flex align-items-center">
+            <i class="fas fa-save me-2"></i>
+            <span class="btn-text">Update</span>
+            <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
           </button>
-          <a href="{{ route('admin.course-categories.index') }}" class="btn btn-outline-secondary rounded-pill px-4">
-            <i class="fas fa-arrow-left me-1"></i> Kembali
+          <a href="{{ route('admin.course-categories.index') }}" class="btn btn-secondary rounded-pill px-4 d-flex align-items-center">
+            <i class="fas fa-arrow-left me-2"></i>Kembali
           </a>
         </div>
       </form>
@@ -53,9 +61,9 @@
 @section('scripts')
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  {{-- SweetAlert for success/error --}}
   <script>
     document.addEventListener('DOMContentLoaded', function () {
+      // SweetAlert for flash messages
       @if(session('success'))
         Swal.fire({
           icon: 'success',
@@ -75,6 +83,18 @@
           timerProgressBar: true
         });
       @endif
+
+      // Spinner & disable button on submit
+      const form = document.getElementById('editCategoryForm');
+      const submitBtn = document.getElementById('submitBtn');
+      const spinner = submitBtn.querySelector('.spinner-border');
+      const btnText = submitBtn.querySelector('.btn-text');
+
+      form.addEventListener('submit', () => {
+        submitBtn.disabled = true;
+        spinner.classList.remove('d-none');
+        btnText.textContent = 'Menyimpan...';
+      });
     });
   </script>
 @endsection

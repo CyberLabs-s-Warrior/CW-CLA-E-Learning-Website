@@ -31,10 +31,10 @@
     @include('templates.footer')
   </div>
 
-
-</body>
+@stack('scripts')
 <script src="..."></script>
 @yield('scripts')
 <!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
 </html>

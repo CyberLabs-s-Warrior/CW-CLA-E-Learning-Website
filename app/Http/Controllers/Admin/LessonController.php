@@ -12,10 +12,9 @@ class LessonController extends Controller
 {
     public function index()
     {
-        $lessons = Lesson::with('course')->latest()->get();
+        $lessons = Lesson::with('course')->latest()->paginate(10);
         return view('admin.lessons.index', compact('lessons'));
     }
-
     public function create()
     {
         $courses = DetailCourse::all();
@@ -52,7 +51,15 @@ class LessonController extends Controller
     public function edit(Lesson $lesson)
     {
         $courses = DetailCourse::all();
-        return view('admin.lessons.edit', compact('lesson', 'courses'));
+
+        // Ambil modul dari course yang sesuai
+        $modules = [];
+        if ($lesson->detail_courses_id) {
+            $course = DetailCourse::find($lesson->detail_courses_id);
+            $modules = $course->modules ?? [];
+        }
+
+        return view('admin.lessons.edit', compact('lesson', 'courses', 'modules'));
     }
 
     public function update(Request $request, Lesson $lesson)

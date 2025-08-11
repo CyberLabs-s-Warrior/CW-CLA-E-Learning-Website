@@ -19,7 +19,7 @@
   </div>
 
   {{-- Form --}}
-  <form action="{{ route('admin.course-prices.store') }}" method="POST" class="animate-fade-up">
+  <form id="priceForm" action="{{ route('admin.course-prices.store') }}" method="POST" class="animate-fade-up">
     @csrf
 
     <div class="row">
@@ -40,12 +40,29 @@
       </div>
     </div>
 
-    <div class="mt-3">
-      <button type="submit" class="btn btn-primary rounded-pill px-4 me-2">
-        <i class="fas fa-save me-2"></i>Simpan
-      </button>
-      <a href="{{ route('admin.course-categories.create') }}" class="btn btn-secondary rounded-pill px-4">Kembali</a>
-    </div>
+<div class="mt-4 d-flex gap-2">
+  <button
+    id="submitBtn"
+    type="submit"
+    class="btn btn-primary rounded-pill px-4 d-flex align-items-center"
+  >
+    <i class="fas fa-save me-2"></i>
+    <span class="btn-text">Simpan</span>
+    <span
+      class="spinner-border spinner-border-sm ms-2 d-none"
+      role="status"
+      aria-hidden="true"
+    ></span>
+  </button>
+
+  <a
+    href="{{ route('admin.course-categories.create') }}"
+    class="btn btn-secondary rounded-pill px-4 d-flex align-items-center"
+  >
+    <i class="fas fa-arrow-left me-2"></i>Kembali
+  </a>
+</div>
+
   </form>
 </div>
 @endsection
@@ -87,4 +104,19 @@
     animation: fadeIn 0.5s ease-in-out forwards;
   }
 </style>
+@endsection
+
+@section('scripts')
+<script>
+  document.getElementById('priceForm').addEventListener('submit', function(e) {
+    const submitBtn = document.getElementById('submitBtn');
+    const spinner = submitBtn.querySelector('.spinner-border');
+    const btnText = submitBtn.querySelector('.btn-text');
+
+    // Tampilkan spinner, sembunyikan teks, disable tombol
+    spinner.classList.remove('d-none');
+    btnText.textContent = 'Menyimpan...';
+    submitBtn.disabled = true;
+  });
+</script>
 @endsection

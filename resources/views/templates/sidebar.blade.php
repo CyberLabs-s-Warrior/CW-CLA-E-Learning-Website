@@ -158,30 +158,14 @@
 
         {{-- User Management --}}
         @role('superadmin')
-        <li class="nav-item has-treeview {{ request()->is('admin/users*') ? 'active' : '' }}">
-          <a href="#" class="nav-link">
-            <i class="fas fa-users me-2"></i> User Management
-            <i class="fas fa-caret-right ms-auto icon-collapsed"></i>
-            <i class="fas fa-caret-down ms-auto icon-expanded"></i>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="{{ route('admin.users.index') }}"
-                class="nav-link {{ request()->routeIs('admin.users.index') && !request('role') ? 'active' : '' }}">
-                <i class="nav-icon dot-toggle me-2"></i> Semua User
-              </a>
-            </li>
-            @foreach(['superadmin', 'admin', 'student'] as $role)
         <li class="nav-item">
-          <a href="{{ route('admin.users.index', ['role' => $role]) }}"
-          class="nav-link {{ request()->fullUrlIs(route('admin.users.index', ['role' => $role])) ? 'active' : '' }}">
-          <i class="nav-icon dot-toggle me-2"></i> {{ ucfirst($role) }}
+          <a href="{{ route('admin.users.index') }}"
+            class="nav-link {{ request()->routeIs('admin.users.index') ? 'active' : '' }}">
+            <i class="fas fa-users me-2"></i> User Management
           </a>
-        </li>
-      @endforeach
-          </ul>
         </li>
         @endrole
+
 
         {{-- About --}}
         @can('kelola_about')
@@ -206,7 +190,7 @@
         {{-- Course --}}
         @can('kelola_course')
         <li class="nav-item has-treeview
-      {{ request()->routeIs('admin.course.*') ||
+        {{ request()->routeIs('admin.course.*') ||
       request()->routeIs('admin.course-categories.*') ||
       request()->routeIs('admin.detail_courses.*') ||
       request()->routeIs('admin.lessons.*') ||
@@ -272,4 +256,4 @@
       });
     });
   });
-</script>
+</script> 

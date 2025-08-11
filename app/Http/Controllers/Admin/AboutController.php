@@ -8,20 +8,26 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 class AboutController extends Controller
 {
-    public function index(Request $request)
-    {
-        $query = About::query();
+public function index(Request $request)
+{
+    $query = About::query();
 
-        if ($request->filled('section')) {
-            $query->where('section', $request->section);
-        }
-
-        $contents = $query->orderBy('created_at', 'asc')->paginate(10);
-
-        $sections = About::select('section')->distinct()->pluck('section');
-
-        return view('admin.about.index', compact('contents', 'sections'));
+    // Filter berdasarkan section
+    if ($request->filled('section')) {
+        $query->where('section', $request->section);
     }
+
+    // Filter berdasarkan judul search
+    if ($request->filled('search')) {
+        $query->where('title', 'like', '%' . $request->search . '%');
+    }
+
+    $contents = $query->orderBy('created_at', 'asc')->paginate(10);
+
+    $sections = About::select('section')->distinct()->pluck('section');
+
+    return view('admin.about.index', compact('contents', 'sections'));
+}
 
 
     public function create()
