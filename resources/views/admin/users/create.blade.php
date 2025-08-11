@@ -21,18 +21,20 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data">
+                    {{-- Tambahkan id="createForm" untuk dikenali script --}}
+                    <form id="createForm" action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <div class="mb-3">
                             <label for="name" class="form-label">Nama</label>
                             <input type="text" name="name" id="name" placeholder="Nama lengkap"
-                                class="form-control @error('name') is-invalid @enderror"
-                                required value="{{ old('name') }}">
+                                class="form-control @error('name') is-invalid @enderror" required
+                                value="{{ old('name') }}">
                             @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+
                         <div class="mb-3">
                             <label for="foto" class="form-label">Foto Profil</label>
                             <input type="file" name="foto" id="foto"
@@ -42,12 +44,11 @@
                             @enderror
                         </div>
 
-
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" name="email" id="email" placeholder="Email aktif"
-                                class="form-control @error('email') is-invalid @enderror"
-                                required value="{{ old('email') }}">
+                                class="form-control @error('email') is-invalid @enderror" required
+                                value="{{ old('email') }}">
                             @error('email')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -56,8 +57,7 @@
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
                             <input type="password" name="password" id="password" placeholder="Minimal 8 karakter"
-                                class="form-control @error('password') is-invalid @enderror"
-                                required>
+                                class="form-control @error('password') is-invalid @enderror" required>
                             @error('password')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -66,8 +66,7 @@
                         <div class="mb-3">
                             <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
                             <input type="password" name="password_confirmation" id="password_confirmation"
-                                placeholder="Ulangi password"
-                                class="form-control" required>
+                                placeholder="Ulangi password" class="form-control" required>
                         </div>
 
                         <div class="mb-3">
@@ -105,13 +104,9 @@
                                             </strong>
                                             @foreach ($perms as $permission)
                                                 <div class="form-check mb-2">
-                                                    <input type="checkbox"
-                                                           name="permissions[]"
-                                                           value="{{ $permission->name }}"
-                                                           class="form-check-input"
-                                                           id="perm_{{ $permission->name }}">
-                                                    <label class="form-check-label small"
-                                                           for="perm_{{ $permission->name }}">
+                                                    <input type="checkbox" name="permissions[]" value="{{ $permission->name }}"
+                                                        class="form-check-input" id="perm_{{ $permission->name }}">
+                                                    <label class="form-check-label small" for="perm_{{ $permission->name }}">
                                                         {{ ucwords(str_replace('_', ' ', $permission->name)) }}
                                                     </label>
                                                 </div>
@@ -126,7 +121,7 @@
                             <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left"></i> Kembali
                             </a>
-                            <button type="submit" class="btn btn-success">
+                            <button type="submit" class="btn btn-success" id="btnSubmit">
                                 <i class="bi bi-save me-1"></i> Simpan
                             </button>
                         </div>
@@ -137,23 +132,60 @@
     </div>
 </div>
 
+{{-- Script Toggle Permissions --}}
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const roleSelect = document.getElementById('role');
-        const permissionWrapper = document.getElementById('permission-wrapper');
+document.addEventListener('DOMContentLoaded', function () {
+    const roleSelect = document.getElementById('role');
+    const permissionWrapper = document.getElementById('permission-wrapper');
+    const checkboxes = permissionWrapper.querySelectorAll('input[type="checkbox"]');
 
-        function togglePermissions() {
-            if (roleSelect.value === 'admin') {
-                permissionWrapper.style.display = 'block';
-            } else {
-                permissionWrapper.style.display = 'none';
-                permissionWrapper.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-            }
+    const rolePermissions = @json($rolePermissions);
+
+    function togglePermissions() {
+        const selectedRole = roleSelect.value;
+        if (selectedRole && rolePermissions[selectedRole]) {
+            permissionWrapper.style.display = 'block';
+            checkboxes.forEach(cb => cb.checked = false);
+            rolePermissions[selectedRole].forEach(name => {
+                const checkbox = document.getElementById(`perm_${name}`);
+                if (checkbox) checkbox.checked = true;
+            });
+        } else {
+            permissionWrapper.style.display = 'none';
+            checkboxes.forEach(cb => cb.checked = false);
         }
+    }
 
-        togglePermissions();
-        roleSelect.addEventListener('change', togglePermissions);
-    });
+    togglePermissions();
+    roleSelect.addEventListener('change', togglePermissions);
+});
+</script>
+
+{{-- Script Tombol Submit jadi Spinner --}}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('createForm');
+    const btnSubmit = document.getElementById('btnSubmit');
+    const originalBtnHtml = btnSubmit.innerHTML;
+
+    if (form && btnSubmit) {
+        form.addEventListener('submit', function () {
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = `
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Menyimpan...
+            `;
+
+            // Jika submit gagal (misalnya validasi server), tombol kembali normal
+            setTimeout(() => {
+                if (document.querySelectorAll('.alert-danger').length > 0) {
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = originalBtnHtml;
+                }
+            }, 500);
+        });
+    }
+});
 </script>
 
 {{-- Bootstrap Icons --}}

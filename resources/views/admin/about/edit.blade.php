@@ -61,7 +61,7 @@
 
         <div class="mb-4">
           <label class="form-label fw-semibold">Deskripsi <span class="text-muted">(opsional)</span></label>
-          <textarea name="description" rows="4"
+          <textarea id="editor" name="description" rows="4"
                     class="form-control rounded-3 shadow-sm @error('description') is-invalid @enderror">{{ old('description', $content->description) }}</textarea>
           @error('description')
             <small class="text-danger d-block mt-1">
@@ -114,4 +114,22 @@
     btn.disabled = true;
   });
 </script>
+
+  <!-- CKEditor 5 CDN -->
+  <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+  <script>
+    ClassicEditor
+      .create(document.querySelector('#editor'))
+      .catch(error => {
+        console.error(error);
+      });
+
+    // Loading saat submit
+    document.getElementById('editForm').addEventListener('submit', function () {
+      const btn = document.getElementById('submitBtn');
+      document.getElementById('spinner').classList.remove('d-none');
+      document.getElementById('btnText').textContent = 'Menyimpan...';
+      btn.disabled = true;
+    });
+  </script>
 @endsection

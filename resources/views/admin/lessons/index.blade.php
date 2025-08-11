@@ -7,7 +7,10 @@
   {{-- Header --}}
   <div class="d-flex align-items-center mb-4">
     <div class="me-2">
-      <div class="bg-info bg-opacity-10 text-info rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 44px; height: 44px;">
+      <div
+        class="bg-info bg-opacity-10 text-info rounded-circle d-flex align-items-center justify-content-center shadow-sm"
+        style="width: 44px; height: 44px;"
+      >
         <i class="fas fa-book-open"></i>
       </div>
     </div>
@@ -21,50 +24,76 @@
     </a>
   </div>
 
-  {{-- Alert Sukses --}}
+  {{-- Session Success (SweetAlert2) --}}
   @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show shadow-sm d-flex align-items-center gap-2" role="alert">
-      <i class="fas fa-check-circle"></i>
-      <div>{{ session('success') }}</div>
-      <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil!',
+          text: @json(session('success')),
+          timer: 2500,
+          timerProgressBar: true,
+          showConfirmButton: false,
+          background: 'linear-gradient(145deg, #e6f0ff, #f8fbff)',
+          color: '#1e3a8a',
+          iconColor: '#0d6efd',
+          customClass: {
+            popup: 'rounded-4 shadow-lg p-4',
+            title: 'fw-bold fs-4 text-primary',
+            htmlContainer: 'mt-2 fs-6',
+          }
+        });
+      });
+    </script>
   @endif
 
   {{-- Table --}}
-  @if($lessons->count())
-    <div class="card border-0 shadow-sm rounded-4">
-      <div class="card-body p-0">
+  <div class="card border-0 shadow-sm rounded-4">
+    <div class="card-body p-0">
+      @if($lessons->count())
         <div class="table-responsive">
-          <table class="table table-hover align-middle mb-0">
+          <table class="table table-hover align-middle text-nowrap mb-0">
             <thead class="table-light">
               <tr>
-                <th>No</th>
+                <th style="width: 50px;">No</th>
                 <th>Kursus</th>
                 <th>Modul</th>
                 <th>Judul</th>
                 <th>Media</th>
-                <th class="text-center">Aksi</th>
+                <th>Konten</th>
+                <th class="text-center" style="width: 180px;">Aksi</th>
               </tr>
             </thead>
             <tbody>
               @foreach($lessons as $lesson)
                 <tr>
-                  <td>{{ $loop->iteration }}</td>
+                  <td>{{ $loop->iteration + ($lessons->currentPage() - 1) * $lessons->perPage() }}</td>
                   <td>{{ $lesson->course->title ?? '-' }}</td>
                   <td>{{ $lesson->module_name }}</td>
                   <td>{{ $lesson->title }}</td>
                   <td>
                     @php
-                      $mediaExt = pathinfo($lesson->media, PATHINFO_EXTENSION);
-                      $isImage = in_array(strtolower($mediaExt), ['jpg', 'jpeg', 'png', 'webp']);
-                      $isVideo = in_array(strtolower($mediaExt), ['mp4', 'mov', 'avi']);
+                      $mediaExt = strtolower(pathinfo($lesson->media, PATHINFO_EXTENSION));
+                      $isImage = in_array($mediaExt, ['jpg', 'jpeg', 'png', 'webp']);
+                      $isVideo = in_array($mediaExt, ['mp4', 'mov', 'avi']);
                     @endphp
 
                     @if($lesson->media)
                       @if($isImage)
-                        <img src="{{ asset('storage/' . $lesson->media) }}" alt="{{ $lesson->title }}" class="img-thumbnail rounded shadow-sm" style="width: 80px; height: auto;">
+                        <img
+                          src="{{ asset('storage/' . $lesson->media) }}"
+                          alt="{{ $lesson->title }}"
+                          class="img-thumbnail rounded shadow-sm"
+                          style="width: 80px; height: auto;"
+                        >
                       @elseif($isVideo)
-                        <video width="130" height="80" controls class="rounded shadow-sm">
+                        <video
+                          width="130"
+                          height="80"
+                          controls
+                          class="rounded shadow-sm"
+                        >
                           <source src="{{ asset('storage/' . $lesson->media) }}" type="video/{{ $mediaExt }}">
                           Browser tidak mendukung video.
                         </video>
@@ -75,72 +104,120 @@
                       <span class="text-muted small fst-italic">Tidak ada media</span>
                     @endif
                   </td>
-                  <td class="text-center">
-                    <div class="d-flex justify-content-center gap-2 flex-wrap">
-                      <a href="{{ route('admin.lessons.show', $lesson) }}" class="btn btn-sm btn-info rounded-pill px-3 shadow-sm">
-                        <i class="fas fa-eye me-1"></i>Show
-                      </a>
-                      <a href="{{ route('admin.lessons.edit', $lesson) }}" class="btn btn-sm btn-warning rounded-pill px-3 shadow-sm">
-                        <i class="fas fa-edit me-1"></i>Edit
-                      </a>
-                      {{-- Hapus dengan SweetAlert2 --}}
-                      <form id="formHapus-{{ $lesson->id }}" action="{{ route('admin.lessons.destroy', $lesson) }}" method="POST" class="d-inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="button" class="btn btn-sm btn-danger rounded-pill px-3 shadow-sm btn-confirm" data-id="{{ $lesson->id }}" data-title="{{ $lesson->title }}">
-                          <i class="fas fa-trash-alt me-1"></i>Hapus
-                        </button>
-                      </form>
-                    </div>
-                  </td>
+                  <td>{!! \Illuminate\Support\Str::limit($lesson->content, 50) !!}</td>
+<td class="text-center">
+  <div class="d-flex justify-content-center gap-2 flex-nowrap">
+    <a
+      href="{{ route('admin.lessons.show', $lesson) }}"
+      class="btn btn-sm btn-outline-info rounded-pill p-1 shadow-sm"
+      style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;"
+      title="Lihat"
+    >
+      <i class="fas fa-eye"></i>
+    </a>
+    <a
+      href="{{ route('admin.lessons.edit', $lesson) }}"
+      class="btn btn-sm btn-outline-warning rounded-pill p-1 shadow-sm"
+      style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;"
+      title="Edit"
+    >
+      <i class="fas fa-edit"></i>
+    </a>
+
+    <button
+      type="button"
+      class="btn btn-sm btn-outline-danger rounded-pill p-1 shadow-sm"
+      style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;"
+      data-bs-toggle="modal"
+      data-bs-target="#modalHapus{{ $lesson->id }}"
+      title="Hapus"
+    >
+      <i class="fas fa-trash-alt"></i>
+    </button>
+
+    {{-- Modal Konfirmasi Hapus --}}
+    <div
+      class="modal fade"
+      id="modalHapus{{ $lesson->id }}"
+      tabindex="-1"
+      aria-labelledby="modalHapusLabel{{ $lesson->id }}"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow">
+          <div class="modal-header border-0">
+            <h5 class="modal-title" id="modalHapusLabel{{ $lesson->id }}">
+              <i class="fas fa-exclamation-triangle text-danger me-2"></i>Konfirmasi Hapus
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+          </div>
+          <div class="modal-body">
+            <p class="mb-0">Apakah Anda yakin ingin menghapus materi <strong>{{ $lesson->title }}</strong>?</p>
+          </div>
+          <div class="modal-footer border-0">
+            <button type="button" class="btn btn-secondary rounded-pill px-3" data-bs-dismiss="modal">Batal</button>
+            <form
+              action="{{ route('admin.lessons.destroy', $lesson) }}"
+              method="POST"
+              class="m-0"
+              onsubmit="return showSpinner(this, {{ $lesson->id }})"
+            >
+              @csrf
+              @method('DELETE')
+              <button
+                type="submit"
+                class="btn btn-danger rounded-pill px-3 d-flex align-items-center gap-2"
+                id="btnDelete{{ $lesson->id }}"
+              >
+                <span
+                  class="spinner-border spinner-border-sm me-2 d-none"
+                  role="status"
+                  aria-hidden="true"
+                  id="spinner{{ $lesson->id }}"
+                ></span>
+                <span>Ya, Hapus</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</td>
                 </tr>
               @endforeach
             </tbody>
           </table>
         </div>
-      </div>
+
+        {{-- Pagination --}}
+        <div class="mt-4 px-3">
+          {{ $lessons->withQueryString()->links('vendor.pagination.bootstrap-5') }}
+        </div>
+      @else
+        <div class="alert alert-secondary d-flex align-items-center gap-2 mb-0 rounded-3">
+          <i class="fas fa-info-circle"></i>
+          <span>Belum ada data materi yang tersedia.</span>
+        </div>
+      @endif
     </div>
-  @else
-    <div class="alert alert-info d-flex align-items-center gap-2" role="alert">
-      <i class="fas fa-info-circle"></i>
-      <div>Belum ada data materi yang tersedia.</div>
-    </div>
-  @endif
+  </div>
 </div>
 @endsection
 
 @push('scripts')
-{{-- SweetAlert2 --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const buttons = document.querySelectorAll('.btn-confirm');
+  function showSpinner(form, id) {
+    const btn = form.querySelector(`#btnDelete${id}`);
+    const spinner = form.querySelector(`#spinner${id}`);
+    const btnText = btn.querySelector('span:last-child');
 
-    buttons.forEach(button => {
-      button.addEventListener('click', function () {
-        const id = this.dataset.id;
-        const title = this.dataset.title;
+    spinner.classList.remove('d-none');
+    btnText.textContent = 'Menghapus...';
+    btn.disabled = true;
 
-        Swal.fire({
-          title: 'Yakin ingin menghapus?',
-          html: `Materi <strong>"${title}"</strong> akan dihapus secara permanen.`,
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonText: 'Ya, Hapus!',
-          cancelButtonText: 'Batal',
-          reverseButtons: true,
-          buttonsStyling: false,
-          customClass: {
-            confirmButton: 'btn btn-danger rounded-pill me-2',
-            cancelButton: 'btn btn-secondary rounded-pill'
-          }
-        }).then((result) => {
-          if (result.isConfirmed) {
-            document.getElementById('formHapus-' + id).submit();
-          }
-        });
-      });
-    });
-  });
+    return true;
+  }
 </script>
 @endpush

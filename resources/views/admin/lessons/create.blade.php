@@ -17,7 +17,7 @@
   {{-- Card --}}
   <div class="card border-0 shadow-sm rounded-4">
     <div class="card-body">
-      <form action="{{ route('admin.lessons.store') }}" method="POST" enctype="multipart/form-data" class="row g-3">
+      <form action="{{ route('admin.lessons.store') }}" method="POST" enctype="multipart/form-data" class="row g-3" id="lesson-form">
         @csrf
 
         {{-- Pilih Kursus --}}
@@ -59,8 +59,12 @@
 
         {{-- Tombol --}}
         <div class="col-12 d-flex gap-2 mt-4">
-          <button type="submit" class="btn btn-success rounded-pill px-4">
-            <i class="fas fa-save me-2"></i>Simpan
+          <button type="submit" class="btn btn-success rounded-pill px-4" id="btn-submit">
+            <span id="btn-text"><i class="fas fa-save me-2"></i>Simpan</span>
+            <span id="btn-saving" class="d-none">
+              Menyimpan...
+              <span class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true"></span>
+            </span>
           </button>
           <a href="{{ route('admin.lessons.index') }}" class="btn btn-secondary rounded-pill px-4">
             <i class="fas fa-arrow-left me-2"></i>Kembali
@@ -73,7 +77,19 @@
 @endsection
 
 @section('scripts')
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 <script>
+  let editorInstance;
+
+  ClassicEditor
+    .create(document.querySelector('#content'))
+    .then(editor => {
+      editorInstance = editor;
+    })
+    .catch(error => {
+      console.error(error);
+    });
+
   const courseSelect = document.getElementById('detail_courses_id');
   const moduleSelect = document.getElementById('module_name');
 
@@ -105,6 +121,29 @@
         moduleSelect.innerHTML = '<option value="">Tidak dapat memuat modul</option>';
         moduleSelect.disabled = true;
       });
+  });
+
+  const form = document.getElementById('lesson-form');
+  const btnSubmit = document.getElementById('btn-submit');
+  const btnText = document.getElementById('btn-text');
+  const btnSaving = document.getElementById('btn-saving');
+
+  form.addEventListener('submit', function(e) {
+    if (editorInstance) {
+      const data = editorInstance.getData().trim();
+      document.querySelector('#content').value = data;
+
+      if (data === '') {
+        e.preventDefault();
+        alert('Konten materi tidak boleh kosong.');
+        return;
+      }
+    }
+
+    // Tampilkan teks "Menyimpan..." dan spinner, sembunyikan teks "Simpan"
+    btnText.classList.add('d-none');
+    btnSaving.classList.remove('d-none');
+    btnSubmit.disabled = true;
   });
 </script>
 @endsection

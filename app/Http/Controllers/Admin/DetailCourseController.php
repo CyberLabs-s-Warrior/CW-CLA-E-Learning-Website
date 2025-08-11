@@ -11,7 +11,7 @@ class DetailCourseController extends Controller
 {
     public function index()
     {
-        $courses = DetailCourse::latest()->get();
+        $courses = DetailCourse::latest()->paginate(10);
         return view('admin.detail_courses.index', compact('courses'));
     }
 

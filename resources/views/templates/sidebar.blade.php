@@ -39,7 +39,7 @@
   .nav-sidebar .nav-link {
     color: #cfd8dc;
     border-radius: 8px;
-    padding: 0.65rem 1rem;
+    padding: 0.55rem 1rem;
     transition: all 0.25s ease;
     font-weight: 500;
     display: flex;
@@ -55,8 +55,8 @@
   .nav-sidebar .nav-link.active {
     background-color: #007bff;
     color: #ffffff;
-    font-weight: 600;
-    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.4);
+    font-weight: 400;
+    box-shadow: 0 2px 2px rgba(0, 123, 255, 0.4);
   }
 
   .nav-treeview {
@@ -156,32 +156,18 @@
           </a>
         </li>
 
-        {{-- User Management --}}
-        @role('superadmin')
-        <li class="nav-item has-treeview {{ request()->is('admin/users*') ? 'active' : '' }}">
-          <a href="#" class="nav-link">
-            <i class="fas fa-users me-2"></i> User Management
-            <i class="fas fa-caret-right ms-auto icon-collapsed"></i>
-            <i class="fas fa-caret-down ms-auto icon-expanded"></i>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="{{ route('admin.users.index') }}"
-                class="nav-link {{ request()->routeIs('admin.users.index') && !request('role') ? 'active' : '' }}">
-                <i class="nav-icon dot-toggle me-2"></i> Semua User
-              </a>
-            </li>
-            @foreach(['superadmin', 'admin', 'student','instructure'] as $role)
-        <li class="nav-item">
-          <a href="{{ route('admin.users.index', ['role' => $role]) }}"
-          class="nav-link {{ request()->fullUrlIs(route('admin.users.index', ['role' => $role])) ? 'active' : '' }}">
-          <i class="nav-icon dot-toggle me-2"></i> {{ ucfirst($role) }}
-          </a>
-        </li>
-      @endforeach
-          </ul>
-        </li>
-        @endrole
+{{-- User Management --}}
+@role('superadmin')
+<li class="nav-item">
+  <a href="{{ route('admin.users.index') }}"
+     class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+    <i class="fas fa-users me-2"></i> User Management
+  </a>
+</li>
+@endrole
+
+
+
 
         {{-- About --}}
         @can('kelola_about')
@@ -206,7 +192,7 @@
         {{-- Course --}}
         @can('kelola_course')
         <li class="nav-item has-treeview
-      {{ request()->routeIs('admin.course.*') ||
+        {{ request()->routeIs('admin.course.*') ||
       request()->routeIs('admin.course-categories.*') ||
       request()->routeIs('admin.detail_courses.*') ||
       request()->routeIs('admin.lessons.*') ||
@@ -272,4 +258,4 @@
       });
     });
   });
-</script>
+</script> 

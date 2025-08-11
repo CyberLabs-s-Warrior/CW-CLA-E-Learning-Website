@@ -19,22 +19,37 @@
   </div>
 
   {{-- Form --}}
-  <form action="{{ route('admin.course-levels.store') }}" method="POST" class="animate-fade-up">
+  <form id="levelForm" action="{{ route('admin.course-levels.store') }}" method="POST" class="animate-fade-up">
     @csrf
 
     <div class="mb-3">
       <label for="level" class="form-label fw-semibold">Nama Level</label>
-      <input type="text" name="level" id="level" class="form-control shadow-sm rounded-3 @error('level') is-invalid @enderror" placeholder="Contoh: Pemula" required>
+      <input
+        type="text"
+        name="level"
+        id="level"
+        class="form-control shadow-sm rounded-3 @error('level') is-invalid @enderror"
+        placeholder="Contoh: Pemula"
+        required
+      >
       @error('level')
         <div class="invalid-feedback">{{ $message }}</div>
       @enderror
     </div>
 
-    <div class="mt-3">
-      <button type="submit" class="btn btn-success rounded-pill px-4 me-2">
-        <i class="fas fa-save me-2"></i>Simpan
+    <div class="mt-3 d-flex align-items-center gap-2">
+      <button
+        id="submitBtn"
+        type="submit"
+        class="btn btn-success rounded-pill px-4 d-flex align-items-center"
+      >
+        <i class="fas fa-save me-2"></i>
+        <span class="btn-text">Simpan</span>
+        <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
       </button>
-      <a href="{{ route('admin.course-categories.create') }}" class="btn btn-secondary rounded-pill px-4">Kembali</a>
+      <a href="{{ route('admin.course-categories.create') }}" class="btn btn-secondary rounded-pill px-4 d-flex align-items-center">
+        <i class="fas fa-arrow-left me-2"></i>Kembali
+      </a>
     </div>
   </form>
 </div>
@@ -76,4 +91,18 @@
     animation: fadeIn 0.5s ease-in-out forwards;
   }
 </style>
+@endsection
+
+@section('scripts')
+<script>
+  document.getElementById('levelForm').addEventListener('submit', function () {
+    const submitBtn = document.getElementById('submitBtn');
+    const spinner = submitBtn.querySelector('.spinner-border');
+    const btnText = submitBtn.querySelector('.btn-text');
+
+    submitBtn.disabled = true;
+    spinner.classList.remove('d-none');
+    btnText.textContent = 'Menyimpan...';
+  });
+</script>
 @endsection

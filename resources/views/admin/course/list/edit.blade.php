@@ -18,7 +18,7 @@
   {{-- Form --}}
   <div class="card border-0 shadow-sm rounded-4">
     <div class="card-body">
-      <form action="{{ route('admin.course.update', $course) }}" method="POST" enctype="multipart/form-data" class="row g-3">
+      <form id="editCourseForm" action="{{ route('admin.course.update', $course) }}" method="POST" enctype="multipart/form-data" class="row g-3">
         @csrf
         @method('PUT')
 
@@ -32,7 +32,7 @@
           <select name="course_category_id" id="course_category_id" class="form-select shadow-sm" required>
             <option value="">-- Silahkan memilih category --</option>
             @foreach($categories as $category)
-              <option value="{{ $category->id }}" {{ $course->course_category_id == $category->id ? 'selected' : '' }}>
+              <option value="{{ $category->id }}" {{ (old('course_category_id', $course->course_category_id) == $category->id) ? 'selected' : '' }}>
                 {{ $category->category }}
               </option>
             @endforeach
@@ -44,7 +44,7 @@
           <select name="course_level_id" id="course_level_id" class="form-select shadow-sm" required>
             <option value="">-- Silahkan memilih level --</option>
             @foreach($levels as $level)
-              <option value="{{ $level->id }}" {{ $course->course_level_id == $level->id ? 'selected' : '' }}>
+              <option value="{{ $level->id }}" {{ (old('course_level_id', $course->course_level_id) == $level->id) ? 'selected' : '' }}>
                 {{ $level->level }}
               </option>
             @endforeach
@@ -68,8 +68,10 @@
 
         {{-- Tombol --}}
         <div class="col-12 d-flex gap-2 mt-4">
-          <button type="submit" class="btn btn-warning rounded-pill px-4">
-            <i class="fas fa-save me-2"></i>Update
+          <button id="submitBtn" type="submit" class="btn btn-warning rounded-pill px-4 d-flex align-items-center">
+            <i class="fas fa-save me-2"></i>
+            <span class="btn-text">Update</span>
+            <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
           </button>
           <a href="{{ route('admin.course.index') }}" class="btn btn-secondary rounded-pill px-4">
             <i class="fas fa-arrow-left me-2"></i>Batal
@@ -85,6 +87,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
+    // SweetAlert notifikasi
     @if(session('success'))
       Swal.fire({
         icon: 'success',
@@ -104,6 +107,18 @@
         timerProgressBar: true
       });
     @endif
+
+    // Spinner loading saat submit form
+    const form = document.getElementById('editCourseForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const spinner = submitBtn.querySelector('.spinner-border');
+    const btnText = submitBtn.querySelector('.btn-text');
+
+    form.addEventListener('submit', function () {
+      submitBtn.disabled = true;
+      spinner.classList.remove('d-none');
+      btnText.textContent = 'Menyimpan...';
+    });
   });
 </script>
 @endpush

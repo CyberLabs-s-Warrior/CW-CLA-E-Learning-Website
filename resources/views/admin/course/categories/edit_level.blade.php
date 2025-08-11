@@ -21,7 +21,7 @@
       <i class="fas fa-signal me-2"></i>Form Edit Level
     </div>
     <div class="card-body">
-      <form method="POST" action="{{ route('admin.course-levels.update', $level->id) }}" class="d-flex flex-column gap-3">
+      <form id="editLevelForm" method="POST" action="{{ route('admin.course-levels.update', $level->id) }}" class="d-flex flex-column gap-3">
         @csrf
         @method('PUT')
 
@@ -38,11 +38,13 @@
 
         {{-- Buttons --}}
         <div class="d-flex gap-2 mt-2">
-          <button type="submit" class="btn btn-success rounded-pill px-4">
-            <i class="fas fa-save me-1"></i> Update
+          <button id="submitBtn" type="submit" class="btn btn-success rounded-pill px-4 d-flex align-items-center">
+            <i class="fas fa-save me-1"></i>
+            <span class="btn-text">Update</span>
+            <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
           </button>
-          <a href="{{ route('admin.course-categories.index') }}" class="btn btn-outline-secondary rounded-pill px-4">
-            <i class="fas fa-arrow-left me-1"></i> Kembali
+          <a href="{{ route('admin.course-categories.index') }}" class="btn btn-secondary rounded-pill px-4">
+            <i class="fas fa-arrow-left me-2"></i> Kembali
           </a>
         </div>
       </form>
@@ -75,6 +77,18 @@
         timerProgressBar: true
       });
     @endif
+
+    // Spinner loading on submit
+    const form = document.getElementById('editLevelForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const spinner = submitBtn.querySelector('.spinner-border');
+    const btnText = submitBtn.querySelector('.btn-text');
+
+    form.addEventListener('submit', function() {
+      submitBtn.disabled = true;
+      spinner.classList.remove('d-none');
+      btnText.textContent = 'Menyimpan...';
+    });
   });
 </script>
 @endsection
