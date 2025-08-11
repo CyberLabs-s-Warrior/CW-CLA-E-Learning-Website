@@ -23,7 +23,7 @@ use App\Http\Controllers\{
 Route::get('/', [HomeClientController::class, 'index'])->name('home.index');
 Route::get('/course', [CourseClientController::class, 'index'])->name('course.index');
 Route::get('/lesson', [LessonClientController::class, 'index'])->name('lesson.index');
-Route::middleware(['auth', \App\Http\Middleware\CheckUserProfileMiddleware::class])
+Route::middleware(['auth',\App\Http\Middleware\CheckUserProfileMiddleware::class])
     ->get('/dashboard', [ProfileClientController::class, 'index'])->name('dashboard.index');
 
 Route::get('/detail-course', [DetailCourseClientController::class, 'index'])->name('detail.index');

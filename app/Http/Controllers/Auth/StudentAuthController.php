@@ -33,6 +33,7 @@ class StudentAuthController extends Controller
         $user->assignRole('student');
         
         Auth::login($user);
+        session()->regenerate();
         return redirect()->route('pendataan.index')->with('status', 'Registration successful. Welcome!');
      }
 
@@ -50,7 +51,7 @@ class StudentAuthController extends Controller
                 return redirect()->route('dashboard.index')->with('status', 'Login successful. Welcome back!');
             } else {
                 Auth::logout();
-                return back()->withErrors(['email' => 'Only students can login from here']);
+                return back()->withErrors(['email' => 'Email atau password salah']);
             }
             
         }
