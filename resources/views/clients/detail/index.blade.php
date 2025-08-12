@@ -32,17 +32,7 @@
                 <li>4. DOM Manipulation</li>
             </ul>
 
-            <div class="comment-section">
-                <h2>Comments</h2>
-                <form id="comment-form">
-                    <textarea id="comment-input" placeholder="Add a public comment..." required></textarea>
-                    <button type="submit">Comment</button>
-                </form>
-                <p class="judul">Semua Komentar</p>
-                <div id="comment-list">
-                    <!-- Komentar akan muncul di sini -->
-                </div>
-            </div>
+            @include('components.comment')
             <a href="{{ route('course.index') }}" class="back-btn">← Back to Courses</a>
             <a href="{{ route('lesson.index') }}" class="next-btn">Follow Courses →</a>
         </div>

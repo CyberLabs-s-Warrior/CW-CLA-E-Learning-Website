@@ -31,17 +31,17 @@
                 various fields such as software development, web development, and data
                 analysis.
             </p>
-            <div class="comment-section">
-                <h2>Comments</h2>
-                <form id="comment-form">
-                    <textarea id="comment-input" placeholder="Add a public comment..." required></textarea>
-                    <button type="submit">Comment</button>
-                </form>
-                <p class="judul">Semua Komentar</p>
-                <div id="comment-list">
-                    <!-- Komentar akan muncul di sini -->
-                </div>
-            </div>
+              <div class="comment-section">
+                  <h2>Comments</h2>
+                  <form id="comment-form">
+                      <textarea id="comment-input" placeholder="Add a public comment..." required></textarea>
+                      <button type="submit">Comment</button>
+                  </form>
+                  <p class="judul">Semua Komentar</p>
+                  <div id="comment-list">
+                      <!-- Komentar akan muncul di sini -->
+                  </div>
+              </div>
             <a href="{{route ('course.index')}}" class="back-btn">← Back to Courses</a>
         </div>
     </main>
