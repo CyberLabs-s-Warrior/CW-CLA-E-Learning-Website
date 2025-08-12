@@ -14,7 +14,7 @@ class VerifyEmailController extends Controller
      */
     public function __invoke(EmailVerificationRequest $request): RedirectResponse
     {
-        // Kalau sudah terverifikasi sebelumnya, langsung arahkan sesuai role
+        
         if ($request->user()->hasVerifiedEmail()) {
             return $this->redirectAfterVerification($request)->with('status', 'Email already verified.');
         }
@@ -23,8 +23,7 @@ class VerifyEmailController extends Controller
             event(new Verified($request->user()));
         }
 
-        // Setelah verifikasi sukses, arahkan sesuai role & status profil
-        return $this->redirectAfterVerification($request)->with('status', 'Email verified.');
+         return $this->redirectAfterVerification($request)->with('status', 'Email verified.');
     }
 
     protected function redirectAfterVerification(EmailVerificationRequest $request): RedirectResponse
@@ -33,8 +32,7 @@ class VerifyEmailController extends Controller
 
         // Alur khusus student
         if ($user->hasRole('student')) {
-            // Belum punya profil -> ke pendataan; kalau sudah -> ke dashboard student
-            $target = $user->profile ? 'dashboard.index' : 'pendataan.index';
+             $target = $user->profile ? 'dashboard.index' : 'pendataan.index';
             return redirect()->route($target);
         }
 
