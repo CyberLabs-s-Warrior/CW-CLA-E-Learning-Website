@@ -39,9 +39,7 @@
             <div style="flex: 1;">
                 <h3 style="font-size: 24px; font-weight: bold;">VISI</h3>
                 <p style="color: #4b5563; line-height: 1.7; font-size: 16px;">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce scelerisque magna aliquet cursus tempus.
-                    Duis viverra metus et turpis elementum elementum. Curabitur facilisis lectus vitae eros malesuada
-                    eleifend. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    {{ $visi->description ?? '-'}}
                 </p>
             </div>
         </div>
@@ -53,9 +51,7 @@
             <div style="flex: 1;">
                 <h3 style="font-size: 24px; font-weight: bold;">MISI</h3>
                 <p style="color: #4b5563; line-height: 1.7; font-size: 16px;">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur facilisis lectus vitae eros malesuada
-                    eleifend. Phasellus vestibulum turpis ac sem commodo. Integer imperdiet erat vel leo rutrum lobortis.
-                    Lorem ipsum dolor sit amet.
+                    {{ $misi->description ?? '-'}}
                 </p>
             </div>
         </div>
