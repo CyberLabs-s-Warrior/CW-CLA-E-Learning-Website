@@ -34,7 +34,7 @@
                     @enderror
                 <input type="password" name="password" placeholder="Password" required />
 
-                <a href="#">Forgot your password?</a>
+                <a href="{{ route('password.request') }}">Forgot your password?</a>
                 <button type="submit">Sign In</button>
             </form>
         </div>
