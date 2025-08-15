@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->string('module_name');
             $table->string('title');
             $table->text('content')->nullable();
-            $table->string('media')->nullable(); // Bisa gambar/video
+            $table->string('media')->nullable();
             $table->timestamps();
         });
     }

@@ -1,105 +1,90 @@
 @extends('components.header')
+
 @push('styles')
     <link rel="stylesheet" href="{{ asset('client/lesson.css') }}">
 @endpush
-@section('title', 'Learnify - Courses')
+
+@section('title', 'Learnify - Lessons of '.$course->name)
+
 @section('content')
-    <main class="content">
-        <div class="lesson">
-            <h2 class="section-title">Course Modules</h2>
-            <select class="module-dropdown">
-                <option selected>Lesson 1: Introduction</option>
-            </select>
+<main class="content">
+    <div class="lesson">
+        <h2 class="section-title">Course Modules</h2>
+        <select class="module-dropdown">
+            @foreach($lessons as $lesson)
+                <option value="{{ $lesson->id }}">{{ $lesson->module_name }}</option>
+            @endforeach
+        </select>
 
-            <h1 class="material-title">Introduction</h1>
+        <h1 class="material-title" id="material-title">
+            {{ $lessons->first()->title ?? 'No Lesson Selected' }}
+        </h1>
 
-            <div class="video-lesson">
-                <video controls>
-                    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
-                    Your browser does not support the video tag.
-                </video>
-            </div>
+        <div class="video-lesson" id="video-lesson">
+            @if($lessons->first()?->media)
+                @php
+                    $mediaPath = 'storage/' . $lessons->first()->media;
+                    $extension = strtolower(pathinfo($mediaPath, PATHINFO_EXTENSION));
+                    $isVideo = in_array($extension, ['mp4', 'webm', 'ogg']);
+                @endphp
 
-            <h2>Lesson Overview</h2>
-            <p>
-                Welcome to the Programming Basics course! In this lesson, we’ll give
-                you an overview of what programming is, why it’s useful, and how to
-                get started.
-            </p>
-            <p>
-                Programming is a valuable skill that can open up many opportunities in
-                various fields such as software development, web development, and data
-                analysis.
-            </p>
-            <div class="comment-section">
-                <h2>Comments</h2>
-                <form id="comment-form">
-                    <textarea id="comment-input" placeholder="Add a public comment..." required></textarea>
-                    <button type="submit">Comment</button>
-                </form>
-                <p class="judul">Semua Komentar</p>
-                <div id="comment-list">
-                    <!-- Komentar akan muncul di sini -->
-                </div>
-            </div>
-            <a href="{{route ('course.index')}}" class="back-btn">← Back to Courses</a>
+                @if($isVideo)
+                    <video controls>
+                        <source src="{{ asset($mediaPath) }}" type="video/{{ $extension }}" />
+                        Your browser does not support the video tag.
+                    </video>
+                @else
+                    <img src="{{ asset($mediaPath) }}" alt="Lesson Media">
+                @endif
+            @else
+                <p>No media available for this lesson.</p>
+            @endif
         </div>
-    </main>
-    @push('scripts')
-    <script>
-        const form = document.getElementById("comment-form");
-        const input = document.getElementById("comment-input");
-        const commentList = document.getElementById("comment-list");
-  
-        // Load komentar dari localStorage
-        window.onload = function () {
-          const saved = JSON.parse(localStorage.getItem("comments") || "[]");
-          saved.forEach((text, index) => addComment(text, index));
-        };
-  
-        form.addEventListener("submit", function (e) {
-          e.preventDefault();
-          const text = input.value.trim();
-          if (text !== "") {
-            const saved = JSON.parse(localStorage.getItem("comments") || "[]");
-            saved.unshift(text);
-            localStorage.setItem("comments", JSON.stringify(saved));
-            addComment(text, 0);
-            input.value = "";
-          }
-        });
-  
-        function addComment(text, index) {
-          const div = document.createElement("div");
-          div.classList.add("comment");
-  
-          const p = document.createElement("p");
-          p.textContent = text;
-  
-          const del = document.createElement("button");
-          del.textContent = "Hapus";
-          del.className = "delete";
-          del.onclick = function () {
-            deleteComment(index);
-          };
-  
-          div.appendChild(p);
-          div.appendChild(del);
-          commentList.prepend(div);
+
+        <h2>Lesson Overview</h2>
+        <div id="lesson-content">
+            {!! $lessons->first()->content ?? '<p>No content available.</p>' !!}
+        </div>
+
+        <a href="{{ route('detail.index', urlencode($course->name)) }}" class="back-btn">← Back to Courses</a>
+    </div>
+</main>
+
+@push('scripts')
+<script>
+    const lessons = @json($lessons);
+    const moduleDropdown = document.querySelector('.module-dropdown');
+    const materialTitle = document.getElementById('material-title');
+    const videoLesson = document.getElementById('video-lesson');
+    const lessonContent = document.getElementById('lesson-content');
+
+    moduleDropdown.addEventListener('change', function() {
+        const selectedId = parseInt(this.value);
+        const lesson = lessons.find(l => l.id === selectedId);
+
+        materialTitle.textContent = lesson.title;
+        lessonContent.innerHTML = lesson.content;
+
+        if (lesson.media) {
+            const ext = lesson.media.split('.').pop().toLowerCase();
+            const isVideo = ['mp4', 'webm', 'ogg'].includes(ext);
+
+            if (isVideo) {
+                videoLesson.innerHTML = `
+                    <video controls>
+                        <source src="/storage/${lesson.media}" type="video/${ext}" />
+                        Your browser does not support the video tag.
+                    </video>
+                `;
+            } else {
+                videoLesson.innerHTML = `
+                    <img src="/storage/${lesson.media}" alt="Lesson Media">
+                `;
+            }
+        } else {
+            videoLesson.innerHTML = `<p>No media available for this lesson.</p>`;
         }
-  
-        function deleteComment(index) {
-          let saved = JSON.parse(localStorage.getItem("comments") || "[]");
-          saved.splice(index, 1);
-          localStorage.setItem("comments", JSON.stringify(saved));
-          refreshComments();
-        }
-  
-        function refreshComments() {
-          commentList.innerHTML = "";
-          const saved = JSON.parse(localStorage.getItem("comments") || "[]");
-          saved.forEach((text, index) => addComment(text, index));
-        }
-      </script>
-    @endpush
+    });
+</script>
+@endpush
 @endsection

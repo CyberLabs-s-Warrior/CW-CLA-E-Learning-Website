@@ -129,52 +129,12 @@
 </div>
 @endsection
 
-@section('scripts')
+@push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-  let deleteFormId = null;
-
   document.addEventListener('DOMContentLoaded', function () {
-    // Tooltip Bootstrap
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-    tooltipTriggerList.forEach(tooltip => new bootstrap.Tooltip(tooltip))
 
-    // Tombol hapus show modal konfirmasi
-    document.querySelectorAll('.btn-delete').forEach(button => {
-      button.addEventListener('click', () => {
-        const id = button.getAttribute('data-id');
-        const name = button.getAttribute('data-name');
-        deleteFormId = `delete-form-${id}`;
-        document.getElementById('itemToDelete').textContent = name;
-
-        // Reset spinner & button
-        document.getElementById('deleteSpinner').classList.add('d-none');
-        document.getElementById('deleteBtnText').textContent = 'Ya, Hapus';
-        document.getElementById('confirmDeleteBtn').disabled = false;
-
-        const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
-        modal.show();
-      });
-    });
-
-    // Tombol konfirmasi hapus modal
-    document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
-      if (!deleteFormId) return;
-
-      const spinner = document.getElementById('deleteSpinner');
-      const btnText = document.getElementById('deleteBtnText');
-      const confirmBtn = document.getElementById('confirmDeleteBtn');
-
-      spinner.classList.remove('d-none');
-      btnText.textContent = 'Menghapus...';
-      confirmBtn.disabled = true;
-
-      setTimeout(() => {
-        document.getElementById(deleteFormId).submit();
-      }, 500);
-    });
-
-    // SweetAlert Session Success
+    // Session Success
     @if(session('success'))
       Swal.fire({
         icon: 'success',
@@ -207,102 +167,98 @@
       });
     @endif
 
-    // SweetAlert Session Error
+    // Session Error
     @if(session('error'))
       Swal.fire({
         icon: 'error',
         title: 'Gagal!',
         text: @json(session('error')),
+        background: 'linear-gradient(145deg, #fff0f0, #fff8f8)',
+        color: '#7f1d1d',
+        iconColor: '#dc3545',
         showConfirmButton: false,
         timer: 3000,
-        timerProgressBar: true
+        timerProgressBar: true,
+        customClass: {
+          popup: 'custom-swal-popup rounded-4 shadow-lg border-0 p-4',
+          title: 'fw-bold fs-4 text-danger custom-swal-title',
+          htmlContainer: 'mt-2 fs-6 custom-swal-text',
+          icon: 'custom-swal-icon'
+        },
+        didOpen: () => {
+          const icon = document.querySelector('.custom-swal-icon');
+          if (icon) {
+            icon.style.animation = 'bounceInIcon 0.6s ease, pulseRed 1.5s infinite';
+          }
+        },
+        willClose: () => {
+          const popup = document.querySelector('.custom-swal-popup');
+          if (popup) {
+            popup.style.animation = 'fadeZoomOut 0.4s ease forwards';
+          }
+        }
       });
     @endif
+
+    // Error Validasi
+    @if($errors->any())
+      @php
+        $errorMessages = implode("<br>", $errors->all());
+      @endphp
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal!',
+        html: @json($errorMessages),
+        background: 'linear-gradient(145deg, #fff0f0, #fff8f8)',
+        color: '#7f1d1d',
+        iconColor: '#dc3545',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        customClass: {
+          popup: 'custom-swal-popup rounded-4 shadow-lg border-0 p-4',
+          title: 'fw-bold fs-4 text-danger custom-swal-title',
+          htmlContainer: 'mt-2 fs-6 custom-swal-text text-start',
+          icon: 'custom-swal-icon'
+        },
+        didOpen: () => {
+          const icon = document.querySelector('.custom-swal-icon');
+          if (icon) {
+            icon.style.animation = 'bounceInIcon 0.6s ease, pulseRed 1.5s infinite';
+          }
+        },
+        willClose: () => {
+          const popup = document.querySelector('.custom-swal-popup');
+          if (popup) {
+            popup.style.animation = 'fadeZoomOut 0.4s ease forwards';
+          }
+        }
+      });
+    @endif
+
   });
 </script>
 
 <style>
-  .custom-swal-popup {
-    animation: fadeZoomIn 0.45s ease;
-    backdrop-filter: blur(6px);
-  }
-
-  @keyframes fadeZoomOut {
-    from {
-      opacity: 1;
-      transform: scale(1);
-    }
-    to {
-      opacity: 0;
-      transform: scale(0.85);
-    }
-  }
-
-  @keyframes fadeZoomIn {
-    from {
-      opacity: 0;
-      transform: scale(0.85);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
   @keyframes bounceInIcon {
-    0% {
-      transform: translateY(50px) scale(0.8);
-      opacity: 0;
-    }
-    60% {
-      transform: translateY(-10px) scale(1.05);
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(0) scale(1);
-    }
+    0% { transform: scale(0.5); opacity: 0; }
+    60% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); }
   }
-
+  @keyframes fadeZoomOut {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(0.9); opacity: 0; }
+  }
   @keyframes pulseBlue {
-    0% {
-      box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.6);
-    }
-    70% {
-      box-shadow: 0 0 0 15px rgba(13, 110, 253, 0);
-    }
-    100% {
-      box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
-    }
+    0% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.6); }
+    70% { box-shadow: 0 0 0 15px rgba(13, 110, 253, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0); }
   }
-
-  .custom-swal-title {
-    animation: fadeInDown 0.5s ease 0.2s both;
-  }
-
-  .custom-swal-text {
-    animation: fadeInUp 0.5s ease 0.4s both;
-  }
-
-  @keyframes fadeInDown {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  @keyframes pulseRed {
+    0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.6); }
+    70% { box-shadow: 0 0 0 15px rgba(220, 53, 69, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
   }
 </style>
-@endsection
+@endpush
+

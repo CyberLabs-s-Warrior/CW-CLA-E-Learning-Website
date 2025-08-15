@@ -29,4 +29,22 @@ class Course extends Model
     {
         return $this->belongsTo(CoursePriceRange::class, 'course_price_range_id');
     }
+
+    public function detailCourses()
+    {
+        return $this->hasMany(DetailCourse::class);
+    }
+
+    public function lessons()
+    {
+        return $this->hasManyThrough(
+            Lesson::class,
+            DetailCourse::class,
+            'course_id',          // Foreign key di table DetailCourse
+            'detail_courses_id',  // Foreign key di table Lesson
+            'id',                 // Local key Course
+            'id'                  // Local key DetailCourse
+        );
+    }
+
 }

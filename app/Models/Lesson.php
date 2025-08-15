@@ -17,7 +17,8 @@ class Lesson extends Model
         'media',
     ];
 
-    public function course()
+    // Relasi ke DetailCourse
+    public function detailCourse()
     {
         return $this->belongsTo(DetailCourse::class, 'detail_courses_id');
     }

@@ -12,14 +12,13 @@ use Illuminate\Support\Facades\Storage;
 
 class CourseController extends Controller
 {
-    // ------------------- INDEX ------------------- //
     public function index()
     {
         $courses = Course::with(['category', 'level', 'priceRange'])->latest()->paginate(10);
         return view('admin.course.list.index', compact('courses'));
     }
 
-    // ------------------- CREATE ------------------- //
+
     public function create()
     {
         $categories = CourseCategory::all();
@@ -37,7 +36,7 @@ class CourseController extends Controller
             'img' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        // Cari range harga otomatis
+
         $priceRange = CoursePriceRange::where('min_price', '<=', $request->price)
             ->where('max_price', '>=', $request->price)
             ->first();
@@ -59,7 +58,7 @@ class CourseController extends Controller
         return redirect()->route('admin.course.index')->with('success', 'Course berhasil ditambahkan');
     }
 
-    // ------------------- EDIT ------------------- //
+
     public function edit(Course $course)
     {
         $categories = CourseCategory::all();
@@ -77,7 +76,6 @@ class CourseController extends Controller
             'img' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        // Cari range harga otomatis
         $priceRange = CoursePriceRange::where('min_price', '<=', $request->price)
             ->where('max_price', '>=', $request->price)
             ->first();
@@ -102,7 +100,6 @@ class CourseController extends Controller
         return redirect()->route('admin.course.index')->with('success', 'Course berhasil diperbarui');
     }
 
-    // ------------------- DESTROY ------------------- //
     public function destroy(Course $course)
     {
         if ($course->img && Storage::disk('public')->exists($course->img)) {

@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\StudentAuthController;
+use App\http\Controllers\Auth\{
+    NewPasswordController,StudentAuthController,PasswordResetLinkController
+};
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 use App\Http\Controllers\Admin\{
@@ -59,6 +61,16 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/register', [StudentAuthController::class, 'showLoginRegisterForm'])->name('register');
     Route::post('/register', [StudentAuthController::class, 'register'])->name('register.submit');
+    Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])
+    ->name('password.request');
+    Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
+        ->name('password.email');
+
+    Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
+        ->name('password.reset');
+
+    Route::post('/reset-password', [NewPasswordController::class, 'store'])
+        ->name('password.store');
 });
 Route::middleware('auth')->post('/logout', [StudentAuthController::class, 'logout'])->name('logout');
 
