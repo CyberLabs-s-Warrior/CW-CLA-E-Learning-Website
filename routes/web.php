@@ -5,15 +5,29 @@ use App\Http\Controllers\Auth\StudentAuthController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 use App\Http\Controllers\Admin\{
-    DashboardController, UsersController, RoleController, AboutController,
-    UserController, ProfileController, ContactController, CourseController,
-    CourseCategoryController, DetailCourseController, LessonController, CommentController
+    DashboardController,
+    UsersController,
+    RoleController,
+    AboutController,
+    UserController,
+    ProfileController,
+    ContactController,
+    CourseController,
+    CourseCategoryController,
+    DetailCourseController,
+    LessonController,
+    CommentController
 };
 
 use App\Http\Controllers\{
-    HomeClientController, CourseClientController, LessonClientController,
-    ProfileClientController, DetailCourseClientController,
-    AboutClientController, PendataanClientController, PaymentClientController
+    HomeClientController,
+    CourseClientController,
+    LessonClientController,
+    ProfileClientController,
+    DetailCourseClientController,
+    AboutClientController,
+    PendataanClientController,
+    PaymentClientController
 };
 
 // ==========================
@@ -21,8 +35,8 @@ use App\Http\Controllers\{
 // ==========================
 Route::get('/', [HomeClientController::class, 'index'])->name('home.index');
 Route::get('/course', [CourseClientController::class, 'index'])->name('course.index');
-Route::get('/lesson', [LessonClientController::class, 'index'])->name('lesson.index');
-Route::get('/detail-course', [DetailCourseClientController::class, 'index'])->name('detail.index');
+Route::get('/detail/{courseName}/lessons', [LessonClientController::class, 'index'])->name('lesson.index');
+Route::get('/detail/{courseName}', [DetailCourseClientController::class, 'index'])->name('detail.index');
 Route::get('/about', [AboutClientController::class, 'index'])->name('about.index');
 Route::get('/payment', [PaymentClientController::class, 'index'])->name('payment.index');
 
@@ -116,14 +130,12 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
     // Lessons
     Route::resource('/lessons', LessonController::class);
+    // Ambil modul berdasarkan Course ID
+    Route::get('course/{courseId}/modules', [LessonController::class, 'getModules'])
+        ->name('course.modules');
 
-    // AJAX - Fetch modules by DetailCourse ID
-    Route::get('/detail-courses/{id}/modules', function ($id) {
-        $course = \App\Models\DetailCourse::findOrFail($id);
-        return response()->json([
-            'modules' => $course->modules ?? []
-        ]);
-    })->name('detail_courses.modules');
+
+
 
     // Comments
     Route::resource('/comments', CommentController::class)->except('show');
