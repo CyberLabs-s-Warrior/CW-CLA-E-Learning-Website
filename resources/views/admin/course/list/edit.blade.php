@@ -7,8 +7,8 @@
   {{-- Header --}}
   <div class="d-flex align-items-center mb-4">
     <div class="me-2">
-      <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center"
-           style="width: 40px; height: 40px;">
+      <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center shadow-sm"
+           style="width: 44px; height: 44px;">
         <i class="fas fa-pen-to-square"></i>
       </div>
     </div>
@@ -61,9 +61,9 @@
           @if($course->img)
             <img src="{{ asset('storage/' . $course->img) }}" alt="Gambar Course" class="img-thumbnail rounded mb-2" width="100">
           @else
-            <p class="text-muted">Belum ada gambar</p>
+            <p class="text-muted mb-2">Belum ada gambar</p>
           @endif
-          <input type="file" name="img" id="img" class="form-control shadow-sm mt-2">
+          <input type="file" name="img" id="img" class="form-control shadow-sm mt-2" accept="image/*">
         </div>
 
         {{-- Tombol --}}
@@ -85,26 +85,107 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+  .custom-swal-popup { animation: fadeZoomIn 0.45s ease; backdrop-filter: blur(6px); }
+  @keyframes fadeZoomIn { from {opacity:0; transform:scale(0.85);} to {opacity:1; transform:scale(1);} }
+  @keyframes fadeZoomOut { to { transform: scale(0.85); opacity: 0; } }
+  @keyframes bounceInIcon { 0%{transform:scale(0.5);opacity:0;} 60%{transform:scale(1.2);opacity:1;} 100%{transform:scale(1);} }
+  @keyframes pulseBlue { 0%{box-shadow:0 0 0 0 rgba(13,110,253,.6);} 70%{box-shadow:0 0 0 15px rgba(13,110,253,0);} 100%{box-shadow:0 0 0 0 rgba(13,110,253,0);} }
+  @keyframes pulseRed  { 0%{box-shadow:0 0 0 0 rgba(220,53,69,.6);} 70%{box-shadow:0 0 0 15px rgba(220,53,69,0);} 100%{box-shadow:0 0 0 0 rgba(220,53,69,0);} }
+  .custom-swal-title { animation: fadeInDown 0.5s ease 0.2s both; }
+  .custom-swal-text  { animation: fadeInUp   0.5s ease 0.4s both; }
+  @keyframes fadeInDown { from{opacity:0;transform:translateY(-10px);} to{opacity:1;transform:translateY(0);} }
+  @keyframes fadeInUp   { from{opacity:0;transform:translateY(10px);}  to{opacity:1;transform:translateY(0);} }
+</style>
+
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    // SweetAlert notifikasi
+    // SUCCESS
     @if(session('success'))
       Swal.fire({
         icon: 'success',
         title: 'Berhasil!',
         text: @json(session('success')),
+        background: 'linear-gradient(145deg, #e6f0ff, #f8fbff)',
+        color: '#1e3a8a',
+        iconColor: '#0d6efd',
         showConfirmButton: false,
         timer: 2500,
-        timerProgressBar: true
+        timerProgressBar: true,
+        customClass: {
+          popup: 'custom-swal-popup rounded-4 shadow-lg border-0 p-4',
+          title: 'fw-bold fs-4 text-primary custom-swal-title',
+          htmlContainer: 'mt-2 fs-6 custom-swal-text',
+          icon: 'custom-swal-icon'
+        },
+        didOpen: () => {
+          const icon = document.querySelector('.custom-swal-icon');
+          if (icon) icon.style.animation = 'bounceInIcon 0.6s ease, pulseBlue 1.5s infinite';
+        },
+        willClose: () => {
+          const popup = document.querySelector('.custom-swal-popup');
+          if (popup) popup.style.animation = 'fadeZoomOut 0.4s ease forwards';
+        }
       });
-    @elseif(session('error'))
+    @endif
+
+    // ERROR (session)
+    @if(session('error'))
       Swal.fire({
         icon: 'error',
         title: 'Gagal!',
         text: @json(session('error')),
+        background: 'linear-gradient(145deg, #ffe6e6, #fff8f8)',
+        color: '#7f1d1d',
+        iconColor: '#dc3545',
         showConfirmButton: false,
         timer: 3000,
-        timerProgressBar: true
+        timerProgressBar: true,
+        customClass: {
+          popup: 'custom-swal-popup rounded-4 shadow-lg border-0 p-4',
+          title: 'fw-bold fs-4 text-danger custom-swal-title',
+          htmlContainer: 'mt-2 fs-6 custom-swal-text',
+          icon: 'custom-swal-icon'
+        },
+        didOpen: () => {
+          const icon = document.querySelector('.custom-swal-icon');
+          if (icon) icon.style.animation = 'bounceInIcon 0.6s ease, pulseRed 1.5s infinite';
+        },
+        willClose: () => {
+          const popup = document.querySelector('.custom-swal-popup');
+          if (popup) popup.style.animation = 'fadeZoomOut 0.4s ease forwards';
+        }
+      });
+    @endif
+
+    // ERROR VALIDASI ($errors)
+    @if($errors->any())
+      @php $errorMessages = implode('<br>', $errors->all()); @endphp
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal!',
+        html: @json($errorMessages),
+        background: 'linear-gradient(145deg, #ffe6e6, #fff8f8)',
+        color: '#7f1d1d',
+        iconColor: '#dc3545',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        customClass: {
+          popup: 'custom-swal-popup rounded-4 shadow-lg border-0 p-4',
+          title: 'fw-bold fs-4 text-danger custom-swal-title',
+          htmlContainer: 'mt-2 fs-6 custom-swal-text text-start',
+          icon: 'custom-swal-icon'
+        },
+        didOpen: () => {
+          const icon = document.querySelector('.custom-swal-icon');
+          if (icon) icon.style.animation = 'bounceInIcon 0.6s ease, pulseRed 1.5s infinite';
+        },
+        willClose: () => {
+          const popup = document.querySelector('.custom-swal-popup');
+          if (popup) popup.style.animation = 'fadeZoomOut 0.4s ease forwards';
+        }
       });
     @endif
 

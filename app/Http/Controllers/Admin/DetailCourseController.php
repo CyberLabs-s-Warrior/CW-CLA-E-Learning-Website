@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\DetailCourse;
+use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,37 +12,40 @@ class DetailCourseController extends Controller
 {
     public function index()
     {
-        $courses = DetailCourse::latest()->paginate(10);
+        $courses = DetailCourse::with('course')->latest()->paginate(10);
         return view('admin.detail_courses.index', compact('courses'));
     }
 
     public function create()
     {
-        return view('admin.detail_courses.create');
+        $courseList = Course::pluck('name', 'id');
+        return view('admin.detail_courses.create', compact('courseList'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string',
+            'course_id' => 'required|exists:courses,id',
             'description' => 'nullable|string',
-            'media' => 'nullable|file|mimes:jpg,jpeg,png,webp,mp4,mov,avi|max:10240',
+            'media.*' => 'nullable|file|mimes:jpg,jpeg,png,webp,mp4,mov,avi|max:10240',
             'modules' => 'required|array',
         ]);
 
-        $mediaPath = null;
+        $mediaPaths = [];
         if ($request->hasFile('media')) {
-            $mediaPath = $request->file('media')->store('detail_courses', 'public');
+            foreach ($request->file('media') as $file) {
+                $mediaPaths[] = $file->store('detail_courses', 'public');
+            }
         }
 
         DetailCourse::create([
-            'title' => $request->title,
+            'course_id' => $request->course_id,
             'description' => $request->description,
-            'media' => $mediaPath,
+            'media' => $mediaPaths,
             'modules' => $request->modules,
         ]);
 
-        return redirect()->route('admin.detail_courses.index')->with('success', 'Kursus berhasil ditambahkan.');
+        return redirect()->route('admin.detail_courses.index')->with('success', 'Detail kursus berhasil ditambahkan.');
     }
 
     public function show(DetailCourse $detailCourse)
@@ -51,45 +55,62 @@ class DetailCourseController extends Controller
 
     public function edit(DetailCourse $detailCourse)
     {
-        return view('admin.detail_courses.edit', compact('detailCourse'));
+        $courseList = Course::pluck('name', 'id');
+        return view('admin.detail_courses.edit', compact('detailCourse', 'courseList'));
     }
 
     public function update(Request $request, DetailCourse $detailCourse)
     {
         $request->validate([
-            'title' => 'required|string',
+            'course_id' => 'required|exists:courses,id',
             'description' => 'nullable|string',
-            'media' => 'nullable|file|mimes:jpg,jpeg,png,webp,mp4,mov,avi|max:10240',
+            'media.*' => 'nullable|file|mimes:jpg,jpeg,png,webp,mp4,mov,avi|max:10240',
             'modules' => 'required|array',
+            'remove_media' => 'nullable|array',
         ]);
 
-        $mediaPath = $detailCourse->media;
+        $mediaPaths = $detailCourse->media ?? [];
 
-        if ($request->hasFile('media')) {
-            if ($mediaPath && Storage::disk('public')->exists($mediaPath)) {
-                Storage::disk('public')->delete($mediaPath);
+
+        if ($request->filled('remove_media')) {
+            foreach ($request->remove_media as $index) {
+                if (isset($mediaPaths[$index]) && Storage::disk('public')->exists($mediaPaths[$index])) {
+                    Storage::disk('public')->delete($mediaPaths[$index]);
+                    unset($mediaPaths[$index]);
+                }
             }
 
-            $mediaPath = $request->file('media')->store('detail_courses', 'public');
+            $mediaPaths = array_values($mediaPaths);
+        }
+
+        if ($request->hasFile('media')) {
+            foreach ($request->file('media') as $file) {
+                $mediaPaths[] = $file->store('detail_courses', 'public');
+            }
         }
 
         $detailCourse->update([
-            'title' => $request->title,
+            'course_id' => $request->course_id,
             'description' => $request->description,
-            'media' => $mediaPath,
+            'media' => $mediaPaths,
             'modules' => $request->modules,
         ]);
 
-        return redirect()->route('admin.detail_courses.index')->with('success', 'Kursus berhasil diperbarui.');
+        return redirect()->route('admin.detail_courses.index')->with('success', 'Detail kursus berhasil diperbarui.');
     }
 
     public function destroy(DetailCourse $detailCourse)
     {
-        if ($detailCourse->media && Storage::disk('public')->exists($detailCourse->media)) {
-            Storage::disk('public')->delete($detailCourse->media);
+        if ($detailCourse->media && is_array($detailCourse->media)) {
+            foreach ($detailCourse->media as $file) {
+                if (Storage::disk('public')->exists($file)) {
+                    Storage::disk('public')->delete($file);
+                }
+            }
         }
 
         $detailCourse->delete();
-        return redirect()->route('admin.detail_courses.index')->with('success', 'Kursus berhasil dihapus.');
+
+        return redirect()->route('admin.detail_courses.index')->with('success', 'Detail kursus berhasil dihapus.');
     }
 }

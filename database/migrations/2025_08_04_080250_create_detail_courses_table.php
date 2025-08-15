@@ -9,9 +9,11 @@ return new class extends Migration {
     {
         Schema::create('detail_courses', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->foreignId('course_id')
+                  ->constrained('courses')
+                  ->onDelete('cascade');
             $table->text('description')->nullable();
-            $table->string('media')->nullable();
+            $table->json('media')->nullable();
             $table->json('modules');
             $table->timestamps();
         });

@@ -22,22 +22,27 @@
 
         {{-- Pilih Kursus --}}
         <div class="col-md-6">
-          <label for="detail_courses_id" class="form-label fw-semibold">Kursus</label>
-          <select name="detail_courses_id" id="detail_courses_id" class="form-select shadow-sm" required>
+          <label for="course_id" class="form-label fw-semibold">Kursus</label>
+          <select name="course_id" id="course_id" class="form-select shadow-sm" required>
             <option value="">-- Pilih Kursus --</option>
             @foreach($courses as $course)
-              <option value="{{ $course->id }}">{{ $course->title }}</option>
+              <option value="{{ $course->id }}">{{ $course->name }}</option>
             @endforeach
           </select>
         </div>
 
         {{-- Pilih Modul --}}
         <div class="col-md-6">
-          <label for="module_name" class="form-label fw-semibold">Nama Modul</label>
-          <select name="module_name" id="module_name" class="form-select shadow-sm" required disabled>
+          <label for="module_select" class="form-label fw-semibold">Nama Modul</label>
+          <select id="module_select" class="form-select shadow-sm" required disabled>
             <option value="">-- Pilih Modul --</option>
           </select>
         </div>
+
+        {{-- Hidden detail_courses_id --}}
+        <input type="hidden" name="detail_courses_id" id="detail_courses_id">
+        {{-- Hidden module_name --}}
+        <input type="hidden" name="module_name" id="module_name">
 
         {{-- Judul --}}
         <div class="col-md-12">
@@ -80,38 +85,37 @@
 <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 <script>
   let editorInstance;
-
   ClassicEditor
     .create(document.querySelector('#content'))
-    .then(editor => {
-      editorInstance = editor;
-    })
-    .catch(error => {
-      console.error(error);
-    });
+    .then(editor => { editorInstance = editor; })
+    .catch(error => { console.error(error); });
 
-  const courseSelect = document.getElementById('detail_courses_id');
-  const moduleSelect = document.getElementById('module_name');
+  const courseSelect = document.getElementById('course_id');
+  const moduleSelect = document.getElementById('module_select');
+  const detailCourseInput = document.getElementById('detail_courses_id');
+  const moduleNameInput = document.getElementById('module_name');
 
   courseSelect.addEventListener('change', function () {
     const courseId = this.value;
     moduleSelect.innerHTML = '<option value="">Sedang memuat modul...</option>';
     moduleSelect.disabled = true;
+    detailCourseInput.value = '';
+    moduleNameInput.value = '';
 
     if (!courseId) {
       moduleSelect.innerHTML = '<option value="">-- Pilih Modul --</option>';
       return;
     }
 
-    fetch(`/admin/detail-courses/${courseId}/modules`)
+    fetch(`/admin/course/${courseId}/modules`)
       .then(response => {
         if (!response.ok) throw new Error("Gagal memuat modul.");
         return response.json();
       })
       .then(data => {
         let options = '<option value="">-- Pilih Modul --</option>';
-        data.modules.forEach(module => {
-          options += `<option value="${module}">${module}</option>`;
+        data.forEach(item => {
+          options += `<option value="${item.detail_courses_id}" data-name="${item.module_name}">${item.module_name}</option>`;
         });
         moduleSelect.innerHTML = options;
         moduleSelect.disabled = false;
@@ -121,6 +125,12 @@
         moduleSelect.innerHTML = '<option value="">Tidak dapat memuat modul</option>';
         moduleSelect.disabled = true;
       });
+  });
+
+  moduleSelect.addEventListener('change', function () {
+    detailCourseInput.value = this.value; // simpan detail_courses_id
+    const selectedOption = this.options[this.selectedIndex];
+    moduleNameInput.value = selectedOption.dataset.name || '';
   });
 
   const form = document.getElementById('lesson-form');
@@ -140,7 +150,12 @@
       }
     }
 
-    // Tampilkan teks "Menyimpan..." dan spinner, sembunyikan teks "Simpan"
+    if (!detailCourseInput.value || !moduleNameInput.value) {
+      e.preventDefault();
+      alert('Silakan pilih modul terlebih dahulu.');
+      return;
+    }
+
     btnText.classList.add('d-none');
     btnSaving.classList.remove('d-none');
     btnSubmit.disabled = true;

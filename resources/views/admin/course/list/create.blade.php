@@ -83,21 +83,99 @@
         icon: 'success',
         title: 'Berhasil!',
         text: @json(session('success')),
+        background: 'linear-gradient(145deg, #e6f0ff, #f8fbff)',
+        color: '#1e3a8a',
+        iconColor: '#0d6efd',
         showConfirmButton: false,
         timer: 2500,
-        timerProgressBar: true
+        timerProgressBar: true,
+        customClass: {
+          popup: 'custom-swal-popup rounded-4 shadow-lg border-0 p-4',
+          title: 'fw-bold fs-4 text-primary custom-swal-title',
+          htmlContainer: 'mt-2 fs-6 custom-swal-text',
+          icon: 'custom-swal-icon'
+        },
+        didOpen: () => {
+          const icon = document.querySelector('.custom-swal-icon');
+          if (icon) {
+            icon.style.animation = 'bounceInIcon 0.6s ease, pulseBlue 1.5s infinite';
+          }
+        },
+        willClose: () => {
+          const popup = document.querySelector('.custom-swal-popup');
+          if (popup) {
+            popup.style.animation = 'fadeZoomOut 0.4s ease forwards';
+          }
+        }
       });
     @endif
 
-    // SweetAlert error
+    // SweetAlert error umum
     @if(session('error'))
       Swal.fire({
         icon: 'error',
         title: 'Gagal!',
         text: @json(session('error')),
+        background: 'linear-gradient(145deg, #ffe6e6, #fff8f8)',
+        color: '#7f1d1d',
+        iconColor: '#dc2626',
         showConfirmButton: false,
         timer: 3000,
-        timerProgressBar: true
+        timerProgressBar: true,
+        customClass: {
+          popup: 'custom-swal-popup rounded-4 shadow-lg border-0 p-4',
+          title: 'fw-bold fs-4 text-danger custom-swal-title',
+          htmlContainer: 'mt-2 fs-6 custom-swal-text',
+          icon: 'custom-swal-icon'
+        },
+        didOpen: () => {
+          const icon = document.querySelector('.custom-swal-icon');
+          if (icon) {
+            icon.style.animation = 'bounceInIcon 0.6s ease, pulseRed 1.5s infinite';
+          }
+        },
+        willClose: () => {
+          const popup = document.querySelector('.custom-swal-popup');
+          if (popup) {
+            popup.style.animation = 'fadeZoomOut 0.4s ease forwards';
+          }
+        }
+      });
+    @endif
+
+    // SweetAlert untuk error validasi
+    @if($errors->any())
+      @php
+        $errorMessages = implode('<br>', $errors->all());
+      @endphp
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal!',
+        html: @json($errorMessages),
+        background: 'linear-gradient(145deg, #ffe6e6, #fff8f8)',
+        color: '#7f1d1d',
+        iconColor: '#dc2626',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        customClass: {
+          popup: 'custom-swal-popup rounded-4 shadow-lg border-0 p-4',
+          title: 'fw-bold fs-4 text-danger custom-swal-title',
+          htmlContainer: 'mt-2 fs-6 custom-swal-text',
+          icon: 'custom-swal-icon'
+        },
+        didOpen: () => {
+          const icon = document.querySelector('.custom-swal-icon');
+          if (icon) {
+            icon.style.animation = 'bounceInIcon 0.6s ease, pulseRed 1.5s infinite';
+          }
+        },
+        willClose: () => {
+          const popup = document.querySelector('.custom-swal-popup');
+          if (popup) {
+            popup.style.animation = 'fadeZoomOut 0.4s ease forwards';
+          }
+        }
       });
     @endif
 
@@ -114,4 +192,26 @@
     });
   });
 </script>
+
+<style>
+@keyframes bounceInIcon {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.05); opacity: 1; }
+  70% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+@keyframes pulseBlue {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.6); }
+  50% { box-shadow: 0 0 0 10px rgba(13, 110, 253, 0); }
+}
+@keyframes pulseRed {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.6); }
+  50% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+}
+@keyframes fadeZoomOut {
+  to { transform: scale(0.85); opacity: 0; }
+}
+</style>
 @endpush
+
+

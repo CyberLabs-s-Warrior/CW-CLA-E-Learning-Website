@@ -27,7 +27,7 @@
 
       {{-- Kursus & Modul --}}
       <div class="mb-3">
-        <p class="mb-1"><strong>Kursus:</strong> {{ $lesson->course->title ?? '-' }}</p>
+        <p class="mb-1"><strong>Kursus:</strong> {{ $lesson->detailCourse->course->name ?? '-' }}</p>
         <p class="mb-1"><strong>Modul:</strong> {{ $lesson->module_name }}</p>
       </div>
 
@@ -35,7 +35,7 @@
       <div class="mb-4">
         <p class="mb-1"><strong>Konten:</strong></p>
         <div class="border rounded p-3 bg-light">
-          {!! nl2br(e($lesson->content)) !!}
+          {!! ($lesson->content) !!}
         </div>
       </div>
 

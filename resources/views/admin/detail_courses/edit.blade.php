@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="container-fluid py-4">
-  {{-- Header --}}
   <div class="d-flex align-items-center mb-4">
     <div class="me-2">
       <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 44px; height: 44px;">
@@ -14,7 +13,6 @@
     <h1 class="h4 fw-semibold mb-0">Edit Kursus Detail</h1>
   </div>
 
-  {{-- Error Message --}}
   @if($errors->any())
     <div class="alert alert-danger shadow-sm">
       <ul class="mb-0">
@@ -25,38 +23,39 @@
     </div>
   @endif
 
-  {{-- Form --}}
   <div class="card border-0 shadow-sm rounded-4">
     <div class="card-body">
       <form action="{{ route('admin.detail_courses.update', $detailCourse->id) }}" method="POST" enctype="multipart/form-data" class="row g-3" id="course-form">
         @csrf
         @method('PUT')
 
-        {{-- Judul --}}
         <div class="col-12">
-          <label for="title" class="form-label fw-semibold">Judul Kursus</label>
-          <input type="text" name="title" id="title" class="form-control shadow-sm" required value="{{ old('title', $detailCourse->title) }}">
+          <label for="course_id" class="form-label fw-semibold">Pilih Kursus</label>
+          <select name="course_id" id="course_id" class="form-select shadow-sm" required>
+            <option value="">-- Pilih Kursus --</option>
+            @foreach($courseList as $id => $name)
+              <option value="{{ $id }}" {{ old('course_id', $detailCourse->course_id) == $id ? 'selected' : '' }}>
+                {{ $name }}
+              </option>
+            @endforeach
+          </select>
         </div>
 
-        {{-- Deskripsi --}}
         <div class="col-12">
           <label for="description" class="form-label fw-semibold">Deskripsi</label>
-          <textarea name="description" id="description" class="form-control shadow-sm" rows="4" required>{{ old('description', $detailCourse->description) }}</textarea>
+          <textarea name="description" id="description" class="form-control shadow-sm editor" rows="4" required>{{ old('description', $detailCourse->description) }}</textarea>
         </div>
 
-        {{-- Modul --}}
         <div class="col-12">
           <label class="form-label fw-semibold">Modul</label>
           <div id="modules-list">
             @php
               $modules = old('modules', $detailCourse->modules ?? []);
-              if (!is_array($modules)) {
-                $modules = [];
-              }
+              if (!is_array($modules)) $modules = [];
             @endphp
 
             @if(count($modules))
-              @foreach($modules as $index => $modul)
+              @foreach($modules as $modul)
                 <input type="text" name="modules[]" class="form-control mb-2 shadow-sm" value="{{ $modul }}" placeholder="Modul {{ $loop->iteration }}" required>
               @endforeach
             @else
@@ -68,27 +67,39 @@
           </button>
         </div>
 
-        {{-- Media --}}
         <div class="col-12">
-          <label for="media" class="form-label fw-semibold">Upload Media (Gambar / Video)</label>
-          <input type="file" name="media" id="media" class="form-control shadow-sm" accept="image/*,video/*">
-          <small class="text-muted fst-italic">Format yang didukung: JPG, PNG, MP4, dll.</small>
-
-          @if($detailCourse->media)
+          <label class="form-label fw-semibold">Upload Media Tambahan (Gambar / Video)</label>
+          
+          @if($detailCourse->media && is_array($detailCourse->media))
             <div class="mt-2">
               <small class="text-muted d-block">Media saat ini:</small>
-              <div class="rounded shadow-sm border p-2 bg-light">
-                @if(\Illuminate\Support\Str::contains($detailCourse->media, ['.mp4', '.webm']))
-                  <video src="{{ asset('storage/' . $detailCourse->media) }}" controls width="250"></video>
-                @else
-                  <img src="{{ asset('storage/' . $detailCourse->media) }}" alt="Media" class="img-fluid rounded" style="max-height: 200px;">
-                @endif
+              <div class="rounded shadow-sm border p-2 bg-light d-flex gap-2 flex-wrap">
+                @foreach($detailCourse->media as $index => $file)
+                  <div class="position-relative">
+                    @if(\Illuminate\Support\Str::contains($file, ['.mp4', '.webm', '.mov', '.avi']))
+                      <video src="{{ asset('storage/' . $file) }}" controls width="150"></video>
+                    @else
+                      <img src="{{ asset('storage/' . $file) }}" alt="Media" class="img-fluid rounded" style="max-height: 150px;">
+                    @endif
+                    <div class="form-check mt-1 text-center">
+                      <input class="form-check-input" type="checkbox" name="remove_media[]" value="{{ $index }}" id="remove-media-{{ $index }}">
+                      <label class="form-check-label small" for="remove-media-{{ $index }}">Hapus</label>
+                    </div>
+                  </div>
+                @endforeach
               </div>
             </div>
           @endif
+
+          <div id="media-list" class="mt-2">
+            <input type="file" name="media[]" class="form-control mb-2 shadow-sm" accept="image/*,video/*">
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 mt-1" onclick="addMedia()">
+            <i class="fas fa-plus me-1"></i>Tambah Media
+          </button>
+          <small class="text-muted fst-italic d-block mt-1">Format: JPG, PNG, MP4, MOV, AVI. Max 10MB per file.</small>
         </div>
 
-        {{-- Aksi --}}
         <div class="col-12 d-flex gap-2 mt-4">
           <button type="submit" class="btn btn-warning rounded-pill px-4 shadow-sm" id="btn-submit">
             <span id="btn-text"><i class="fas fa-save me-2"></i>Update</span>
@@ -105,55 +116,62 @@
 @endsection
 
 @push('scripts')
-  {{-- CKEditor --}}
-  <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 
-  <script>
-    function addModule() {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.name = 'modules[]';
-      input.className = 'form-control mb-2 shadow-sm';
-      input.placeholder = 'Modul tambahan';
-      input.required = true;
-      document.getElementById('modules-list').appendChild(input);
-    }
+<script>
+  function addModule() {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.name = 'modules[]';
+    input.className = 'form-control mb-2 shadow-sm';
+    input.placeholder = 'Modul tambahan';
+    input.required = true;
+    document.getElementById('modules-list').appendChild(input);
+  }
 
-    let editorInstance;
+  function addMedia() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.name = 'media[]';
+    input.className = 'form-control mb-2 shadow-sm';
+    input.accept = 'image/*,video/*';
+    document.getElementById('media-list').appendChild(input);
+  }
 
-    if (!window.hasInitializedEditor) {
-      window.hasInitializedEditor = true;
+  let editorInstance;
 
-      ClassicEditor
-        .create(document.querySelector('#description'))
-        .then(editor => {
-          editorInstance = editor;
-        })
-        .catch(error => {
-          console.error(error);
-        });
+  if (!window.hasInitializedEditor) {
+    window.hasInitializedEditor = true;
 
-      document.getElementById('course-form').addEventListener('submit', function (e) {
-        if (editorInstance) {
-          const data = editorInstance.getData().trim();
-          document.querySelector('#description').value = data;
-
-          if (data === '') {
-            e.preventDefault();
-            alert('Deskripsi tidak boleh kosong.');
-            return;
-          }
-        }
-
-        // Tampilkan spinner dan disable tombol submit
-        const btnSubmit = document.getElementById('btn-submit');
-        const btnText = document.getElementById('btn-text');
-        const btnSpinner = document.getElementById('btn-spinner');
-
-        btnText.classList.add('d-none');
-        btnSpinner.classList.remove('d-none');
-        btnSubmit.disabled = true;
+    ClassicEditor
+      .create(document.querySelector('#description'))
+      .then(editor => {
+        editorInstance = editor;
+      })
+      .catch(error => {
+        console.error(error);
       });
-    }
-  </script>
+
+    document.getElementById('course-form').addEventListener('submit', function (e) {
+      if (editorInstance) {
+        const data = editorInstance.getData().trim();
+        document.querySelector('#description').value = data;
+
+        if (data === '') {
+          e.preventDefault();
+          alert('Deskripsi tidak boleh kosong.');
+          return;
+        }
+      }
+
+      const btnSubmit = document.getElementById('btn-submit');
+      const btnText = document.getElementById('btn-text');
+      const btnSpinner = document.getElementById('btn-spinner');
+
+      btnText.classList.add('d-none');
+      btnSpinner.classList.remove('d-none');
+      btnSubmit.disabled = true;
+    });
+  }
+</script>
 @endpush
