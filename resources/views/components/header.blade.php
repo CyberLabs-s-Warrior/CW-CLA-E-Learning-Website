@@ -26,7 +26,10 @@
             </nav>
 
             <div class="nav-right">
+                @guest
+                    
                 <a href="{{ route('login') }}" class="btn-login">Log in</a>
+                @endguest
                 @auth
                     <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         Logout
