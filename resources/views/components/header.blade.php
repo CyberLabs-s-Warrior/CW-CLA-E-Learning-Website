@@ -53,6 +53,6 @@
         });
     </script>
 
-    @include('components.footer')
+    <x-footer />
 </body>
 </html>
