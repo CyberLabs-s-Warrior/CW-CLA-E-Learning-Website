@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\http\Controllers\Auth\{
+use App\Http\Controllers\Auth\{
     NewPasswordController,StudentAuthController,PasswordResetLinkController
 };
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -42,19 +42,15 @@ Route::get('/detail/{courseName}', [DetailCourseClientController::class, 'index'
 Route::get('/about', [AboutClientController::class, 'index'])->name('about.index');
 Route::get('/payment', [PaymentClientController::class, 'index'])->name('payment.index');
 
-// Dashboard (hanya user login + profile lengkap)
-Route::middleware(['auth', \App\Http\Middleware\CheckUserProfileMiddleware::class])
+Route::middleware(['auth','role:student', \App\Http\Middleware\CheckUserProfileMiddleware::class])
     ->get('/dashboard', [ProfileClientController::class, 'index'])->name('dashboard.index');
 
-// Pendataan (hanya user login)
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth','role:student'])->group(function () {
     Route::get('/data', [PendataanClientController::class, 'index'])->name('pendataan.index');
     Route::post('/data', [PendataanClientController::class, 'store'])->name('pendataan.store');
 });
 
-// ==========================
 // Student Auth Routes
-// ==========================
 Route::middleware('guest')->group(function () {
     Route::get('/login', [StudentAuthController::class, 'showLoginRegisterForm'])->name('login');
     Route::post('/login', [StudentAuthController::class, 'login'])->name('login.submit');
@@ -74,17 +70,13 @@ Route::middleware('guest')->group(function () {
 });
 Route::middleware('auth')->post('/logout', [StudentAuthController::class, 'logout'])->name('logout');
 
-// ==========================
 // Admin Auth Routes
-// ==========================
 Route::get('/login-admin', [AuthenticatedSessionController::class, 'create'])->name('admin.login');
 Route::post('/login-admin', [AuthenticatedSessionController::class, 'store'])->name('admin.login.submit');
 Route::post('/logout-admin', [AuthenticatedSessionController::class, 'destroy'])->name('admin.logout');
 
-// ==========================
 // Admin Panel Routes
-// ==========================
-Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+Route::middleware('auth','role:admin|superadmin|instructor')->prefix('admin')->name('admin.')->group(function () {
 
     // Dashboard & Profile
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
@@ -153,7 +145,5 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::resource('/comments', CommentController::class)->except('show');
 });
 
-// ==========================
 // Breeze Auth Routes
-// ==========================
 require __DIR__ . '/auth.php';
