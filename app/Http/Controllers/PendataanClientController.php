@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Models\UserProfile;
 
 class PendataanClientController extends Controller
@@ -14,33 +15,35 @@ class PendataanClientController extends Controller
     }
 
     public function store(Request $request)
-{
-    if (UserProfile::where('user_id', Auth::id())->exists()) {
-        return redirect()->route('dashboard.index')->with('info', 'Profil sudah ada.');
+    {
+        if (UserProfile::where('user_id', Auth::id())->exists()) {
+            return redirect()->route('dashboard.index')->with('info', 'Profil sudah ada.');
+        }
+
+        $validated = $request->validate([
+            'status'     => ['required','string','max:255'],
+            'tgl_lahir'  => ['required','date','before_or_equal:today'],
+            'foto'       => ['nullable','image','mimes:jpg,jpeg,png,webp','max:2048'],
+        ], [
+            'tgl_lahir.before_or_equal' => 'Tanggal lahir tidak boleh di masa depan.',
+        ]);
+
+        $data = [
+            'user_id'   => Auth::id(),
+            'status'    => $validated['status'],
+            'tgl_lahir' => $validated['tgl_lahir'],
+            'foto'      => null,
+        ];
+
+        // Simpan foto bila diunggah
+        if ($request->hasFile('foto')) {
+            $data['foto'] = $request->file('foto')->store('user_photos', 'public');
+        }
+
+        UserProfile::create($data);
+
+        auth()->user()->load('profile');
+
+        return redirect()->route('dashboard.index')->with('success', 'Data profil berhasil disimpan!');
     }
-
-    $request->validate([
-        'nama_lengkap' => 'required|string|max:255',
-        'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-        'no_hp' => 'required|string|max:20',
-        'alamat' => 'required|string',
-        'status' => 'required|string',
-        'tgl_lahir' => 'required|date',
-        'foto' => 'nullable|image|max:2048',
-    ]);
-
-    $data = $request->only(['nama_lengkap', 'jenis_kelamin', 'no_hp', 'alamat', 'status', 'tgl_lahir']);
-    $data['user_id'] = Auth::id();
-
-    if ($request->hasFile('foto')) {
-        $data['foto'] = $request->file('foto')->store('foto_profil', 'public');
-    }
-
-    UserProfile::create($data);
-
-    auth()->user()->load('profile');
-
-    return redirect()->route('dashboard.index')->with('success', 'Data profil berhasil disimpan!');
-}
-
 }

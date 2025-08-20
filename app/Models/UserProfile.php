@@ -8,14 +8,14 @@ class UserProfile extends Model
 {
     protected $fillable = [
     'user_id',
-    'nama_lengkap',
     'jenis_kelamin',
-    'no_hp',
-    'alamat',
+    'foto',
     'status',
     'tgl_lahir',
-    'foto',
 ];
+    protected $casts = [
+        'tgl_lahir' => 'date',
+    ];
 
 
    public function user()
