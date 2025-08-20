@@ -17,31 +17,44 @@ class StudentAuthController extends Controller
     }
 
     public function register(Request $request)
-    {
-        $request->validate([
-            'name'     => 'required|string|max:100',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|min:6|confirmed',
-        ]);
+{
+    // 1) Validasi input
+    $data = $request->validate([
+        'name'                  => ['required','string','max:100'],         
+        'username'              => ['required','string','min:3','max:30','alpha_dash','unique:users,username'],
+        'email'                 => ['required','email','max:255','unique:users,email'],
+        'phone'                 => ['required','string','max:20','unique:users,phone'],          // tambah 'unique:users,phone' kalau ingin unik
+        'password'              => ['required','confirmed','min:6'],
+     ]);
 
-        $user = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+     
+    $normalizedPhone = preg_replace('/(?!^\+)[^\d]/', '', $data['phone']);   
+    $normalizedPhone = preg_replace('/\s+/', '', $normalizedPhone);
 
+    // 3) Buat user
+    $user = \App\Models\User::create([
+        'name'     => $data['name'],
+        'username' => $data['username'],
+        'email'    => $data['email'],
+        'phone'    => $normalizedPhone,
+        'password' => \Illuminate\Support\Facades\Hash::make($data['password']),
+    ]);
+
+
+
+    if (method_exists($user, 'assignRole')) {
         $user->assignRole('student');
-
-        // Kirim email verifikasi
-        event(new Registered($user));
-
-        Auth::login($user);
-        $request->session()->regenerate();
-
-        return redirect()
-            ->route('verification.notice')
-            ->with('status', 'We sent a verification link to your email. Please verify to continue.');
     }
+    event(new \Illuminate\Auth\Events\Registered($user));
+
+    \Illuminate\Support\Facades\Auth::login($user);
+    $request->session()->regenerate();
+
+    return redirect()
+        ->route('verification.notice')
+        ->with('status', 'We sent a verification link to your email. Please verify to continue.');
+}
+
 
     public function login(Request $request)
     {

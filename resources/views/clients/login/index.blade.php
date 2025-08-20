@@ -13,16 +13,31 @@
     <div class="container" id="container">
         <div class="form-container sign-up-container">
             <form action="{{ route('register.submit') }}" method="POST">
-
                 @csrf
                 <h1>Create Account</h1>
-                <span>or use your email for registration</span>
-                <input type="text" placeholder="Name" name="name" required />
-                <input type="email" name="email" placeholder="Email" required />
-                <input type="password" name="password" placeholder="Password" required/>
+                <span>Use your data to register</span>
+
+                <input type="text" name="name" placeholder="Nama Lengkap" value="{{ old('name') }}" required />
+                @error('name') <small style="color:red">{{ $message }}</small> @enderror
+
+                <input type="text" name="username" placeholder="Username" value="{{ old('username') }}" required />
+                @error('username') <small style="color:red">{{ $message }}</small> @enderror
+
+                <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" required />
+                @error('email') <small style="color:red">{{ $message }}</small> @enderror
+
+                <input type="text" name="phone" placeholder="No HP" value="{{ old('phone') }}" required />
+                @error('phone') <small style="color:red">{{ $message }}</small> @enderror
+
+                <input type="password" name="password" placeholder="Password" required />
+                @error('password') <small style="color:red">{{ $message }}</small> @enderror
+
                 <input type="password" name="password_confirmation" placeholder="Confirm Password" required />
-                <button>Sign Up</button>
+
+                <button type="submit">Sign Up</button>
             </form>
+
+
         </div>
         <div class="form-container sign-in-container">
             <form action="{{ route('login.submit') }}" method="POST">
