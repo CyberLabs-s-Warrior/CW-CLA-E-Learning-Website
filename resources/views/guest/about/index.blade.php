@@ -1,4 +1,5 @@
-@extends('components.header')
+@extends('layouts.guest')
+
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('client/about.css') }}">
@@ -39,7 +40,7 @@
             <div style="flex: 1;">
                 <h3 style="font-size: 24px; font-weight: bold;">VISI</h3>
                 <p style="color: #4b5563; line-height: 1.7; font-size: 16px;">
-                    {{ $visi->description ?? '-'}}
+                    {!! $visi->description ?? '-'!!}
                 </p>
             </div>
         </div>

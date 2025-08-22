@@ -1,4 +1,4 @@
-@extends('components.header')
+@extends('layouts.guest')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('client/home.css') }}" />

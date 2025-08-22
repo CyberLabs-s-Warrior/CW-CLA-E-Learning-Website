@@ -1,4 +1,4 @@
-@extends('components.header')
+@extends('layouts.student')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('client/dashboard.css') }}">

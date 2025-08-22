@@ -1,0 +1,44 @@
+:root { --c-brand:#3b82f6; --c-text:#111827; --c-muted:#6b7280; --c-bg:#ffffff; }
+* { box-sizing: border-box; }
+html, body { height:100%; }
+body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; color:var(--c-text); }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+.page-container { padding: 24px 0 56px; }
+
+/* NAVBAR (student) */
+.navbar-student { position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px solid #e5e7eb; }
+.navbar-student .container { display:flex; align-items:center; justify-content:space-between; padding:10px 0; }
+.navbar-student .brand { font-weight:700; text-decoration:none; color:var(--c-brand); }
+.navbar-student .right { display:flex; gap:12px; align-items:center; }
+.navbar-student .avatar { border-radius:50%; object-fit:cover; }
+.btn-logout { border:1px solid #e5e7eb; background:#fff; padding:6px 10px; border-radius:8px; cursor:pointer; }
+.btn-logout:hover { background:#f3f4f6; }
+
+/* HAMBURGER */
+.hamburger { display:inline-flex; flex-direction:column; gap:4px; background:transparent; border:none; cursor:pointer; padding:6px; }
+.hamburger-line { width:22px; height:2px; background:#111827; display:block; }
+
+/* DRAWER */
+.drawer-overlay { position:fixed; inset:0; background:rgba(0,0,0,.35); opacity:0; pointer-events:none; transition:opacity .22s ease; z-index:40; }
+.drawer-overlay.open { opacity:1; pointer-events:auto; }
+
+.drawer { position:fixed; top:0; left:0; height:100vh; width:300px; background:var(--c-bg);
+          box-shadow: 0 10px 30px rgba(0,0,0,.15);
+          transform: translateX(-100%); transition: transform .22s cubic-bezier(.2,.8,.2,1); z-index:41; }
+.drawer.open { transform: translateX(0); }
+
+.drawer-header { display:flex; align-items:center; justify-content:space-between; padding:16px; border-bottom:1px solid #e5e7eb; }
+.drawer-header .brand { font-weight:700; color:var(--c-brand); }
+.drawer-close { background:transparent; border:none; font-size:24px; line-height:1; cursor:pointer; }
+
+.drawer-body { padding:8px 8px 16px; }
+.menu { list-style:none; padding:0; margin:0; }
+.menu li { margin:4px 0; }
+.menu a, .menu .link-like { display:block; padding:10px 12px; border-radius:8px; text-decoration:none; color:var(--c-text); background:transparent; border:none; text-align:left; cursor:pointer; }
+.menu a:hover, .menu .link-like:hover { background:#f3f4f6; }
+.menu a.active { background:#eef2ff; color:#1d4ed8; }
+
+body.nav-open { overflow:hidden; }
+
+/* FOOTER (biar seragam) */
+.site-footer { border-top:1px solid #e5e7eb; padding:16px 0; background:#fafafa; font-size:14px; color:var(--c-muted); }

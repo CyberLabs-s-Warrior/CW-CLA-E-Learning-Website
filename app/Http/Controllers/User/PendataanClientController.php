@@ -11,7 +11,7 @@ class PendataanClientController extends Controller
 {
     public function index()
     {
-        return view('clients.pendataan.index');
+        return view('student.pendataan.index');
     }
 
     public function store(Request $request)
@@ -35,7 +35,6 @@ class PendataanClientController extends Controller
             'foto'      => null,
         ];
 
-        // Simpan foto bila diunggah
         if ($request->hasFile('foto')) {
             $data['foto'] = $request->file('foto')->store('user_photos', 'public');
         }

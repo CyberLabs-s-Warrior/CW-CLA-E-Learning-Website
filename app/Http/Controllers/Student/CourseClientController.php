@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Student;
+
+use App\Http\Controllers\Controller;  
 
 use App\Models\CourseCategory;
 use App\Models\CoursePriceRange;
@@ -40,7 +42,7 @@ public function index(Request $request)
 
     $courses = $courses->get();
 
-    return view('clients.course.index', compact('categories', 'priceRanges', 'levels', 'courses'));
+    return view('student.course.index', compact('categories', 'priceRanges', 'levels', 'courses'));
 }
 
 }

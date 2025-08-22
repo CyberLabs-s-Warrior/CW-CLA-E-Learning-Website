@@ -67,7 +67,6 @@
   </div>
 
   <script>
-    // Preview foto profil
     const upload = document.getElementById('profile-upload');
     const preview = document.getElementById('profile-preview');
     upload.addEventListener('change', function () {
