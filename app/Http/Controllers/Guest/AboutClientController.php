@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Guest;
+use App\Http\Controllers\Controller; // <- penting
 
 use Illuminate\Http\Request;
 use App\Models\About; 
@@ -11,6 +12,6 @@ class AboutClientController extends Controller
     {
         $visi = About::where('section', 'visi')->first();
         $misi = About::where('section', 'misi')->first();
-        return view('clients.about.index' , compact('visi', 'misi'));
+        return view('guest.about.index' , compact('visi', 'misi'));
     }
 }

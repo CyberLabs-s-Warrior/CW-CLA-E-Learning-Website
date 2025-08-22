@@ -1,4 +1,5 @@
-@extends('components.header')
+@extends('layouts.student')
+
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('client/detail.css') }}">

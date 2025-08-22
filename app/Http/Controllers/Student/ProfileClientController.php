@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Student;
+
+use App\Http\Controllers\Controller;  
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +16,6 @@ class ProfileClientController extends Controller
         if($user->hasRole('student') && !$user->profile){
             return redirect()->route('pendataan.index');
         }
-        return view('clients.dashboard.index', compact('user'));
+        return view('student.dashboard.index', compact('user'));
     }
 }

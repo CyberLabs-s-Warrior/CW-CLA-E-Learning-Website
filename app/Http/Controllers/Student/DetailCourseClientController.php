@@ -1,7 +1,7 @@
 <?php
 
-namespace App\Http\Controllers;
-
+namespace App\Http\Controllers\Student;
+use App\Http\Controllers\Controller;  
 use App\Models\DetailCourse;
 use App\Models\Course;
 use Illuminate\Http\Request;
@@ -18,7 +18,7 @@ public function index($courseName)
     // Cari detail course yang terkait dengan course tersebut
     $detailCourse = DetailCourse::where('course_id', $course->id)->firstOrFail();
 
-    return view('clients.detail.index', compact('detailCourse'));
+    return view('student.detail.index', compact('detailCourse'));
 }
 
 

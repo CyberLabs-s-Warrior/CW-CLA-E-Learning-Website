@@ -31,8 +31,8 @@
                 <a href="{{ route('login') }}" class="btn-login">Log in</a>
                 @endguest
                 @auth
-                    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        Logout
+                    <a href="{{ route('dashboard.index') }}">
+                        DASHBOARD
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                         @csrf
@@ -56,6 +56,5 @@
         });
     </script>
 
-    @include('components.footer')
 </body>
 </html>
