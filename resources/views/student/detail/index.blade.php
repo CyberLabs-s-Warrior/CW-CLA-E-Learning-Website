@@ -1,129 +1,178 @@
 @extends('layouts.student')
 
-
 @push('styles')
-<link rel="stylesheet" href="{{ asset('client/detail.css') }}">
+    <link rel="stylesheet" href="{{ asset('client/detail.css') }}">
 @endpush
-
-@section('title', 'Learnify - ' . $detailCourse->title)
 
 @section('content')
-<main class="content">
-    <div class="lesson">
+    <header class="hero container">
+        <div class="hero-media">
+            <img src="{{ asset('storage/' . $course->img) }}" alt="{{ $course->name }}">
+        </div>
 
-        {{-- Media Slider --}}
-        @php
-            $mediaArray = is_array($detailCourse->media) ? $detailCourse->media : [$detailCourse->media];
-        @endphp
+        <div class="hero-info">
+            <h1 class="course-title">{{ $course->name }}</h1>
 
-        <div class="media-slider">
-            @foreach($mediaArray as $index => $file)
-                @php
-                    $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-                    $filePath = $file && file_exists(storage_path('app/public/' . $file))
-                        ? asset('storage/' . $file)
-                        : asset('images/no-image.png');
-                @endphp
-                <div class="media-slide {{ $index === 0 ? 'active' : '' }}">
-                    @if(in_array($ext, ['jpg','jpeg','png','webp']))
-                        <img src="{{ $filePath }}" alt="Media" loading="lazy" class="media-item">
-                    @elseif(in_array($ext, ['mp4','mov','avi','webm']))
-                        <video controls preload="metadata" class="media-item">
-                            <source src="{{ $filePath }}" type="video/{{ $ext }}">
-                            Your browser does not support the video tag.
-                        </video>
-                    @else
-                        <img src="{{ asset('images/no-image.png') }}" alt="No Media" loading="lazy" class="media-item">
-                    @endif
+            <div class="rating-line">
+                <div class="stars" aria-label="Rating {{ number_format($course->reviews_avg_rating, 1) }} dari 5">
+                    @for ($i = 1; $i <= 5; $i++)
+                        <i
+                            class="{{ $i <= round($course->reviews_avg_rating) ? 'fa-solid fa-star' : 'fa-regular fa-star' }}"></i>
+                    @endfor
                 </div>
-            @endforeach
-
-            @if(count($mediaArray) > 1)
-                <button class="slider-btn prev" id="prevMedia">&#10094;</button>
-                <button class="slider-btn next" id="nextMedia">&#10095;</button>
-            @endif
-        </div>
-
-        {{-- Title --}}
-        <h1 class="section-title">{{ $detailCourse->course->name }}</h1>
-
-        {{-- Description --}}
-        <div class="description-box">
-            <div class="material-title">Description</div>
-            <div>{!! $detailCourse->description !!}</div>
-        </div>
-
-        {{-- Modules --}}
-        @if(!empty($detailCourse->modules) && is_array($detailCourse->modules))
-            <div class="module-box">
-                <h2>Course Modules</h2>
-                <ul class="module-list">
-                    @foreach($detailCourse->modules as $module)
-                        <li>{{ $module }}</li>
-                    @endforeach
-                </ul>
+                <span class="rating-number">{{ number_format($course->reviews_avg_rating, 1) }}</span>
+                <span class="divider">•</span>
+                <span class="reviews">({{ $course->reviews->count() }} ulasan)</span>
             </div>
-        @endif
 
-        {{-- Comment Section --}}
-        <div class="comment-section">
-            <h2>Comments</h2>
-            <form id="comment-form">
-                <textarea id="comment-input" placeholder="Add a public comment..." required></textarea>
-                <button type="submit">Comment</button>
-            </form>
-            <p class="judul">Semua Komentar</p>
-            <div id="comment-list"></div>
+            <div class="meta-line">
+                <i class="fa-solid fa-user-group"></i>
+                <span>{{ $course->students_count }} orang sudah ikut</span>
+            </div>
+
+            <a href="{{ route('lesson.index', $course->slug) }}" class="btn pay-btn" aria-label="Mulai Belajar">
+                <i class="fa-solid fa-play"></i>
+                {{ $course->priceRange->name ?? 'Free' }}
+            </a>
+
+            <ul class="quick-facts">
+                <li><i class="fa-regular fa-clock"></i> {{ $course->formatted_duration }}</li>
+                <li><i class="fa-solid fa-signal"></i> Tingkat: {{ $course->level->level }}</li>
+                <li><i class="fa-solid fa-certificate"></i> Sertifikat kelulusan</li>
+            </ul>
         </div>
+    </header>
 
-        {{-- Navigation --}}
-        <a href="{{ route('course.index') }}" class="back-btn">← Back to Courses</a>
-        <a href="{{ route('lesson.index', ['courseName' => $detailCourse->course->name]) }}" class="next-btn">Follow Courses →</a>
+    <!-- ================= TABS ================= -->
+    <section class="tabs container">
+        <input type="radio" id="tab-tentang" name="tabs" checked />
+        <input type="radio" id="tab-modul" name="tabs" />
+        <input type="radio" id="tab-mentor" name="tabs" />
+        <input type="radio" id="tab-review" name="tabs" />
 
-    </div>
-</main>
+        <nav class="tab-nav">
+            <label for="tab-tentang">Tentang Kursus</label>
+            <label for="tab-modul">Modul</label>
+            <label for="tab-mentor">Mentor</label>
+            <label for="tab-review">Review</label>
+            <span class="active-pill"></span>
+        </nav>
 
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const slides = document.querySelectorAll('.media-slide');
-    const mediaItems = document.querySelectorAll('.media-item');
-    let currentIndex = 0;
+        <div class="tab-panels">
+            <!-- Tentang -->
+            <article id="panel-tentang" class="tab-panel">
+                <h2>Apa yang akan kamu pelajari</h2>
+                <p>{!! $course->detail->description !!}</p>
+                @if(!empty($course->detail->outcomes))
+                    <div>{!! $course->detail->outcomes !!}</div>
+                @endif
+            </article>
 
-    function showSlide(index) {
-        slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
-    }
+            <!-- Modul -->
+            <article id="panel-modul" class="tab-panel">
+                <h2>Daftar Modul</h2>
+                @php
+                    $grouped = $course->lessons->groupBy('module_name');
+                @endphp
 
-    document.getElementById('prevMedia')?.addEventListener('click', () => {
-        currentIndex = (currentIndex - 1 + slides.length) % slides.length;
-        showSlide(currentIndex);
-    });
+                @forelse ($grouped as $module => $lessons)
+                    <details>
+                        <summary>{{ $module }}</summary>
+                        <ul>
+                            @foreach ($lessons as $lesson)
+                                <li>
+                                    {{ $lesson->title }} ({{ $lesson->formatted_duration }})
+                                </li>
+                            @endforeach
+                        </ul>
+                    </details>
+                @empty
+                    <p>Belum ada modul.</p>
+                @endforelse
 
-    document.getElementById('nextMedia')?.addEventListener('click', () => {
-        currentIndex = (currentIndex + 1) % slides.length;
-        showSlide(currentIndex);
-    });
+            </article>
 
-    // Ganti object-fit saat fullscreen
-    mediaItems.forEach(item => {
-        item.addEventListener('fullscreenchange', () => {
-            if (document.fullscreenElement) {
-                item.style.objectFit = 'contain';
-            } else {
-                item.style.objectFit = 'cover';
-            }
-        });
+            <!-- Mentor -->
+            <article id="panel-mentor" class="tab-panel">
+                <h2>Mentor</h2>
+                <div class="mentor-grid">
+                    <div class="mentor-card">
+                        <img src="{{ $course->mentor_avatar ?? 'https://via.placeholder.com/200' }}" alt="Foto Mentor" />
+                        <div class="mentor-info">
+                            <h3>{{ $course->mentor_name ?? 'Mentor Belum Ditentukan' }}</h3>
+                            <p class="role">{{ $course->mentor_role ?? '-' }}</p>
+                            <p class="bio">{{ $course->mentor_bio ?? '-' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
 
-        // Untuk Safari & vendor prefix
-        item.addEventListener('webkitfullscreenchange', () => {
-            if (document.webkitFullscreenElement) {
-                item.style.objectFit = 'contain';
-            } else {
-                item.style.objectFit = 'cover';
-            }
-        });
-    });
-});
-</script>
-@endpush
+            <!-- Review -->
+            <article id="panel-review" class="tab-panel">
+                <div class="review-header">
+                    <div class="avg">
+                        <div class="avg-score">{{ number_format($course->reviews_avg_rating, 1) }}</div>
+                        <div class="avg-stars">
+                            @for ($i = 1; $i <= 5; $i++)
+                                <i
+                                    class="{{ $i <= round($course->reviews_avg_rating) ? 'fa-solid fa-star' : 'fa-regular fa-star' }}"></i>
+                            @endfor
+                        </div>
+                        <p class="count">({{ $course->reviews->count() }} ulasan)</p>
+                    </div>
+                </div>
+
+                <ul class="review-list">
+                    @forelse ($course->reviews as $review)
+                        <li class="review-item">
+                            <img src="{{ $review->user->avatar ?? 'https://i.pravatar.cc/80' }}"
+                                alt="{{ $review->user->name }}" />
+                            <div>
+                                <div class="name">
+                                    {{ $review->user->name }}
+                                    <span class="stars-inline">
+                                        @for ($i = 1; $i <= 5; $i++)
+                                            {{ $i <= $review->rating ? '★' : '☆' }}
+                                        @endfor
+                                    </span>
+                                </div>
+                                <p>{{ $review->comment }}</p>
+                            </div>
+                        </li>
+                    @empty
+                        <p>Belum ada review.</p>
+                    @endforelse
+                </ul>
+            </article>
+        </div>
+    </section>
+
+    <!-- ================= REKOMENDASI ================= -->
+    <section class="container recos">
+        <h2>Orang lain juga kursus di sini</h2>
+        <div class="reco-row">
+            @forelse ($relatedCourses as $rel)
+                <a class="reco-card" href="{{ route('course.detail', $rel->slug) }}">
+                    <img src="{{ $rel->thumbnail ?? 'https://via.placeholder.com/400x200' }}" alt="{{ $rel->name }}" />
+                    <div class="reco-body">
+                        <h3>{{ $rel->name }}</h3>
+                        <div class="mini">
+                            <span class="stars-mini">
+                                @for ($i = 1; $i <= 5; $i++)
+                                    {{ $i <= round($rel->reviews_avg_rating) ? '★' : '☆' }}
+                                @endfor
+                            </span>
+                            <span class="price">{{ $rel->priceRange->name ?? 'Gratis' }}</span>
+                        </div>
+                    </div>
+                </a>
+            @empty
+                <p>Tidak ada rekomendasi.</p>
+            @endforelse
+        </div>
+    </section>
+
+    <footer class="container footer">
+        <p>© {{ date('Y') }} Tasty Academy. Semua hak dilindungi.</p>
+    </footer>
 @endsection

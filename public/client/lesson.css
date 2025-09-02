@@ -1,158 +1,201 @@
 body {
-    font-family: "Segoe UI", sans-serif;
-    background-color: #f9f9f9;
-    margin: 0;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f9f9f9;
+  color: #222;
 }
 
-.lesson {
-    max-width: 900px;
-    margin: auto;
-    padding: 30px;
+/* NAVBAR */
+.navbar {
+  background: #fff;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+}
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 15px;
+}
+.nav-links a {
+  text-decoration: none;
+  color: #222;
+}
+.auth-buttons .btn {
+  padding: 6px 12px;
+  margin-left: 10px;
+  text-decoration: none;
+  border-radius: 4px;
+}
+.login {
+  background: #ddd;
+}
+.signup {
+  background: #cc0000;
+  color: #fff;
 }
 
-.section-title {
-    font-size: 20px;
-    margin-bottom: 10px;
+/* LAYOUT */
+.main-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  padding: 20px;
+}
+.left-content {
+  background: #fff;
+  padding: 15px;
+  border-radius: 8px;
+}
+.right-sidebar {
+  background: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  max-height: 100vh;
+  overflow-y: auto;
 }
 
-.module-dropdown {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    margin-bottom: 24px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+/* MEDIA CONTAINER */
+.media-container video,
+.media-container img {
+  width: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+  max-height: 500px;
+}
+.lesson-image {
+  display: block;
+  margin: 0 auto;
+}
+.no-video {
+  background: #f1f1f1;
+  padding: 30px;
+  text-align: center;
+  border-radius: 8px;
 }
 
+/* LESSON DETAIL */
 .material-title {
-    font-size: 28px;
-    margin-bottom: 16px;
-    color: #222;
+  margin: 10px 0 5px;
+  font-size: 20px;
+}
+.lesson-meta {
+  color: #555;
+  font-size: 14px;
+  margin-bottom: 15px;
 }
 
-.video-lesson {
-    margin-bottom: 24px;
+/* SIDEBAR MODULES */
+.module-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.module-item a {
+  display: flex;
+  gap: 10px;
+  text-decoration: none;
+  color: #222;
+}
+.module-item.active {
+  background: #f0f0f0;
+  border-radius: 6px;
+}
+.thumb {
+  width: 120px;
+  height: 70px;
+  background: #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.thumb video,
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.thumb-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: #777;
+  height: 100%;
+}
+.module-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.module-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: bold;
+}
+.module-duration {
+  font-size: 12px;
+  color: #666;
 }
 
-/* Normal view → Cover */
-.video-lesson img,
-.video-lesson video {
-    width: 100%;
-    height: 500px;
-    object-fit: contain;
-    border-radius: 12px;
-    background: #000;
-}
-
-/* Saat fullscreen → Contain */
-:fullscreen img,
-:fullscreen video {
-    object-fit: contain !important;
-}
-
-/* Cross-browser fullscreen selectors */
-:-webkit-full-screen img,
-:-webkit-full-screen video {
-    object-fit: contain !important;
-}
-:-moz-full-screen img,
-:-moz-full-screen video {
-    object-fit: contain !important;
-}
-:-ms-fullscreen img,
-:-ms-fullscreen video {
-    object-fit: contain !important;
-}
-
-h2 {
-    font-size: 20px;
-    margin-bottom: 12px;
-    margin-top: 32px;
-}
-
-p {
-    font-size: 16px;
-    color: #333;
-    line-height: 1.6;
-}
-
-.back-btn {
-    display: inline-block;
-    margin-top: 32px;
-    text-decoration: none;
-    color: #3366cc;
-    font-weight: 500;
-}
-.back-btn:hover {
-    text-decoration: underline;
-}
-
+/* COMMENT SECTION */
 .comment-section {
-    margin-top: 40px;
+  margin-top: 30px;
 }
-
-.comment-section h2 {
-    font-size: 20px;
-    margin-bottom: 12px;
+.comment-section textarea {
+  width: 100%;
+  height: 60px;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
 }
-
-#comment-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 24px;
+.comment-section button {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: #065fd4;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
 }
-
-#comment-input {
-    padding: 12px;
-    font-size: 15px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    resize: vertical;
-}
-
-#comment-form button {
-    align-self: flex-end;
-    padding: 8px 16px;
-    font-size: 14px;
-    background-color: #3366cc;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-#comment-form button:hover {
-    background-color: #255bb5;
-}
-
-#comment-list .comment {
-    padding: 12px;
-    border-radius: 5px;
-}
-
 .comment {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    background: #fff;
-    padding: 12px;
-    border-radius: 6px;
-    margin-bottom: 10px;
+  padding: 8px;
+  background: #f1f1f1;
+  margin-top: 8px;
+  border-radius: 4px;
 }
 
-.comment p {
-    margin: 0;
-    flex: 1;
-    font-size: 15px;
-    color: #333;
+/* FOOTER */
+.site-footer {
+  background: #fff;
+  border-top: 1px solid #ddd;
+  text-align: center;
+  padding: 15px;
+  margin-top: 20px;
 }
 
-.comment button.delete {
-    background: none;
-    border: none;
-    color: red;
-    font-weight: bold;
-    cursor: pointer;
-    padding-left: 10px;
+/* TOGGLE COMMENTS BUTTON */
+#toggle-comments {
+  background-color: #065fd4; 
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  margin: 8px 0;
+  display: inline-block;
+}
+#toggle-comments:hover {
+  background-color: #004aad;
+  transform: translateY(-2px); 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+#toggle-comments:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }

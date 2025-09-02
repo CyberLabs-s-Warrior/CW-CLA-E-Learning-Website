@@ -29,9 +29,8 @@ use App\Http\Controllers\Admin\{
     ContactController,
     CourseController,
     CourseCategoryController,
-    DetailCourseController,
-    LessonController,
-    CommentController
+    CourseDetailController,
+    LessonController
 };
 
 /*
@@ -42,7 +41,7 @@ use App\Http\Controllers\Admin\{
 use App\Http\Controllers\Guest\{
     HomeClientController,
     AboutClientController
-    // LoginClientController  // (tidak dipakai; login pakai StudentAuthController)
+// LoginClientController  // (tidak dipakai; login pakai StudentAuthController)
 };
 
 /*
@@ -66,8 +65,12 @@ use App\Http\Controllers\Student\{
 | ================
 | Hanya halaman publik. Tidak ada course/detail/lessons/payment di sini.
 */
-Route::get('/',      [HomeClientController::class,  'index'])->name('home.index');
+Route::get('/', [HomeClientController::class, 'index'])->name('home.index');
 Route::get('/about', [AboutClientController::class, 'index'])->name('about.index');
+// Courses (dipindah dari guest ke student)
+Route::get('/course', [CourseClientController::class, 'index'])->name('course.index');
+Route::get('/detail/{slug}', [DetailCourseClientController::class, 'index'])->name('detail.index');
+Route::get('/detail/{slug}/lessons', [LessonClientController::class, 'index'])->name('lesson.index');
 
 /*
 |--------------------------------------------------------------------------
@@ -78,17 +81,17 @@ Route::get('/about', [AboutClientController::class, 'index'])->name('about.index
 */
 Route::middleware(['guest'])->group(function () {
     // Login & Register
-    Route::get('/login',     [StudentAuthController::class, 'showLoginRegisterForm'])->name('login');
-    Route::post('/login',    [StudentAuthController::class, 'login'])->name('login.submit');
+    Route::get('/login', [StudentAuthController::class, 'showLoginRegisterForm'])->name('login');
+    Route::post('/login', [StudentAuthController::class, 'login'])->name('login.submit');
 
-    Route::get('/register',  [StudentAuthController::class, 'showLoginRegisterForm'])->name('register');
+    Route::get('/register', [StudentAuthController::class, 'showLoginRegisterForm'])->name('register');
     Route::post('/register', [StudentAuthController::class, 'register'])->name('register.submit');
 
     // Forgot & Reset Password
-    Route::get('/forgot-password',        [PasswordResetLinkController::class, 'create'])->name('password.request');
-    Route::post('/forgot-password',       [PasswordResetLinkController::class, 'store'])->name('password.email');
+    Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
+    Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
     Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
-    Route::post('/reset-password',        [NewPasswordController::class, 'store'])->name('password.store');
+    Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.store');
 });
 
 // Logout student
@@ -103,7 +106,7 @@ Route::middleware(['auth'])->post('/logout', [StudentAuthController::class, 'log
 | Pendataan TIDAK lewat CheckUserProfileMiddleware.
 */
 Route::middleware(['auth', 'role:student'])->group(function () {
-    Route::get('/data',  [PendataanClientController::class, 'index'])->name('pendataan.index');
+    Route::get('/data', [PendataanClientController::class, 'index'])->name('pendataan.index');
     Route::post('/data', [PendataanClientController::class, 'store'])->name('pendataan.store');
 });
 
@@ -119,10 +122,10 @@ Route::middleware(['auth', 'role:student', \App\Http\Middleware\CheckUserProfile
     // Dashboard
     Route::get('/dashboard', [ProfileClientController::class, 'index'])->name('dashboard.index');
 
-    // Courses (dipindah dari guest ke student)
-    Route::get('/course',                      [CourseClientController::class,       'index'])->name('course.index');
-    Route::get('/detail/{courseName}',         [DetailCourseClientController::class, 'index'])->name('detail.index');
-    Route::get('/detail/{courseName}/lessons', [LessonClientController::class,       'index'])->name('lesson.index');
+    // // Courses (dipindah dari guest ke student)
+    // Route::get('/course',                      [CourseClientController::class,       'index'])->name('course.index');
+    // Route::get('/detail/{courseName}',         [DetailCourseClientController::class, 'index'])->name('detail.index');
+    // Route::get('/detail/{courseName}/lessons', [LessonClientController::class,       'index'])->name('lesson.index');
 
     // Payments (dipindah dari guest ke student)
     Route::get('/payment', [PaymentClientController::class, 'index'])->name('payment.index');
@@ -134,9 +137,9 @@ Route::middleware(['auth', 'role:student', \App\Http\Middleware\CheckUserProfile
 | ADMIN AUTH ROUTES
 | ==========================
 */
-Route::get('/login-admin',  [AuthenticatedSessionController::class, 'create'])->name('admin.login');
+Route::get('/login-admin', [AuthenticatedSessionController::class, 'create'])->name('admin.login');
 Route::post('/login-admin', [AuthenticatedSessionController::class, 'store'])->name('admin.login.submit');
-Route::post('/logout-admin',[AuthenticatedSessionController::class, 'destroy'])->name('admin.logout');
+Route::post('/logout-admin', [AuthenticatedSessionController::class, 'destroy'])->name('admin.logout');
 
 /*
 |--------------------------------------------------------------------------
@@ -151,7 +154,7 @@ Route::middleware(['auth', 'role:admin|superadmin|instructor'])
 
         // Dashboard & Profile
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
-        Route::get('/profile',   [ProfileController::class, 'show'])->name('profile.show');
+        Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
 
         // User Management
         Route::resource('/users', UserController::class)
@@ -161,9 +164,9 @@ Route::middleware(['auth', 'role:admin|superadmin|instructor'])
         // About & Contact
         Route::resource('/about', AboutController::class)->middleware('can:kelola_about');
         Route::prefix('contact')->middleware('can:kelola_contact')->group(function () {
-            Route::get('/',      [ContactController::class, 'index'])->name('contact.index');
-            Route::get('/edit',  [ContactController::class, 'edit'])->name('contact.edit');
-            Route::post('/update',[ContactController::class, 'update'])->name('contact.update');
+            Route::get('/', [ContactController::class, 'index'])->name('contact.index');
+            Route::get('/edit', [ContactController::class, 'edit'])->name('contact.edit');
+            Route::post('/update', [ContactController::class, 'update'])->name('contact.update');
         });
 
         // Course Management
@@ -173,42 +176,50 @@ Route::middleware(['auth', 'role:admin|superadmin|instructor'])
 
         // Course Categories
         Route::prefix('course-categories')->middleware('can:kelola_course')->group(function () {
-            Route::get('/index',           [CourseCategoryController::class, 'index'])->name('course-categories.index');
-            Route::get('/create',          [CourseCategoryController::class, 'create'])->name('course-categories.create');
+            Route::get('/index', [CourseCategoryController::class, 'index'])->name('course-categories.index');
+            Route::get('/create', [CourseCategoryController::class, 'create'])->name('course-categories.create');
             Route::get('/create-category', [CourseCategoryController::class, 'createCategory'])->name('course-categories.create.category');
             Route::post('/store-category', [CourseCategoryController::class, 'storeCategory'])->name('course-categories.store.category');
-            Route::get('/{id}/edit',       [CourseCategoryController::class, 'edit'])->name('course-categories.edit');
-            Route::put('/{id}',            [CourseCategoryController::class, 'update'])->name('course-categories.update');
-            Route::delete('/{id}',         [CourseCategoryController::class, 'destroy'])->name('course-categories.destroy');
+            Route::get('/{id}/edit', [CourseCategoryController::class, 'edit'])->name('course-categories.edit');
+            Route::put('/{id}', [CourseCategoryController::class, 'update'])->name('course-categories.update');
+            Route::delete('/{id}', [CourseCategoryController::class, 'destroy'])->name('course-categories.destroy');
         });
 
         // Course Levels
         Route::prefix('course-levels')->middleware('can:kelola_course')->group(function () {
-            Route::get('/create',    [CourseCategoryController::class, 'createLevel'])->name('course-levels.create');
-            Route::post('/store',    [CourseCategoryController::class, 'storeLevel'])->name('course-levels.store');
+            Route::get('/create', [CourseCategoryController::class, 'createLevel'])->name('course-levels.create');
+            Route::post('/store', [CourseCategoryController::class, 'storeLevel'])->name('course-levels.store');
             Route::get('/{id}/edit', [CourseCategoryController::class, 'editLevel'])->name('course-levels.edit');
-            Route::put('/{id}',      [CourseCategoryController::class, 'updateLevel'])->name('course-levels.update');
-            Route::delete('/{id}',   [CourseCategoryController::class, 'destroyLevel'])->name('course-levels.destroy');
+            Route::put('/{id}', [CourseCategoryController::class, 'updateLevel'])->name('course-levels.update');
+            Route::delete('/{id}', [CourseCategoryController::class, 'destroyLevel'])->name('course-levels.destroy');
         });
 
         // Course Prices
         Route::prefix('course-prices')->middleware('can:kelola_course')->group(function () {
-            Route::get('/create',    [CourseCategoryController::class, 'createPrice'])->name('course-prices.create');
-            Route::post('/store',    [CourseCategoryController::class, 'storePrice'])->name('course-prices.store');
+            Route::get('/create', [CourseCategoryController::class, 'createPrice'])->name('course-prices.create');
+            Route::post('/store', [CourseCategoryController::class, 'storePrice'])->name('course-prices.store');
             Route::get('/{id}/edit', [CourseCategoryController::class, 'editPrice'])->name('course-prices.edit');
-            Route::put('/{id}',      [CourseCategoryController::class, 'updatePrice'])->name('course-prices.update');
-            Route::delete('/{id}',   [CourseCategoryController::class, 'destroyPrice'])->name('course-prices.destroy');
+            Route::put('/{id}', [CourseCategoryController::class, 'updatePrice'])->name('course-prices.update');
+            Route::delete('/{id}', [CourseCategoryController::class, 'destroyPrice'])->name('course-prices.destroy');
         });
 
         // Detail Courses
-        Route::resource('/detail_courses', DetailCourseController::class);
+        Route::resource('/detail', CourseDetailController::class, )
+            ->middleware('can:kelola_course')
+            ->names('detail');
+
+        // Tambahan AJAX endpoint untuk ambil data lengkap course
+        Route::get('/detail/course/{id}/info', [CourseDetailController::class, 'getCourseInfo'])
+            ->middleware('can:kelola_course')
+            ->name('detail.course.info');
+
+
 
         // Lessons
         Route::resource('/lessons', LessonController::class);
 
         Route::get('course/{courseId}/modules', [LessonController::class, 'getModules'])->name('course.modules');
 
-        Route::resource('/comments', CommentController::class)->except('show');
     });
 
 /*
@@ -216,4 +227,4 @@ Route::middleware(['auth', 'role:admin|superadmin|instructor'])
 | Laravel Default Auth (Breeze/Fortify/etc)
 |--------------------------------------------------------------------------
 */
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
