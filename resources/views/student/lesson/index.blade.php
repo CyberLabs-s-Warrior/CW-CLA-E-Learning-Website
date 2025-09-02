@@ -4,87 +4,143 @@
     <link rel="stylesheet" href="{{ asset('client/lesson.css') }}">
 @endpush
 
-@section('title', 'Learnify - Lessons of '.$course->name)
+@section('title', 'Learnify - Lessons of ' . $course->title)
 
 @section('content')
-<main class="content">
-    <div class="lesson">
-        <h2 class="section-title">Course Modules</h2>
-        <select class="module-dropdown">
-            @foreach($lessons as $lesson)
-                <option value="{{ $lesson->id }}">{{ $lesson->module_name }}</option>
-            @endforeach
-        </select>
+    <main class="main-layout">
+        {{-- BAGIAN KIRI: MEDIA PLAYER + DETAIL --}}
+        <div class="left-content">
+            {{-- MEDIA PLAYER --}}
+            <div class="media-container">
+                @if ($lesson && $lesson->media)
+                    @php
+                        $ext = strtolower(pathinfo($lesson->media, PATHINFO_EXTENSION));
+                    @endphp
 
-        <h1 class="material-title" id="material-title">
-            {{ $lessons->first()->title ?? 'No Lesson Selected' }}
-        </h1>
-
-        <div class="video-lesson" id="video-lesson">
-            @if($lessons->first()?->media)
-                @php
-                    $mediaPath = 'storage/' . $lessons->first()->media;
-                    $extension = strtolower(pathinfo($mediaPath, PATHINFO_EXTENSION));
-                    $isVideo = in_array($extension, ['mp4', 'webm', 'ogg']);
-                @endphp
-
-                @if($isVideo)
-                    <video controls>
-                        <source src="{{ asset($mediaPath) }}" type="video/{{ $extension }}" />
-                        Your browser does not support the video tag.
-                    </video>
+                    @if (in_array($ext, ['mp4', 'mov', 'avi']))
+                        <video controls>
+                            <source src="{{ asset('storage/' . $lesson->media) }}" type="video/mp4" />
+                            Browser tidak mendukung video.
+                        </video>
+                    @elseif (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
+                        <img src="{{ asset('storage/' . $lesson->media) }}" alt="Lesson Media" class="lesson-image" />
+                    @else
+                        <div class="no-video">
+                            <p class="text-muted">Media tidak dikenali.</p>
+                        </div>
+                    @endif
                 @else
-                    <img src="{{ asset($mediaPath) }}" alt="Lesson Media">
+                    <div class="no-video">
+                        <p class="text-muted">Belum ada media untuk lesson ini.</p>
+                    </div>
                 @endif
-            @else
-                <p>No media available for this lesson.</p>
-            @endif
+            </div>
+
+            {{-- JUDUL LESSON --}}
+            <h1 class="material-title">
+                {{ $lesson->title ?? 'Untitled Lesson' }}
+            </h1>
+
+            {{-- META LESSON --}}
+            <div class="lesson-meta">
+                <span>
+                    @if($course->instructors->isNotEmpty())
+                        {{ $course->instructors->pluck('name')->join(', ') }}
+                    @else
+                        Instruktur
+                    @endif
+                </span>
+                •
+                <span>{{ gmdate('i:s', $lesson->duration ?? 0) }}</span>
+            </div>
+
+            {{-- OVERVIEW --}}
+            <h2>Lesson Overview</h2>
+            <p>
+                {!! $lesson->content ?? '<em>Belum ada deskripsi untuk lesson ini.</em>' !!}
+            </p>
+
+            {{-- KOMENTAR --}}
+            <div class="comment-section">
+                <h2>Comments</h2>
+                <form id="comment-form">
+                    <textarea id="comment-input" placeholder="Add a public comment..." required></textarea>
+                    <button type="submit">Comment</button>
+                </form>
+                <p class="judul">Semua Komentar</p>
+                <div id="comment-list"></div>
+            </div>
         </div>
 
-        <h2>Lesson Overview</h2>
-        <div id="lesson-content">
-            {!! $lessons->first()->content ?? '<p>No content available.</p>' !!}
-        </div>
-
-        <a href="{{ route('detail.index', urlencode($course->name)) }}" class="back-btn">← Back to Courses</a>
-    </div>
-</main>
+        {{-- BAGIAN KANAN: MODULE LIST --}}
+        <aside class="right-sidebar">
+            <h3>Course Modules</h3>
+            <ul class="module-list">
+                @forelse ($course->lessons as $item)
+                    <li class="module-item {{ $item->id === $lesson->id ? 'active' : '' }}">
+                        <a href="{{ route('lesson.index', $course->slug) }}?lesson={{ $item->id }}">
+                            <div class="thumb">
+                                @php
+                                    $ext = strtolower(pathinfo($item->media, PATHINFO_EXTENSION));
+                                @endphp
+                                @if ($item->media && in_array($ext, ['mp4', 'mov', 'avi']))
+                                    <video muted preload="metadata">
+                                        <source src="{{ asset('storage/' . $item->media) }}" type="video/mp4" />
+                                    </video>
+                                @elseif ($item->media && in_array($ext, ['jpg','jpeg','png','gif','webp']))
+                                    <img src="{{ asset('storage/' . $item->media) }}" alt="thumb" class="thumb-img" />
+                                @else
+                                    <div class="thumb-placeholder">🎬</div>
+                                @endif
+                            </div>
+                            <div class="module-info">
+                                <p class="module-title">{{ $item->title }}</p>
+                                <span class="module-duration">{{ gmdate('i:s', $item->duration ?? 0) }}</span>
+                            </div>
+                        </a>
+                    </li>
+                @empty
+                    <li class="module-item">
+                        <p class="text-muted">Belum ada lesson di course ini.</p>
+                    </li>
+                @endforelse
+            </ul>
+        </aside>
+    </main>
+@endsection
 
 @push('scripts')
-<script>
-    const lessons = @json($lessons);
-    const moduleDropdown = document.querySelector('.module-dropdown');
-    const materialTitle = document.getElementById('material-title');
-    const videoLesson = document.getElementById('video-lesson');
-    const lessonContent = document.getElementById('lesson-content');
+    <script>
+        const form = document.getElementById("comment-form");
+        const input = document.getElementById("comment-input");
+        const commentList = document.getElementById("comment-list");
 
-    moduleDropdown.addEventListener('change', function() {
-        const selectedId = parseInt(this.value);
-        const lesson = lessons.find(l => l.id === selectedId);
+        window.onload = function () {
+            const saved = JSON.parse(localStorage.getItem("comments") || "[]");
+            saved.forEach((text) => addComment(text));
+        };
 
-        materialTitle.textContent = lesson.title;
-        lessonContent.innerHTML = lesson.content;
-
-        if (lesson.media) {
-            const ext = lesson.media.split('.').pop().toLowerCase();
-            const isVideo = ['mp4', 'webm', 'ogg'].includes(ext);
-
-            if (isVideo) {
-                videoLesson.innerHTML = `
-                    <video controls>
-                        <source src="/storage/${lesson.media}" type="video/${ext}" />
-                        Your browser does not support the video tag.
-                    </video>
-                `;
-            } else {
-                videoLesson.innerHTML = `
-                    <img src="/storage/${lesson.media}" alt="Lesson Media">
-                `;
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const text = input.value.trim();
+            if (text !== "") {
+                const saved = JSON.parse(localStorage.getItem("comments") || "[]");
+                saved.unshift(text);
+                localStorage.setItem("comments", JSON.stringify(saved));
+                addComment(text);
+                input.value = "";
             }
-        } else {
-            videoLesson.innerHTML = `<p>No media available for this lesson.</p>`;
+        });
+
+        function addComment(text) {
+            const div = document.createElement("div");
+            div.classList.add("comment");
+
+            const p = document.createElement("p");
+            p.textContent = text;
+
+            div.appendChild(p);
+            commentList.prepend(div);
         }
-    });
-</script>
+    </script>
 @endpush
-@endsection

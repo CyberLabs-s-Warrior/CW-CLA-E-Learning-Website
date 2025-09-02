@@ -156,91 +156,79 @@
           </a>
         </li>
 
-{{-- User Management --}}
-@role('superadmin')
-<li class="nav-item">
-  <a href="{{ route('admin.users.index') }}"
-     class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-    <i class="fas fa-users me-2"></i> User Management
-  </a>
-</li>
-@endrole
+        {{-- User Management --}}
+        @role('superadmin')
+        <li class="nav-item">
+          <a href="{{ route('admin.users.index') }}"
+            class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+            <i class="fas fa-users me-2"></i> User Management
+          </a>
+        </li>
+        @endrole
 
 
 
 
         {{-- About --}}
         @can('kelola_about')
-      <li class="nav-item">
-        <a href="{{ route('admin.about.index') }}"
-        class="nav-link {{ request()->routeIs('admin.about.*') ? 'active' : '' }}">
-        <i class="fas fa-info-circle me-2"></i> About
-        </a>
-      </li>
-    @endcan
+          <li class="nav-item">
+            <a href="{{ route('admin.about.index') }}"
+              class="nav-link {{ request()->routeIs('admin.about.*') ? 'active' : '' }}">
+              <i class="fas fa-info-circle me-2"></i> About
+            </a>
+          </li>
+        @endcan
 
         {{-- Contact --}}
         @can('kelola_contact')
-      <li class="nav-item">
-        <a href="{{ route('admin.contact.index') }}"
-        class="nav-link {{ request()->routeIs('admin.contact.*') ? 'active' : '' }}">
-        <i class="fas fa-envelope me-2"></i> Contact
-        </a>
-      </li>
-    @endcan
+          <li class="nav-item">
+            <a href="{{ route('admin.contact.index') }}"
+              class="nav-link {{ request()->routeIs('admin.contact.*') ? 'active' : '' }}">
+              <i class="fas fa-envelope me-2"></i> Contact
+            </a>
+          </li>
+        @endcan
 
         {{-- Course --}}
         @can('kelola_course')
-        <li class="nav-item has-treeview
-        {{ request()->routeIs('admin.course.*') ||
-      request()->routeIs('admin.course-categories.*') ||
-      request()->routeIs('admin.detail_courses.*') ||
-      request()->routeIs('admin.lessons.*') ||
-      request()->routeIs('admin.comments.*') ? 'active' : '' }}">
-          <a href="#" class="nav-link">
-          <i class="fas fa-book-reader me-2"></i> Course
-          <i class="fas fa-caret-right ms-auto icon-collapsed"></i>
-          <i class="fas fa-caret-down ms-auto icon-expanded"></i>
-          </a>
-          <ul class="nav nav-treeview">
-          <li class="nav-item">
-            <a href="{{ route('admin.course-categories.index') }}"
-            class="nav-link {{ request()->routeIs('admin.course-categories.index') ? 'active' : '' }}">
-            <i class="fas fa-layer-group me-2 text-secondary"></i> Category
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('admin.course.index') }}"
-            class="nav-link {{ request()->routeIs('admin.course.index') ? 'active' : '' }}">
-            <i class="fas fa-list-ul me-2 text-secondary"></i> List
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('admin.detail_courses.index') }}"
-            class="nav-link {{ request()->routeIs('admin.detail_courses.*') ? 'active' : '' }}">
-            <i class="fas fa-file-alt me-2 text-secondary"></i> Detail Course
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('admin.lessons.index') }}"
-            class="nav-link {{ request()->routeIs('admin.lessons.*') ? 'active' : '' }}">
-            <i class="fas fa-chalkboard-teacher me-2 text-secondary"></i> Lessons
-            </a>
-          </li>
-          </ul>
-        </li>
-    @endcan
-
-
-        {{-- Comments --}}
-        @can('kelola_course')
-      <li class="nav-item">
-        <a href="{{ route('admin.comments.index') }}"
-        class="nav-link {{ request()->routeIs('admin.comments.*') ? 'active' : '' }}">
-        <i class="fas fa-comments me-2"></i> Comments
-        </a>
-      </li>
-    @endcan
+              <li class="nav-item has-treeview
+              {{ request()->routeIs('admin.course.*') ||
+          request()->routeIs('admin.course-categories.*') ||
+          request()->routeIs('admin.detail.*') ||
+          request()->routeIs('admin.lessons.*') ? 'active' : '' }}">
+                <a href="#" class="nav-link">
+                  <i class="fas fa-book-reader me-2"></i> Course
+                  <i class="fas fa-caret-right ms-auto icon-collapsed"></i>
+                  <i class="fas fa-caret-down ms-auto icon-expanded"></i>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{{ route('admin.course-categories.index') }}"
+                      class="nav-link {{ request()->routeIs('admin.course-categories.index') ? 'active' : '' }}">
+                      <i class="fas fa-layer-group me-2 text-secondary"></i> Category
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('admin.course.index') }}"
+                      class="nav-link {{ request()->routeIs('admin.course.index') ? 'active' : '' }}">
+                      <i class="fas fa-list-ul me-2 text-secondary"></i> List
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('admin.detail.index') }}"
+                      class="nav-link {{ request()->routeIs('admin.detail.*') ? 'active' : '' }}">
+                      <i class="fas fa-file-alt me-2 text-secondary"></i> Detail Course
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('admin.lessons.index') }}"
+                      class="nav-link {{ request()->routeIs('admin.lessons.*') ? 'active' : '' }}">
+                      <i class="fas fa-chalkboard-teacher me-2 text-secondary"></i> Lessons
+                    </a>
+                  </li>
+                </ul>
+              </li>
+        @endcan
 
       </ul>
     </nav>
@@ -258,4 +246,4 @@
       });
     });
   });
-</script> 
+</script>

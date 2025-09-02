@@ -13,7 +13,7 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
-    
+
     use HasRoles;
 
     /**
@@ -53,9 +53,31 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function profile()
-{
-    return $this->hasOne(UserProfile::class,'user_id','id');
-}
+    {
+        return $this->hasOne(UserProfile::class, 'user_id', 'id');
+    }
 
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    public function enrolledCourses()
+    {
+        return $this->belongsToMany(Course::class, 'enrollments')
+            ->withPivot('status', 'payment_id')
+            ->withTimestamps();
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function teachingCourses()
+    {
+        return $this->belongsToMany(Course::class, 'course_instructors')
+            ->withTimestamps();
+    }
 
 }
