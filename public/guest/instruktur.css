@@ -1,0 +1,154 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #f9f9f9;
+    color: #0f172a;
+}
+
+/* Section Wrapper */
+.instruktur-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+}
+
+/* Header */
+.instruktur-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.instruktur-title {
+    font-size: 2.3rem;
+    font-weight: 800;
+    color: #0d6efd;
+    margin-bottom: 0.5rem;
+}
+
+.instruktur-subtitle {
+    font-size: 1.05rem;
+    color: #64748b;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Grid Layout */
+.instruktur-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.8rem;
+}
+
+/* Card */
+.instruktur-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1.2rem;
+    text-align: center;
+    position: relative;
+}
+
+.instruktur-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* Gambar */
+.instruktur-img-wrapper {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 1rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #0d6efd20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+}
+
+.instruktur-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .3s ease;
+}
+
+.instruktur-card:hover .instruktur-img-wrapper img {
+    transform: scale(1.05);
+}
+
+/* Info */
+.instruktur-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.instruktur-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.instruktur-skill {
+    font-size: 0.95rem;
+    color: #0d6efd;
+    background: #eaf2ff;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    display: inline-block;
+    margin: 0 auto;
+    font-weight: 600;
+}
+
+.instruktur-desc {
+    font-size: 0.9rem;
+    color: #475569;
+    line-height: 1.5;
+    margin: 0.5rem 0 1rem;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Tombol */
+.instruktur-btn {
+    background: #0d6efd;
+    color: #fff;
+    padding: 0.55rem 1.1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: background 0.2s ease;
+    display: inline-block;
+}
+
+.instruktur-btn:hover {
+    background: #0b5ed7;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .instruktur-title {
+        font-size: 1.8rem;
+    }
+
+    .instruktur-subtitle {
+        font-size: 0.95rem;
+    }
+}

@@ -40,11 +40,15 @@ use App\Http\Controllers\Admin\{
 | GUEST CONTROLLERS (publik)
 |--------------------------------------------------------------------------
 */
+ 
 use App\Http\Controllers\Guest\{
     HomeClientController,
     AboutClientController,
     ShowcaseClientController,
     ContactClientController,
+    KatalogClientController,
+    TestimoniClientController,
+    InstrukturClientController
 };
 
 /*
@@ -74,6 +78,10 @@ Route::get('/contact', [ContactClientController::class, 'index'])->name('contact
 // Showcase publik
 Route::get('/showcase', [ShowcaseClientController::class, 'index'])
     ->name('showcase.index');
+    
+Route::get('/testimoni', [TestimoniClientController::class, 'index'])->name('testimoni.index');
+Route::get('/instruktur', [InstrukturClientController::class, 'index'])->name('instruktur.index');
+Route::get('/katalog', [KatalogClientController::class, 'index'])->name('katalog.index');
 
 /*
 |--------------------------------------------------------------------------

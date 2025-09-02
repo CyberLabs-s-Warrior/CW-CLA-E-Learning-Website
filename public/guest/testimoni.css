@@ -1,0 +1,125 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #f9f9f9;
+    color: #0f172a;
+}
+
+/* Section Wrapper */
+.testimoni-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+}
+
+/* Header */
+.testimoni-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.testimoni-title {
+    font-size: 2.3rem;
+    font-weight: 800;
+    color: #0d6efd;
+    margin-bottom: 0.5rem;
+}
+
+.testimoni-subtitle {
+    font-size: 1.05rem;
+    color: #64748b;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Grid Layout */
+.testimoni-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.8rem;
+}
+
+/* Card */
+.testimoni-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+    padding: 1.8rem;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.testimoni-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* Profile */
+.testimoni-profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.testimoni-profile img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #0d6efd20;
+    transition: transform .3s ease;
+}
+
+.testimoni-card:hover .testimoni-profile img {
+    transform: scale(1.05);
+}
+
+.testimoni-user h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.2rem;
+}
+
+.testimoni-role {
+    display: inline-block;
+    background: #eaf2ff;
+    color: #0d6efd;
+    font-size: 0.85rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    font-weight: 600;
+}
+
+/* Text */
+.testimoni-text p {
+    color: #475569;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    font-style: italic;
+}
+
+/* Hover Animation */
+.testimoni-card:hover .testimoni-text p {
+    color: #0f172a;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .testimoni-title {
+        font-size: 1.8rem;
+    }
+
+    .testimoni-subtitle {
+        font-size: 0.95rem;
+    }
+}
