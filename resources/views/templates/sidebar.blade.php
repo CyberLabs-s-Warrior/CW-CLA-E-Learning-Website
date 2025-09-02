@@ -171,23 +171,32 @@
 
         {{-- About --}}
         @can('kelola_about')
-      <li class="nav-item">
-        <a href="{{ route('admin.about.index') }}"
-        class="nav-link {{ request()->routeIs('admin.about.*') ? 'active' : '' }}">
-        <i class="fas fa-info-circle me-2"></i> About
-        </a>
-      </li>
-    @endcan
+          <li class="nav-item">
+            <a href="{{ route('admin.about.index') }}"
+            class="nav-link {{ request()->routeIs('admin.about.*') ? 'active' : '' }}">
+            <i class="fas fa-info-circle me-2"></i> About
+            </a>
+          </li>
+        @endcan
 
         {{-- Contact --}}
         @can('kelola_contact')
-      <li class="nav-item">
-        <a href="{{ route('admin.contact.index') }}"
-        class="nav-link {{ request()->routeIs('admin.contact.*') ? 'active' : '' }}">
-        <i class="fas fa-envelope me-2"></i> Contact
-        </a>
-      </li>
-    @endcan
+          <li class="nav-item">
+            <a href="{{ route('admin.contact.index') }}"
+            class="nav-link {{ request()->routeIs('admin.contact.*') ? 'active' : '' }}">
+            <i class="fas fa-envelope me-2"></i> Contact
+            </a>
+          </li>
+        @endcan
+
+         @can('kelola_showcase')
+          <li class="nav-item">
+            <a href="{{ route('admin.showcases.index') }}"
+            class="nav-link {{ request()->routeIs('admin.showcases.*') ? 'active' : '' }}">
+            <i class="fas fa-lightbulb me-2"></i> showcase
+            </a>
+          </li>
+        @endcan
 
         {{-- Course --}}
         @can('kelola_course')

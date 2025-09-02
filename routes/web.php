@@ -31,7 +31,8 @@ use App\Http\Controllers\Admin\{
     CourseCategoryController,
     DetailCourseController,
     LessonController,
-    CommentController
+    CommentController,
+    ShowcaseController
 };
 
 /*
@@ -41,8 +42,9 @@ use App\Http\Controllers\Admin\{
 */
 use App\Http\Controllers\Guest\{
     HomeClientController,
-    AboutClientController
-    // LoginClientController  // (tidak dipakai; login pakai StudentAuthController)
+    AboutClientController,
+    ShowcaseClientController,
+    ContactClientController,
 };
 
 /*
@@ -68,6 +70,10 @@ use App\Http\Controllers\Student\{
 */
 Route::get('/',      [HomeClientController::class,  'index'])->name('home.index');
 Route::get('/about', [AboutClientController::class, 'index'])->name('about.index');
+Route::get('/contact', [ContactClientController::class, 'index'])->name('contact.index');
+// Showcase publik
+Route::get('/showcase', [ShowcaseClientController::class, 'index'])
+    ->name('showcase.index');
 
 /*
 |--------------------------------------------------------------------------
@@ -209,6 +215,8 @@ Route::middleware(['auth', 'role:admin|superadmin|instructor'])
         Route::get('course/{courseId}/modules', [LessonController::class, 'getModules'])->name('course.modules');
 
         Route::resource('/comments', CommentController::class)->except('show');
+        Route::resource('/showcases', ShowcaseController::class)->middleware('can:kelola_showcase');
+
     });
 
 /*
