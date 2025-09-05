@@ -2,23 +2,25 @@
 
 namespace App\Http\Controllers\Student;
 
-use App\Http\Controllers\Controller;  
+use App\Http\Controllers\Controller;
 use App\Models\Course;
 use Illuminate\Http\Request;
 
 class LessonClientController extends Controller
 {
-    public function index($courseName)
+    public function index($slug, Request $request)
     {
-        // Cari course berdasarkan nama beserta lessons
-        $course = Course::with('lessons')->where('name', $courseName)->first();
+        // Ambil course beserta relasi lessons & instructors
+        $course = Course::with(['lessons', 'instructors'])
+            ->where('slug', $slug)
+            ->firstOrFail();
 
-        if (!$course) {
-            abort(404, 'Course tidak ditemukan');
-        }
+        // Tentukan lesson aktif dari query ?lesson=id atau ambil pertama
+        $lesson = $course->lessons
+            ->where('id', $request->get('lesson'))
+            ->first()
+            ?? $course->lessons->first();
 
-        $lessons = $course->lessons;
-
-        return view('student.lesson.index', compact('lessons', 'course'));
+        return view('student.lesson.index', compact('course', 'lesson'));
     }
 }
