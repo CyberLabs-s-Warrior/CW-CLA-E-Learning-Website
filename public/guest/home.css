@@ -172,6 +172,262 @@ body { background-color: #f9fbfc; color: #333; }
 .info h3 { margin: 0; font-size: 1.05rem; font-weight: 700; }
 .info p  { margin: 6px 0; color: #555; font-size: .95rem; }
 
+/* ===== HERO accent + stats ===== */
+.hero--accent {
+  background:
+    radial-gradient(1200px 400px at 20% -10%, rgba(59,130,246,.15), transparent 60%),
+    radial-gradient(1000px 320px at 85% 0%, rgba(250,204,21,.14), transparent 55%);
+  padding-top: 72px;
+}
+.hero-trust { display:flex; gap:12px; flex-wrap:wrap; margin-top:12px; color:#475569; font-weight:600; }
+.hero-trust span { background:#eef2ff; padding:6px 10px; border-radius:10px; }
+.stats-bar { padding: 12px 0 0; }
+.stats { display:grid; grid-template-columns: repeat(4,1fr); gap:14px; }
+.stat {
+  background:#ffffff; color:#0f172a; border-radius:12px; padding:12px 10px; text-align:center;
+  box-shadow: 0 8px 20px rgba(0,0,0,.05);
+}
+.stat .num { display:block; font-size: clamp(1.1rem, 2.2vw, 1.6rem); font-weight:800; }
+.stat .lbl { color:#64748b; font-weight:600; }
+
+/* ===== Learning Paths linkable ===== */
+.card--link { text-decoration: none; color: inherit; display:block; }
+.card--link .view-link { display:inline-block; margin-top:4px; }
+
+/* ===== Featured Courses ===== */
+.featured { padding: 60px 0; background: #fff; }
+.course-grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:18px; }
+.course-card { background:#fff; border-radius:14px; overflow:hidden; box-shadow:0 6px 18px rgba(0,0,0,.06); display:flex; flex-direction:column; }
+.course-card .card-image img { width:100%; height:160px; object-fit:cover; }
+.course-card .card-body { padding:14px; display:flex; flex-direction:column; gap:10px; }
+.course-card .category { color:#64748b; font-size:.9rem; }
+.course-card .price { font-weight:800; }
+.course-card .price.is-free { color:#16a34a; }
+.course-card .info, .course-card .meta { display:flex; gap:12px; align-items:center; color:#475569; font-size:.92rem; }
+.course-card .actions { display:flex; gap:10px; margin-top:6px; }
+.btn--ghost { background: transparent; border: 2px solid #3b82f6; color:#3b82f6; }
+.btn--ghost:hover { background:#e0ecff; }
+
+/* Responsive adjust */
+@media (max-width: 992px) {
+  .stats { grid-template-columns: repeat(2,1fr); }
+}
+@media (max-width: 640px) {
+  .stats { grid-template-columns: 1fr; }
+  .hero-trust span { font-size:.9rem; }
+}
+
+/* ===== Accent hero & stats (melengkapi CSS kamu) ===== */
+.hero--accent{
+  background:
+    radial-gradient(1200px 400px at 20% -10%, rgba(59,130,246,.15), transparent 60%),
+    radial-gradient(1000px 320px at 85% 0%, rgba(250,204,21,.14), transparent 55%);
+  padding-top: 72px;
+}
+.hero-trust{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;color:#475569;font-weight:600}
+.hero-trust span{background:#eef2ff;padding:6px 10px;border-radius:10px}
+.stats-bar{padding:12px 0 0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat{background:#fff;color:#0f172a;border-radius:12px;padding:12px 10px;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,.05)}
+.stat .num{display:block;font-size:clamp(1.1rem,2.2vw,1.6rem);font-weight:800}
+.stat .lbl{color:#64748b;font-weight:600}
+
+/* ===== Section helper ===== */
+.section-sub{color:#64748b;max-width:760px;margin: -10px auto 22px; text-align:center}
+
+/* ===== Why Learn (penjelasan per-section) ===== */
+.why-learn{padding:60px 0;background:#fff}
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.why-item{background:#f8fafc;border:1px solid #eef2f7;border-radius:12px;padding:16px;box-shadow:0 4px 12px rgba(0,0,0,.03)}
+.why-item h3{font-size:1.02rem;margin-bottom:6px}
+
+/* ===== Instructors ===== */
+.instructors{padding:60px 0;background:#f9fbfc}
+.instructor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.instructor-card{display:flex;gap:14px;background:#fff;border-radius:14px;padding:14px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+.ins-photo{width:72px;height:72px;border-radius:50%;object-fit:cover}
+.ins-role{color:#64748b;margin:4px 0 8px}
+.ins-tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px;padding:0;list-style:none}
+.ins-tags li{background:#eef2ff;border:1px solid #dbeafe;color:#1e40af;font-size:.85rem;padding:4px 8px;border-radius:999px}
+.ins-meta{display:flex;gap:10px;color:#475569;font-size:.92rem}
+
+/* ===== Featured (melengkapi blok yang sudah ada) ===== */
+.featured{padding:60px 0;background:#fff}
+.course-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.course-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.06);display:flex;flex-direction:column}
+.course-card .card-image img{width:100%;height:160px;object-fit:cover}
+.course-card .card-body{padding:14px;display:flex;flex-direction:column;gap:10px}
+.course-card .category{color:#64748b;font-size:.9rem}
+.course-card .price{font-weight:800}
+.course-card .price.is-free{color:#16a34a}
+.course-card .info,.course-card .meta{display:flex;gap:12px;align-items:center;color:#475569;font-size:.92rem}
+.course-card .actions{display:flex;gap:10px;margin-top:6px}
+.btn--ghost{background:transparent;border:2px solid #3b82f6;color:#3b82f6}
+.btn--ghost:hover{background:#e0ecff}
+
+/* ===== Plan (Learning Path + Penjelasan gabung) ===== */
+.plan{padding:60px 0;background:#fff}
+.plan-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:16px}
+.plan .step{background:#f8fafc;border:1px solid #eef2f7;border-radius:12px;padding:18px;box-shadow:0 4px 12px rgba(0,0,0,.03)}
+.plan .step img{width:44px;height:44px;margin-bottom:8px}
+.plan .step h3{margin-bottom:6px;font-size:1.04rem}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chip{display:inline-block;padding:6px 10px;border-radius:999px;background:#eef2ff;border:1px solid #dbeafe;color:#1e40af;font-weight:600;text-decoration:none;font-size:.9rem}
+
+/* ===== Instructors Minimal ===== */
+.instructors-min{padding:60px 0;background:#f9fbfc}
+.ins-min-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
+.ins-min-card{background:#fff;border:1px solid #eef2f7;border-radius:14px;padding:14px;text-align:center;box-shadow:0 6px 16px rgba(0,0,0,.04)}
+.ins-min-card img{width:72px;height:72px;border-radius:50%;object-fit:cover;margin-bottom:8px}
+.ins-min-card figcaption{display:flex;flex-direction:column;gap:4px}
+.ins-min-card strong{font-weight:800}
+.ins-min-card span{color:#64748b;font-size:.92rem}
+
+ 
+
+/* ===== CTA Join ===== */
+.cta-join{padding:60px 0;background:
+  radial-gradient(1200px 400px at 20% -10%, rgba(255, 255, 255, 0.15), transparent 0%),
+  radial-gradient(1000px 320px at 0% 0%, rgba(255, 255, 255, 0.14), transparent 0%);}
+.cta-wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;align-items:center}
+.cta-wrap img{width:100%;height:100%;object-fit:cover;border-radius:14px}
+.cta-text h2{font-weight:800;margin-bottom:8px}
+.cta-text p{color:#475569;margin-bottom:14px}
+.cta-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn.btn--light{background:#fff;border:2px solid #e2e8f0;color:#0f172a}
+.btn.btn--light:hover{background:#ffffff}
+
+/* Responsive tweaks untuk blok tambahan */
+@media (max-width: 992px){
+  .cta-wrap{grid-template-columns:1fr}
+}
+
+/* ===== WHY soft sections (modern, soft) ===== */
+.why-section{padding:60px 0}
+.soft-1{background:#ffffff}
+.soft-2{background:linear-gradient(180deg,#fafcff 0%,#f6f9ff 100%)}
+.soft-3{background:linear-gradient(180deg,#f9fbfc 0%,#ffffff 100%)}
+
+.why-split{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center}
+.why-split.reverse{grid-template-columns:.9fr 1.1fr}
+.why-media img{width:100%;height:100%;object-fit:cover;border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,.06)}
+.section-sub.left{text-align:left;margin-left:0}
+.why-list{margin:12px 0 0;display:grid;gap:10px}
+.bullet{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:999px;background:#eef2ff;color:#1e40af;font-weight:800;margin-right:8px}
+.check{color:#16a34a;font-weight:800;margin-right:8px}
+.pill-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.pill{background:#fff;border:1px solid #e6ecfb;border-radius:999px;padding:6px 10px;color:#334155;font-weight:600}
+.mt-12{margin-top:12px}
+/* ===== Instructors (kartu foto besar seperti referensi) ===== */
+.instructors-pro{
+  padding:60px 0;
+  /* latar lembut kekuningan seperti contoh */
+  background: #ffffff;
+}
+
+.mentor-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:22px;
+}
+
+.mentor-card{
+  background:#fff;
+  border:1px solid #efe7d9;
+  border-radius:24px;
+  box-shadow:0 12px 28px rgba(15,23,42,.06);
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.mentor-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 18px 36px rgba(15,23,42,.10);
+}
+
+.mentor-photo{
+  width:100%;
+  height:220px;            /* sesuaikan jika mau lebih tinggi */
+  background:#f2f2f2;
+  overflow:hidden;
+}
+.mentor-photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:18px 18px 0 0;  /* sudut atas membulat */
+}
+
+.mentor-body{
+  padding:18px 18px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.mentor-name{
+  font-weight:800;
+  font-size:1.1rem;
+  letter-spacing:-.01em;
+}
+.mentor-role{ 
+  font-weight:700;
+  font-size:.95rem;
+}
+
+.mentor-desc{
+  color:#475569;
+  line-height:1.6;
+}
+
+.mentor-social{
+  display:flex;
+  gap:10px;
+  margin-top:8px;
+}
+.social-btn{
+  width:38px;height:38px;
+  display:grid;place-items:center;
+  border-radius:999px;
+  background:#fff;
+  border:1.5px solid #e5e7eb;
+  box-shadow:0 4px 10px rgba(0,0,0,.06);
+  transition:transform .12s ease, background .12s ease;
+}
+.social-btn:hover{ transform:translateY(-2px); background:#f8fafc; }
+.social-btn svg{ width:18px;height:18px; fill:#0f172a }
+
+
+/* ===== Courses Minimal (sudah ada — tambahkan sedikit padding) ===== */
+.courses-min{padding:60px 0;background:#fff}
+
+/* ===== CTA Join (sudah ada) ===== */
+.cta-join{padding:60px 0;background:
+  radial-gradient(1200px 400px at 20% -10%, rgba(59,130,246,.15), transparent 60%),
+  radial-gradient(1000px 320px at 85% 0%, rgba(250,204,21,.14), transparent 55%);}
+.cta-wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;align-items:center}
+.cta-wrap img{width:100%;height:100%;object-fit:cover;border-radius:14px}
+.btn.btn--light{background:#fff;border:2px solid #e2e8f0;color:#0f172a}
+.btn.btn--light:hover{background:#f8fafc}
+
+/* ===== Reuse chips (dari plan sebelumnya) ===== */
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chip{display:inline-block;padding:6px 10px;border-radius:999px;background:#eef2ff;border:1px solid #dbeafe;color:#1e40af;font-weight:700;text-decoration:none;font-size:.9rem}
+
+/* ===== Responsive ===== */
+@media (max-width: 992px){
+  .why-split,.why-split.reverse{grid-template-columns:1fr}
+  .cta-wrap{grid-template-columns:1fr}
+}
+
+/* Responsive */
+@media (max-width: 992px){ .stats{grid-template-columns:repeat(2,1fr)} }
+@media (max-width: 640px){
+  .stats{grid-template-columns:1fr}
+  .hero-trust span{font-size:.9rem}
+}
+
 /* ========== Responsive tweaks ========== */
 @media (max-width: 992px) {
   .hero { padding: 40px 0; }

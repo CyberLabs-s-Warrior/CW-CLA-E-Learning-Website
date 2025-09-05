@@ -3,45 +3,57 @@
 namespace App\Http\Controllers\Guest;
 
 use App\Http\Controllers\Controller;
+use App\Models\Course;
+use App\Models\CourseCategory;
+use App\Models\CourseLevel;
+use App\Models\CoursePriceRange;
+use Illuminate\Http\Request;
 
 class KatalogClientController extends Controller
 {
-   public function index()
-{
-    $category = request('category');
-    $price    = request('price');
-    $level    = request('level');
+    public function index(Request $request)
+    {
+        // dropdown sumber DB
+        $categories  = CourseCategory::orderBy('category')->get();
+        $levels      = CourseLevel::orderBy('level')->get();
+        $priceRanges = CoursePriceRange::orderBy('min_price')->get();
 
-    $courses = collect([
-        [
-            'title' => 'Belajar React',
-            'category' => 'frontend',
-            'img' => asset('images/courses/react.jpg'),
-            'desc' => 'Belajar React dari dasar hingga mahir.',
-            'level' => 'Beginner',
-            'price' => 'Free',
-            'modules' => 10,
-            'duration' => '8 jam',
-            'students' => 120,
-        ],
-        [
-            'title' => 'Laravel Dasar',
-            'category' => 'web',
-            'img' => asset('images/courses/laravel.jpg'),
-            'desc' => 'Belajar Laravel untuk membangun aplikasi web.',
-            'level' => 'Intermediate',
-            'price' => 'Paid',
-            'modules' => 20,
-            'duration' => '15 jam',
-            'students' => 300,
-        ],
-    ])
-    ->when($category, fn($q) => $q->where('category', $category))
-    ->when($price, fn($q) => $q->where('price', ucfirst($price)))
-    ->when($level, fn($q) => $q->where('level', ucfirst($level)))
-    ->values()->all();
+        // Query dasar: hanya kursus "publish/available"
+        $courses = Course::query()
+            ->with(['category','level','priceRange'])
+            ->withCount(['students','lessons'])
+            ->withAvg('reviews', 'rating');
 
-    return view('guest.katalog.index', compact('courses'));
-}
+        // kalau kamu punya kolom is_published / is_active di courses:
+        // $courses->where('is_published', 1);
 
+        // === Filter Category (id) ===
+        if ($request->filled('category')) {
+            $courses->where('course_category_id', $request->input('category'));
+        }
+
+        // === Filter Price ===
+        // free → price == 0
+        // numeric id → ambil range lalu whereBetween
+        if ($request->price === 'free') {
+            $courses->where('price', 0);
+        } elseif ($request->filled('price') && ctype_digit((string)$request->price)) {
+            $range = $priceRanges->firstWhere('id', (int)$request->price);
+            if ($range) {
+                $courses->whereBetween('price', [$range->min_price, $range->max_price]);
+            }
+        }
+
+        // === Filter Level (id) ===
+        if ($request->filled('level')) {
+            $courses->where('course_level_id', $request->input('level'));
+        }
+
+        // Urutan & pagination
+        $courses = $courses
+            ->orderByDesc('created_at')
+            ->paginate(9);
+
+        return view('guest.katalog.index', compact('categories','levels','priceRanges','courses'));
+    }
 }

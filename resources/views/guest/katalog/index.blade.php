@@ -13,16 +13,16 @@
     <p class="katalog-subtitle">Pilih kursus favoritmu dan mulai belajar sekarang</p>
   </header>
 
-  {{-- FILTER: kategori, price, level --}}
+  {{-- FILTER: kategori, price, level (ambil dari DB) --}}
   <form action="{{ route('katalog.index') }}" method="GET" class="katalog-toolbar" id="filterForm">
     <div class="toolbar-row">
       <div class="form-field">
         <label class="label">Kategori</label>
         <select name="category" class="select" onchange="this.form.submit()">
           <option value="">Semua</option>
-          <option value="frontend" @selected(request('category')==='frontend')>Frontend</option>
-          <option value="web" @selected(request('category')==='web')>Web</option>
-          <option value="aplikasi" @selected(request('category')==='aplikasi')>Aplikasi</option>
+          @foreach($categories as $cat)
+            <option value="{{ $cat->id }}" @selected(request('category') == $cat->id)>{{ $cat->category }}</option>
+          @endforeach
         </select>
       </div>
 
@@ -31,7 +31,11 @@
         <select name="price" class="select" onchange="this.form.submit()">
           <option value="">Semua</option>
           <option value="free" @selected(request('price')==='free')>Gratis</option>
-          <option value="paid" @selected(request('price')==='paid')>Berbayar</option>
+          @foreach($priceRanges as $pr)
+            <option value="{{ $pr->id }}" @selected(request('price') == $pr->id)">
+              ${{ $pr->min_price }} - ${{ $pr->max_price }}
+            </option>
+          @endforeach
         </select>
       </div>
 
@@ -39,9 +43,9 @@
         <label class="label">Level</label>
         <select name="level" class="select" onchange="this.form.submit()">
           <option value="">Semua</option>
-          <option value="beginner" @selected(request('level')==='beginner')>Beginner</option>
-          <option value="intermediate" @selected(request('level')==='intermediate')>Intermediate</option>
-          <option value="advanced" @selected(request('level')==='advanced')>Advanced</option>
+          @foreach($levels as $lv)
+            <option value="{{ $lv->id }}" @selected(request('level') == $lv->id)>{{ $lv->level }}</option>
+          @endforeach
         </select>
       </div>
 
@@ -52,27 +56,36 @@
   </form>
 
   {{-- GRID KURSUS --}}
-  @if(collect($courses)->count())
+  @if($courses->count())
     <div class="katalog-grid">
       @foreach ($courses as $course)
-        @php $rating = (float)($course['rating'] ?? 0); @endphp
+        @php
+          $rating = round($course->reviews_avg_rating ?? 0, 1);
+          $priceLabel = ($course->price ?? 0) == 0
+              ? 'Free'
+              : '$'.number_format($course->price, 2);
+          // tujuan redirect setelah login: ke detail course milik student area
+          $afterLogin = route('detail.index', $course->slug);
+          $loginUrl   = route('login') . '?redirect=' . urlencode($afterLogin);
+        @endphp
+
         <article class="katalog-card">
           <div class="katalog-media">
-            <img src="{{ $course['img'] }}" alt="{{ $course['title'] }}">
-            @if(!empty($course['badge']))
-              <span class="katalog-badge">{{ $course['badge'] }}</span>
+            <img src="{{ asset('storage/' . $course->img) }}" alt="{{ $course->name }}">
+            @if(($course->price ?? 0) == 0)
+              <span class="katalog-badge">Gratis</span>
             @endif
           </div>
 
           <div class="katalog-body">
-            <h3 class="katalog-name">{{ $course['title'] }}</h3>
+            <h3 class="katalog-name">{{ $course->name }}</h3>
 
             <div class="katalog-meta">
-              <span class="meta-item"><span class="meta-ico">⏱️</span><span>{{ $course['duration'] ?? '—' }}</span></span>
+              <span class="meta-item"><span class="meta-ico">⏱️</span><span>{{ $course->formatted_duration ?? '—' }}</span></span>
               <span class="meta-dot">•</span>
-              <span class="meta-item"><span class="meta-ico">📘</span><span>{{ $course['modules'] ?? '—' }} Modul</span></span>
+              <span class="meta-item"><span class="meta-ico">📘</span><span>{{ $course->lessons_count ?? 0 }} Modul</span></span>
               <span class="meta-dot">•</span>
-              <span class="meta-item"><span class="meta-ico">👥</span><span>{{ $course['students'] ?? 0 }}</span></span>
+              <span class="meta-item"><span class="meta-ico">👥</span><span>{{ $course->students_count ?? 0 }}</span></span>
             </div>
 
             {{-- Bintang rating --}}
@@ -84,22 +97,30 @@
               <span class="stars-num">{{ number_format($rating,1) }}</span>
             </div>
 
-            <p class="katalog-desc">{{ $course['desc'] }}</p>
+            <p class="katalog-desc">
+              {{ Str::limit($course->short_description ?? $course->description ?? '-', 120) }}
+            </p>
 
             <div class="katalog-row">
-              <span class="katalog-level">{{ $course['level'] ?? 'All Levels' }}</span>
-              <span class="katalog-price {{ ($course['price'] ?? 'Free') === 'Free' ? 'is-free' : '' }}">
-                {{ $course['price'] ?? 'Free' }}
+              <span class="katalog-level">{{ $course->level->level ?? 'All Levels' }}</span>
+              <span class="katalog-price {{ $priceLabel === 'Free' ? 'is-free' : '' }}">
+                {{ $priceLabel }}
               </span>
             </div>
 
             <div class="katalog-actions">
-              <a href="#" class="btn-join">Bergabung</a>
-              <a href="#" class="btn-outline"> Detail</a>
+              {{-- Katalog khusus guest: semua tombol menuju login dengan redirect ke detail --}}
+              <a href="{{ $loginUrl }}" class="btn-join">Bergabung</a>
+              <a href="{{ $loginUrl }}" class="btn-outline">Detail</a>
             </div>
           </div>
         </article>
       @endforeach
+    </div>
+
+    {{-- Pagination (pakai simplePaginate/paginate di controller) --}}
+    <div class="pagination">
+      {{ $courses->appends(request()->query())->links() }}
     </div>
   @else
     <div class="empty">
