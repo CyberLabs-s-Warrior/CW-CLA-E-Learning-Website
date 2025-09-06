@@ -1,13 +1,18 @@
-/* Header base */
+/* ===============================
+   Header (guest) — NON-STICKY
+   =============================== */
+
+/* Header base (static, not sticky) */
 .header {
   background-color: #ffffff;
   padding: 14px 0;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  position: relative;
-  top: 0;
+  position: relative;     /* bukan sticky/fixed */
+  top: auto;
   z-index: 1000;
 }
 
+/* Container */
 .header-container {
   max-width: 1200px;
   margin: auto;
@@ -17,6 +22,7 @@
   align-items: center;
 }
 
+/* Logo */
 .logo, .drawer-logo {
   font-weight: 700;
   font-size: 1.6rem;
@@ -25,12 +31,12 @@
   text-decoration: none;
 }
 
+/* Nav */
 .nav-center {
   display: flex;
   gap: 24px;
   align-items: center;
 }
-
 .nav-right {
   display: flex;
   gap: 12px;
@@ -46,11 +52,27 @@
   font-size: 1rem;
   transition: color 0.2s ease;
 }
-
 .nav-center a:hover,
 .nav-right a:hover,
-.drawer-links a:hover {
-  color: #2563eb;
+.drawer-links a:hover { color: #2563eb; }
+
+/* Active & hover indikator */
+.nav-center a {
+  position: relative;
+  padding-block: 6px;
+}
+.nav-center a::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: -8px;
+  height: 2px; border-radius: 2px;
+  background: #2563eb;
+  transform: scaleX(0);
+  transition: transform .18s ease;
+}
+.nav-center a:is(:hover, :focus-visible)::after,
+.nav-center a.is-active::after,
+.nav-center a[aria-current="page"]::after {
+  transform: scaleX(1);
 }
 
 /* Buttons */
@@ -64,6 +86,7 @@
   transition: background-color 0.2s ease, transform .1s ease;
 }
 .btn-login:hover { background-color: #1e40af; }
+
 .btn-dashboard {
   padding: 6px 14px;
   border-radius: 8px;
@@ -72,30 +95,95 @@
   font-weight: 600;
 }
 .btn-dashboard:hover { filter: brightness(.95); }
+
 .link-dashboard { color:#2563eb; font-weight:700; }
 
-/* Hamburger (hidden on desktop) */
-.hamburger {
-  display: none;
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  background: #fff;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  cursor: pointer;
-  transition: background .2s ease, border-color .2s ease;
+/* Focus (keyboard) yang jelas */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+  border-radius: 8px;
 }
-.hamburger:hover { background:#f8fafc; border-color:#dbe3ea; }
-.hamburger-bar {
-  display: block;
-  width: 18px;
-  height: 2px;
-  background: #0f172a;
-  border-radius: 2px;
+
+/* Skip link */
+.skip-link{
+  position:absolute; left:-999px; top:auto; width:1px; height:1px; overflow:hidden;
 }
+.skip-link:focus{
+  left:12px; top:12px; width:auto; height:auto; z-index:1100;
+  background:#2563eb; color:#fff; padding:10px 14px; border-radius:10px;
+}
+
+/* ===== Polished Hamburger (morph to X) ===== */
+.hamburger{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:44px; height:44px;
+  border-radius:12px;
+  border:1px solid #e2e8f0;
+  background:#fff;
+  cursor:pointer;
+  transition: background .2s ease, border-color .2s ease, transform .08s ease;
+  position: relative;
+}
+.hamburger:hover{ background:#f8fafc; border-color:#dbe3ea; }
+.hamburger:active{ transform: translateY(1px); }
+
+/* sembunyikan bar lama jika masih ada */
+.hamburger-bar{ display:none !important; }
+
+/* kotak & garis */
+.hamburger-box{
+  width:24px; height:16px; position:relative;
+}
+.hamburger-inner,
+.hamburger-inner::before,
+.hamburger-inner::after{
+  position:absolute; left:0;
+  width:24px; height:2px;
+  border-radius:2px;
+  background:#0f172a;  /* warna garis */
+  transition: transform .22s cubic-bezier(.2,.6,.3,1), top .22s cubic-bezier(.2,.6,.3,1), opacity .15s ease;
+  content:"";
+}
+.hamburger-inner{
+  top:50%; transform:translateY(-50%); /* tengah */
+  box-shadow: 0 0.5px 0 rgba(2,8,23,.12);
+}
+.hamburger-inner::before{ top:-7px; }
+.hamburger-inner::after { top: 7px; }
+
+/* state open → jadi X */
+.hamburger.is-open .hamburger-inner{
+  transform: translateY(-50%) rotate(45deg);
+}
+.hamburger.is-open .hamburger-inner::before{
+  top:0; transform: rotate(90deg);
+}
+.hamburger.is-open .hamburger-inner::after{
+  top:0; transform: rotate(90deg);
+  opacity:0; /* opsi: hilangkan bar bawah agar X lebih tipis */
+}
+
+/* fokus keyboard */
+.hamburger:focus-visible{
+  outline:2px solid #2563eb; outline-offset:2px;
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .hamburger-inner,
+  .hamburger-inner::before,
+  .hamburger-inner::after{ transition:none; }
+}
+/* Safety override: pastikan selalu tersembunyi di desktop */
+@media (min-width: 961px) {
+  .hamburger { display: none !important; }
+}
+
+
 
 /* Mobile overlay */
 .mobile-overlay {
@@ -104,7 +192,10 @@
   background: rgba(15,23,42,0.45);
   backdrop-filter: blur(2px);
   z-index: 999;
+  opacity: 0;
+  transition: opacity .2s ease;
 }
+.mobile-overlay[data-open="true"] { opacity: 1; }
 
 /* Mobile drawer (slide-in) */
 .mobile-drawer {
@@ -123,6 +214,8 @@
   flex-direction: column;
 }
 .mobile-drawer.open { transform: translateX(0); }
+.mobile-drawer[aria-hidden="true"] { visibility: hidden; }
+.mobile-drawer[aria-hidden="false"] { visibility: visible; }
 
 .drawer-header {
   display: flex; align-items: center; justify-content: space-between;

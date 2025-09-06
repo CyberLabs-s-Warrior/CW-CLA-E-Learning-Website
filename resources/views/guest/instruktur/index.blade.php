@@ -25,7 +25,6 @@
                 <p class="instruktur-desc">
                     Mentor berpengalaman dengan passion mengajar dan membimbingmu memahami teknologi.
                 </p>
-                <a href="#" class="instruktur-btn">Lihat Profil</a>
             </div>
         </div>
         @endforeach
