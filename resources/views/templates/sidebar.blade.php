@@ -179,9 +179,19 @@
         {{-- Showcase --}}
         @can('kelola_showcase')
         <li class="nav-item">
-          <a href="{{ route('admin.showcases.index') }}"
+          <a href="{{ route('admin.showcase.index') }}"
              class="nav-link {{ request()->routeIs('admin.showcases.*') ? 'active' : '' }}">
             <i class="fa-solid fa-lightbulb me-2"></i> Showcase
+          </a>
+        </li>
+        @endcan
+
+        {{-- testimoni --}}
+        @can('kelola_testimoni')
+        <li class="nav-item">
+          <a href="{{ route('admin.testimoni.index') }}"
+             class="nav-link {{ request()->routeIs('admin.showcases.*') ? 'active' : '' }}">
+            <i class="fa-solid fa-comment me-2"></i> testimoni
           </a>
         </li>
         @endcan

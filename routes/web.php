@@ -249,7 +249,7 @@ Route::middleware(['auth', 'role:admin|superadmin|instructor'])
         Route::get('course/{courseId}/modules', [LessonController::class, 'getModules'])->name('course.modules');
 
         // Route::resource('/comments', CommentController::class)->except('show');
-        Route::resource('/showcases', ShowcaseController::class)->middleware('can:kelola_showcase');
+        Route::resource('/showcase', ShowcaseController::class)->middleware('can:kelola_showcase');
         Route::resource('/testimoni', TestimoniController::class)
             ->except('show')->middleware('can:kelola_testimoni');
      });

@@ -10,7 +10,7 @@
       <h1 class="h4 mb-0">Edit Karya</h1>
       <div class="text-muted small">Perbarui informasi karya anggota dan gambar cover.</div>
     </div>
-    <a href="{{ route('admin.showcases.index') }}" class="btn btn-light border ms-md-auto">
+    <a href="{{ route('admin.showcase.index') }}" class="btn btn-light border ms-md-auto">
       <i class="fas fa-arrow-left me-2"></i>Kembali
     </a>
   </div>
@@ -26,7 +26,7 @@
     </div>
   @endif
 
-  <form action="{{ route('admin.showcases.update', $showcase) }}" method="POST" enctype="multipart/form-data" id="showcaseEditForm">
+  <form action="{{ route('admin.showcase.update', $showcase) }}" method="POST" enctype="multipart/form-data" id="showcaseEditForm">
     @csrf @method('PUT')
 
     <div class="row g-4">
@@ -126,7 +126,7 @@
       <button class="btn btn-primary px-4" id="submitBtn">
         <span class="me-2"><i class="fas fa-save"></i></span> Update
       </button>
-      <a href="{{ route('admin.showcases.index') }}" class="btn btn-outline-secondary">Batal</a>
+      <a href="{{ route('admin.showcase.index') }}" class="btn btn-outline-secondary">Batal</a>
     </div>
   </form>
 </div>

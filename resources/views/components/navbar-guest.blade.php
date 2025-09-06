@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>@yield('title', 'E-Learning')</title>
 
-  {{-- CSS Global --}}
-  <link rel="stylesheet" href="{{ asset('client/header.css') }}"/>
-  <link rel="stylesheet" href="{{ asset('client/footer.css') }}"/>
+  {{-- CSS Global (pakai cache-busting supaya update langsung kebaca) --}}
+  <link rel="stylesheet" href="{{ asset('client/header.css') }}?v={{ filemtime(public_path('client/header.css')) }}"/>
+  <link rel="stylesheet" href="{{ asset('client/footer.css') }}?v={{ filemtime(public_path('client/footer.css')) }}"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
   @stack('styles')
@@ -16,7 +16,8 @@
 <a href="#main" class="skip-link">Lewati ke konten</a>
 
 <header class="header">
-  <div class="container header-container">
+  <div class="header-container"><!-- BUKAN .container -->
+
     <a href="{{ route('home.index') }}" class="logo" aria-label="Home">LandPage</a>
 
     {{-- Desktop Nav --}}
@@ -35,42 +36,42 @@
 
       <a href="{{ route('showcase.index') }}"
          class="{{ request()->routeIs('showcase.*') ? 'is-active' : '' }}"
-         @if(request()->routeIs('showcase.*')) aria-current="page" @endif>karya member</a>
+         @if(request()->routeIs('showcase.*')) aria-current="page" @endif>Karya member</a>
 
       <a href="{{ route('testimoni.index') }}"
          class="{{ request()->routeIs('testimoni.*') ? 'is-active' : '' }}"
-         @if(request()->routeIs('testimoni.*')) aria-current="page" @endif>testimoni</a>
+         @if(request()->routeIs('testimoni.*')) aria-current="page" @endif>Testimoni</a>
 
       <a href="{{ route('katalog.index') }}"
          class="{{ request()->routeIs('katalog.*') ? 'is-active' : '' }}"
-         @if(request()->routeIs('katalog.*')) aria-current="page" @endif>katalog</a>
+         @if(request()->routeIs('katalog.*')) aria-current="page" @endif>Katalog</a>
 
       <a href="{{ route('instruktur.index') }}"
          class="{{ request()->routeIs('instruktur.*') ? 'is-active' : '' }}"
-         @if(request()->routeIs('instruktur.*')) aria-current="page" @endif>instruktur</a>
+         @if(request()->routeIs('instruktur.*')) aria-current="page" @endif>Instruktur</a>
     </nav>
 
+    {{-- Right --}}
     <div class="nav-right">
-  @guest
-    <a href="{{ route('login') }}" class="btn-login">Log in</a>
-  @else
-    @hasanyrole('superadmin|admin|instructor')
-      <a href="{{ route('admin.dashboard.index') }}" class="link-dashboard">Dashboard</a>
-    @else
-      <a href="{{ route('dashboard.index') }}" class="link-dashboard">Dashboard</a>
-    @endhasanyrole
-  @endguest
+      @guest
+        <a href="{{ route('login') }}" class="btn-login">Log in</a>
+      @else
+        @hasanyrole('superadmin|admin|instructor')
+          <a href="{{ route('admin.dashboard.index') }}" class="link-dashboard">Dashboard</a>
+        @else
+          <a href="{{ route('dashboard.index') }}" class="link-dashboard">Dashboard</a>
+        @endhasanyrole
+      @endguest
 
-  <button class="hamburger" id="hamburger"
-          aria-label="Buka menu"
-          aria-controls="mobile-menu"
-          aria-expanded="false">
-    <span class="hamburger-box">
-      <span class="hamburger-inner"></span>
-    </span>
-  </button>
-</div>
-
+      <button class="hamburger" id="hamburger"
+              aria-label="Buka menu"
+              aria-controls="mobile-menu"
+              aria-expanded="false">
+        <span class="hamburger-box">
+          <span class="hamburger-inner"></span>
+        </span>
+      </button>
+    </div>
   </div>
 
   {{-- Overlay --}}
@@ -87,28 +88,26 @@
     </div>
 
     <div class="drawer-links">
-      {{-- sama seperti desktop --}}
       <a href="{{ route('home.index') }}"><i class="fa-solid fa-house"></i> Home</a>
       <a href="{{ route('about.index')}}"><i class="fa-solid fa-circle-info"></i> About</a>
       <a href="{{ route('contact.index') }}"><i class="fa-solid fa-envelope"></i> Kontak kami</a>
-      <a href="{{ route('showcase.index') }}"><i class="fa-solid fa-images"></i> karya member</a>
-      <a href="{{ route('testimoni.index') }}"><i class="fa-solid fa-comments"></i> testimoni</a>
-      <a href="{{ route('katalog.index') }}"><i class="fa-solid fa-list"></i> katalog</a>
-      <a href="{{ route('instruktur.index') }}"><i class="fa-solid fa-chalkboard-user"></i> instruktur</a>
+      <a href="{{ route('showcase.index') }}"><i class="fa-solid fa-images"></i> Karya member</a>
+      <a href="{{ route('testimoni.index') }}"><i class="fa-solid fa-comments"></i> Testimoni</a>
+      <a href="{{ route('katalog.index') }}"><i class="fa-solid fa-list"></i> Katalog</a>
+      <a href="{{ route('instruktur.index') }}"><i class="fa-solid fa-chalkboard-user"></i> Instruktur</a>
     </div>
 
     <div class="drawer-actions">
-  @guest
-    <a href="{{ route('login') }}" class="btn-login block">Log in</a>
-  @else
-    @hasanyrole('superadmin|admin|instructor')
-      <a href="{{ route('admin.dashboard.index') }}" class="btn-dashboard block">Dashboard</a>
-    @else
-      <a href="{{ route('dashboard.index') }}" class="btn-dashboard block">Dashboard</a>
-    @endhasanyrole
-  @endguest
-</div>
-
+      @guest
+        <a href="{{ route('login') }}" class="btn-login block">Log in</a>
+      @else
+        @hasanyrole('superadmin|admin|instructor')
+          <a href="{{ route('admin.dashboard.index') }}" class="btn-dashboard block">Dashboard</a>
+        @else
+          <a href="{{ route('dashboard.index') }}" class="btn-dashboard block">Dashboard</a>
+        @endhasanyrole
+      @endguest
+    </div>
   </nav>
 </header>
 
@@ -116,7 +115,6 @@
   @yield('content')
 </main>
 
-{{-- Opsional: tampilkan footer global kalau ada --}}
 @includeIf('client.footer')
 
 @stack('scripts')
@@ -125,7 +123,7 @@
 <script>
   AOS.init({ once: true, duration: 700, easing: 'ease-out' });
 
-  // Mobile drawer toggle + ARIA + focus trap (tanpa efek scroll header)
+  // Mobile drawer + focus trap
   (function(){
     const btn = document.getElementById('hamburger');
     const drawer = document.getElementById('mobile-menu');
@@ -142,41 +140,40 @@
     }
 
     function openMenu(){
-  lastFocus = document.activeElement;
-  drawer.classList.add('open');
-  drawer.setAttribute('aria-hidden','false');
-  setOverlay(true);
-  document.body.style.overflow = 'hidden';
-  btn.setAttribute('aria-expanded','true');
-  btn.setAttribute('aria-label','Tutup menu');
-  btn.classList.add('is-open'); // <-- TAMBAHKAN
+      lastFocus = document.activeElement;
+      drawer.classList.add('open');
+      drawer.setAttribute('aria-hidden','false');
+      setOverlay(true);
+      document.body.style.overflow = 'hidden';
+      btn.setAttribute('aria-expanded','true');
+      btn.setAttribute('aria-label','Tutup menu');
+      btn.classList.add('is-open');
 
-  const focusables = drawer.querySelectorAll(focusablesSel);
-  focusables[0]?.focus();
+      const focusables = drawer.querySelectorAll(focusablesSel);
+      focusables[0]?.focus();
 
-  function trap(e){
-    if(e.key !== 'Tab') return;
-    const list = Array.from(drawer.querySelectorAll(focusablesSel)).filter(el=>el.offsetParent !== null);
-    const first = list[0], last = list[list.length-1];
-    if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
-    if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
-  }
-  drawer.addEventListener('keydown', trap, { once:false, passive:false });
-  drawer._trap = trap;
-}
+      function trap(e){
+        if(e.key !== 'Tab') return;
+        const list = Array.from(drawer.querySelectorAll(focusablesSel)).filter(el=>el.offsetParent !== null);
+        const first = list[0], last = list[list.length-1];
+        if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+        if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+      }
+      drawer.addEventListener('keydown', trap);
+      drawer._trap = trap;
+    }
 
-function closeMenu(){
-  drawer.classList.remove('open');
-  drawer.setAttribute('aria-hidden','true');
-  setOverlay(false);
-  document.body.style.overflow = '';
-  btn.setAttribute('aria-expanded','false');
-  btn.setAttribute('aria-label','Buka menu');
-  btn.classList.remove('is-open'); // <-- TAMBAHKAN
-  if(drawer._trap) drawer.removeEventListener('keydown', drawer._trap);
-  lastFocus?.focus();
-}
-
+    function closeMenu(){
+      drawer.classList.remove('open');
+      drawer.setAttribute('aria-hidden','true');
+      setOverlay(false);
+      document.body.style.overflow = '';
+      btn.setAttribute('aria-expanded','false');
+      btn.setAttribute('aria-label','Buka menu');
+      btn.classList.remove('is-open');
+      if(drawer._trap) drawer.removeEventListener('keydown', drawer._trap);
+      lastFocus?.focus();
+    }
 
     btn?.addEventListener('click', openMenu);
     closeBtn?.addEventListener('click', closeMenu);

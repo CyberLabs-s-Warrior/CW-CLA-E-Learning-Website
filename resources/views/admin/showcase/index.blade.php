@@ -16,7 +16,7 @@
       <h1 class="h4 mb-0">Karya Member</h1>
       <div class="text-muted small">Kelola karya yang dibuat oleh student. Gunakan pencarian & filter untuk mempercepat.</div>
     </div>
-    <a href="{{ route('admin.showcases.create') }}" class="btn btn-primary ms-md-auto">
+    <a href="{{ route('admin.showcase.create') }}" class="btn btn-primary ms-md-auto">
       <i class="fas fa-plus me-2"></i> Tambah Karya
     </a>
   </div>
@@ -26,7 +26,7 @@
   @endif
 
   <!-- Toolbar: Search + Filters -->
-  <form method="GET" action="{{ route('admin.showcases.index') }}" id="filterForm" class="card border-0 shadow-sm rounded-4 mb-3">
+  <form method="GET" action="{{ route('admin.showcase.index') }}" id="filterForm" class="card border-0 shadow-sm rounded-4 mb-3">
     <div class="card-body p-3 p-md-3">
       <div class="row g-2 align-items-center">
         <div class="col-12 col-lg-6">
@@ -120,10 +120,10 @@
                 <div class="text-muted small">{{ $s->created_at?->diffForHumans() }}</div>
               </td>
               <td class="text-end">
-                <a href="{{ route('admin.showcases.edit', $s) }}" class="btn btn-sm btn-outline-warning">
+                <a href="{{ route('admin.showcase.edit', $s) }}" class="btn btn-sm btn-outline-warning">
                   <i class="fas fa-pen"></i>
                 </a>
-                <form action="{{ route('admin.showcases.destroy', $s) }}" method="POST" class="d-inline"
+                <form action="{{ route('admin.showcase.destroy', $s) }}" method="POST" class="d-inline"
                       onsubmit="return confirm('Hapus karya ini?')">
                   @csrf @method('DELETE')
                   <button class="btn btn-sm btn-outline-danger">
@@ -136,7 +136,7 @@
             <tr>
               <td colspan="5" class="text-center text-muted py-5">
                 <div class="mb-2"><i class="far fa-folder-open fa-2x"></i></div>
-                Belum ada data. <a href="{{ route('admin.showcases.create') }}">Tambah karya pertama</a>.
+                Belum ada data. <a href="{{ route('admin.showcase.create') }}">Tambah karya pertama</a>.
               </td>
             </tr>
           @endforelse

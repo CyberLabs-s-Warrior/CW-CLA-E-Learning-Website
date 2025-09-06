@@ -50,7 +50,7 @@ class ShowcaseController extends Controller
         Showcase::create($validated);
 
         return redirect()
-            ->route('admin.showcases.index')
+            ->route('admin.showcase.index')
             ->with('success', 'Karya berhasil ditambahkan!');
     }
 
@@ -87,7 +87,7 @@ class ShowcaseController extends Controller
         $showcase->update($validated);
 
         return redirect()
-            ->route('admin.showcases.index')
+            ->route('admin.showcase.index')
             ->with('success', 'Karya berhasil diperbarui!');
     }
 
