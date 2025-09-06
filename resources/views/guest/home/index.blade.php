@@ -8,7 +8,7 @@
 @section('title', 'Learnify - Home')
 
 @section('content')
-  {{-- ================= HERO (konten asli dipertahankan) ================= --}}
+  {{-- ================= HERO ================= --}}
   <main class="hero hero--accent">
     <div class="container hero-content">
       <div class="text-content">
@@ -21,7 +21,6 @@
         </p>
         <a href="{{ route('katalog.index') }}" class="btn">Get Started</a>
 
-        {{-- trust badges --}}
         <div class="hero-trust">
           <span>⭐ 4.8/5 Reviews</span>
           <span>👥 120K+ Students</span>
@@ -47,7 +46,7 @@
     </div>
   </main>
 
-  {{-- ============== WHY #1 — Jalur Belajar Terarah (gabungan Learning Path + penjelasan) ============== --}}
+  {{-- ============== WHY #1 ============== --}}
   <section class="why-section soft-1">
     <div class="container why-split">
       <div class="why-text">
@@ -75,7 +74,7 @@
     </div>
   </section>
 
-  {{-- ============== WHY #2 — Project-Based & Relevan ============== --}}
+  {{-- ============== WHY #2 ============== --}}
   <section class="why-section soft-2">
     <div class="container why-split reverse">
       <div class="why-media">
@@ -97,7 +96,7 @@
     </div>
   </section>
 
-  {{-- ============== WHY #3 — Komunitas, Mentoring & Karier ============== --}}
+  {{-- ============== WHY #3 ============== --}}
   <section class="why-section soft-3">
     <div class="container why-split">
       <div class="why-text">
@@ -119,74 +118,71 @@
     </div>
   </section>
 
-{{-- ============== INSTRUKTUR (kartu seperti gambar) ============== --}}
-<section class="instructors-pro">
-  <div class="container">
-    <h2 class="section-title" style="text-align:center">Instruktur Terverifikasi</h2>
-    <p class="section-sub">Foto besar, jabatan jelas, dan ringkasan pengalaman yang relevan.</p>
+  {{-- ============== INSTRUKTUR (contoh statis) ============== --}}
+  <section class="instructors-pro">
+    <div class="container">
+      <h2 class="section-title" style="text-align:center">Instruktur Terverifikasi</h2>
+      <p class="section-sub">Foto besar, jabatan jelas, dan ringkasan pengalaman yang relevan.</p>
 
-    <div class="mentor-grid">
-      @foreach([
-        [
-          'name'=>'Bahrul Rozak',
-          'role'=>'Technical Learning Facilitator',
-          'img'=>'https://randomuser.me/api/portraits/men/32.jpg',
-          'desc'=>'Fullstack Engineer yang pernah menangani aplikasi skala besar di sektor finansial & B2B. Fokus pada arsitektur, kinerja, dan reliability.',
-          'gh'=>'#','in'=>'#'
-        ],
-        [
-          'name'=>'Ahmad Oriza',
-          'role'=>'Education Hacker di KelasFullstack',
-          'img'=>'https://randomuser.me/api/portraits/men/47.jpg',
-          'desc'=>'Former Lead Programmer untuk proyek enterprise lintas industri. Lebih dari 20 proyek freelance dan konsultan kurikulum teknologi.',
-          'gh'=>'#','in'=>'#'
-        ],
-        [
-          'name'=>'Toni Haryanto',
-          'role'=>'Mentor Fullstack Developer',
-          'img'=>'https://randomuser.me/api/portraits/men/52.jpg',
-          'desc'=>'Pernah menjadi Lead Developer OTT Platform, terlibat dalam proyek LMS & pemerintahan. Pencipta framework internal komunitas.',
-          'gh'=>'#','in'=>'#'
-        ],
-        [
-          'name'=>'Aditya Fakhri Riansyah',
-          'role'=>'Technical Learning Facilitator',
-          'img'=>'https://randomuser.me/api/portraits/men/76.jpg',
-          'desc'=>'Aktif sebagai mentor, pembicara event teknologi, serta membimbing ratusan siswa dari nol hingga siap karier.',
-          'gh'=>'#','in'=>'#'
-        ],
-      ] as $m)
-        <article class="mentor-card">
-          <div class="mentor-photo">
-            <img src="{{ $m['img'] }}" alt="{{ $m['name'] }}">
-          </div>
-          <div class="mentor-body">
-            <h3 class="mentor-name">{{ $m['name'] }}</h3>
-            <div class="mentor-role">{{ $m['role'] }}</div>
-            <p class="mentor-desc">{{ $m['desc'] }}</p>
-
-            <div class="mentor-social">
-              {{-- GitHub --}}
-              <a class="social-btn" href="{{ $m['gh'] }}" target="_blank" rel="noopener" aria-label="GitHub {{ $m['name'] }}">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58 0-.29-.01-1.06-.02-2.07-3.34.73-4.05-1.61-4.05-1.61-.55-1.41-1.34-1.79-1.34-1.79-1.09-.75.08-.74.08-.74 1.2.08 1.83 1.23 1.83 1.23 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.67-.31-5.48-1.34-5.48-5.95 0-1.31.47-2.38 1.23-3.22-.12-.31-.54-1.55.12-3.23 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 6.84c1.02.01 2.05.14 3.01.41 2.29-1.55 3.3-1.23 3.3-1.23.66 1.68.24 2.92.12 3.23.77.84 1.23 1.91 1.23 3.22 0 4.62-2.81 5.63-5.49 5.94.43.37.81 1.1.81 2.22 0 1.6-.01 2.89-.01 3.29 0 .32.22.7.83.58A12 12 0 0 0 12 .5Z"/>
-                </svg>
-              </a>
-              {{-- LinkedIn --}}
-              <a class="social-btn" href="{{ $m['in'] }}" target="_blank" rel="noopener" aria-label="LinkedIn {{ $m['name'] }}">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5.001 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM14.5 9c-2.33 0-3.5 1.27-3.5 2.73V21h4v-6.2c0-1.07.74-1.8 1.8-1.8 1.02 0 1.7.69 1.7 1.8V21h4v-7.06C22.5 10.55 20.7 9 18.2 9c-1.24 0-2.38.54-3 1.41V9h-0.7z"/>
-                </svg>
-              </a>
+      <div class="mentor-grid">
+        @foreach([
+          [
+            'name'=>'Bahrul Rozak',
+            'role'=>'Technical Learning Facilitator',
+            'img'=>'https://randomuser.me/api/portraits/men/32.jpg',
+            'desc'=>'Fullstack Engineer yang pernah menangani aplikasi skala besar di sektor finansial & B2B. Fokus pada arsitektur, kinerja, dan reliability.',
+            'gh'=>'#','in'=>'#'
+          ],
+          [
+            'name'=>'Ahmad Oriza',
+            'role'=>'Education Hacker di KelasFullstack',
+            'img'=>'https://randomuser.me/api/portraits/men/47.jpg',
+            'desc'=>'Former Lead Programmer untuk proyek enterprise lintas industri. Lebih dari 20 proyek freelance dan konsultan kurikulum teknologi.',
+            'gh'=>'#','in'=>'#'
+          ],
+          [
+            'name'=>'Toni Haryanto',
+            'role'=>'Mentor Fullstack Developer',
+            'img'=>'https://randomuser.me/api/portraits/men/52.jpg',
+            'desc'=>'Pernah menjadi Lead Developer OTT Platform, terlibat dalam proyek LMS & pemerintahan. Pencipta framework internal komunitas.',
+            'gh'=>'#','in'=>'#'
+          ],
+          [
+            'name'=>'Aditya Fakhri Riansyah',
+            'role'=>'Technical Learning Facilitator',
+            'img'=>'https://randomuser.me/api/portraits/men/76.jpg',
+            'desc'=>'Aktif sebagai mentor, pembicara event teknologi, serta membimbing ratusan siswa dari nol hingga siap karier.',
+            'gh'=>'#','in'=>'#'
+          ],
+        ] as $m)
+          <article class="mentor-card">
+            <div class="mentor-photo">
+              <img src="{{ $m['img'] }}" alt="{{ $m['name'] }}">
             </div>
-          </div>
-        </article>
-      @endforeach
+            <div class="mentor-body">
+              <h3 class="mentor-name">{{ $m['name'] }}</h3>
+              <div class="mentor-role">{{ $m['role'] }}</div>
+              <p class="mentor-desc">{{ $m['desc'] }}</p>
+              <div class="mentor-social">
+                <a class="social-btn" href="{{ $m['gh'] }}" target="_blank" rel="noopener" aria-label="GitHub {{ $m['name'] }}">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58 0-.29-.01-1.06-.02-2.07-3.34.73-4.05-1.61-4.05-1.61-.55-1.41-1.34-1.79-1.34-1.79-1.09-.75.08-.74.08-.74 1.2.08 1.83 1.23 1.83 1.23 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.67-.31-5.48-1.34-5.48-5.95 0-1.31.47-2.38 1.23-3.22-.12-.31-.54-1.55.12-3.23 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 6.84c1.02.01 2.05.14 3.01.41 2.29-1.55 3.3-1.23 3.3-1.23.66 1.68.24 2.92.12 3.23.77.84 1.23 1.91 1.23 3.22 0 4.62-2.81 5.63-5.49 5.94.43.37.81 1.1.81 2.22 0 1.6-.01 2.89-.01 3.29 0 .32.22.7.83.58A12 12 0 0 0 12 .5Z"/>
+                  </svg>
+                </a>
+                <a class="social-btn" href="{{ $m['in'] }}" target="_blank" rel="noopener" aria-label="LinkedIn {{ $m['name'] }}">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5.001 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM14.5 9c-2.33 0-3.5 1.27-3.5 2.73V21h4v-6.2c0-1.07.74-1.8 1.8-1.8 1.02 0 1.7.69 1.7 1.8V21h4v-7.06C22.5 10.55 20.7 9 18.2 9c-1.24 0-2.38.54-3 1.41V9h-0.7z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </article>
+        @endforeach
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-  {{-- ============== CTA AJAKAN GABUNG ============== --}}
+  {{-- ============== CTA ============== --}}
   <section class="cta-join">
     <div class="container cta-wrap">
       <div class="cta-text">
@@ -201,42 +197,41 @@
     </div>
   </section>
 
-  {{-- ============== TESTIMONIALS ============== --}}
-  <section class="testimonials">
+  {{-- ============== TESTIMONIALS (dinamis & rapi) ============== --}}
+  <section class="testimonials" id="testimonials">
     <div class="container">
-      <h2 class="section-title">What Our Students Say</h2>
-      <div class="testimonial-container">
-        @foreach ([
-          [
-            'text' => 'This platform helped me land my first job as a web developer. The courses are very clear and easy to follow!',
-            'img'  => 'https://randomuser.me/api/portraits/women/49.jpg',
-            'name' => 'Sarah Johnson', 'role' => 'Web Development Student'
-          ],
-          [
-            'text' => 'I love how flexible the learning schedule is. I can study at my own pace and still get quality content.',
-            'img'  => 'https://randomuser.me/api/portraits/men/35.jpg',
-            'name' => 'Michael Lee', 'role' => 'Mobile Development Student'
-          ],
-          [
-            'text' => 'The data science path was exactly what I needed to start freelancing. Highly recommend this platform!',
-            'img'  => 'https://randomuser.me/api/portraits/men/65.jpg',
-            'name' => 'David Kim', 'role' => 'Data Science Student'
-          ],
-        ] as $t)
-          <div class="testimonial-card">
-            <p class="testimonial-text">“{{ $t['text'] }}”</p>
-            <div class="testimonial-user">
-              <img src="{{ $t['img'] }}" alt="{{ $t['name'] }}" class="testimonial-img" />
+      <h2 class="section-title">Apa Kata Mereka</h2>
+
+      <div class="testi-grid">
+        @forelse($testimonials as $t)
+          @php
+            $name = $t->user->name ?? 'Student';
+            $parts = preg_split('/\s+/', trim($name));
+            $initials = strtoupper(mb_substr($parts[0] ?? '', 0, 1) . mb_substr(end($parts) ?: '', 0, 1));
+            $hue = crc32($name) % 360;
+          @endphp
+
+          <article class="testi-card">
+            <div class="testi-head">
+              <div class="avatar" style="--hue: {{ $hue }}">{{ $initials }}</div>
               <div>
-                <h4>{{ $t['name'] }}</h4>
-                <span>{{ $t['role'] }}</span>
+                <h4 class="testi-name">{{ $name }}</h4>
+                <span class="testi-role">Student</span>
               </div>
             </div>
-          </div>
-        @endforeach
+            {{-- tanpA kutip manual; kutip dibikin CSS ::before --}}
+            <p class="testi-text">{{ $t->content }}</p>
+          </article>
+        @empty
+          <p class="muted-center">Belum ada testimoni.</p>
+        @endforelse
       </div>
+
+      @if(!empty($testiHasMore) && $testiHasMore)
+        <div class="center mt-16">
+          <a href="{{ route('testimoni.index') }}" class="btn btn--ghost">Lihat lainnya</a>
+        </div>
+      @endif
     </div>
   </section>
 @endsection
-
-
