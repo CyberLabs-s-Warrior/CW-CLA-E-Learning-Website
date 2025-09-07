@@ -90,7 +90,23 @@ body { background-color: #f9fbfc; color: #333; }
 
 /* ===== Instructors (kartu foto besar) ===== */
 .instructors-pro{ padding:60px 0; background:#ffffff; }
+
+/* Default mentor grid */
 .mentor-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:22px; }
+
+/* Grid khusus 3 kolom (Home) */
+.mentor-grid.mentor-grid--3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+@media (max-width: 1024px){
+  .mentor-grid.mentor-grid--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px){
+  .mentor-grid.mentor-grid--3 { grid-template-columns: 1fr; }
+}
+
 .mentor-card{
   background:#fff;border:1px solid #efe7d9;border-radius:24px;box-shadow:0 12px 28px rgba(15,23,42,.06);
   overflow:hidden;display:flex;flex-direction:column;transition:transform .18s ease, box-shadow .18s ease;
@@ -101,7 +117,16 @@ body { background-color: #f9fbfc; color: #333; }
 .mentor-body{ padding:18px 18px 14px; display:flex; flex-direction:column; gap:10px; }
 .mentor-name{ font-weight:800; font-size:1.1rem; letter-spacing:-.01em; }
 .mentor-role{ font-weight:700; font-size:.95rem; }
-.mentor-desc{ color:#475569; line-height:1.6; }
+
+/* Clamp deskripsi mentor agar tidak meluber */
+.mentor-desc{
+  color:#475569; line-height:1.6;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;   /* max 4 baris di home */
+  overflow: hidden;
+}
+
 .mentor-social{ display:flex; gap:10px; margin-top:8px; }
 .social-btn{
   width:38px;height:38px; display:grid;place-items:center; border-radius:999px; background:#fff;
@@ -135,44 +160,51 @@ body { background-color: #f9fbfc; color: #333; }
   .hero-content { gap: 28px; }
 }
 
-/* ===== Testimonials (rapi 3 kolom, clamp teks, tombol center) ===== */
-.testimonials{
-  padding:64px 0;
-  background:#ffffff;
+/* === Testimonials (HOME) — scoped biar nggak ke-override file lain === */
+section.testimonials { 
+  padding: 84px 0 92px;   /* jarak vertikal lebih lega */
+  background: #ffffff;
 }
-.testimonials .section-title{ margin-bottom: 18px; }
 
-.testi-grid{
+section.testimonials .section-title{ margin-bottom: 20px; }
+
+/* Paksa 3 kolom & jarak antar kartu besar */
+section.testimonials .testi-grid{
   display:grid;
   grid-template-columns: repeat(3, minmax(0,1fr));
-  gap: 22px;
+  gap: 32px !important;     /* penting: pakai !important bila masih ketimpa */
   align-items: stretch;
 }
-@media (max-width: 1024px){ .testi-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
-@media (max-width: 560px){ .testi-grid{ grid-template-columns: 1fr; } }
+@media (max-width: 1024px){
+  section.testimonials .testi-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+@media (max-width: 560px){
+  section.testimonials .testi-grid{ grid-template-columns: 1fr; }
+}
 
-.testi-card{
+section.testimonials .testi-card{
   background:#fff;
   border:1px solid #e5e7eb;
   border-radius:16px;
   box-shadow:0 8px 24px rgba(2,8,23,.05);
-  padding:16px;
+  padding:16px 16px 18px;
   display:flex;
   flex-direction:column;
   gap:10px;
   height:100%;
   transition:transform .18s ease, box-shadow .18s ease;
 }
-.testi-card:hover{
+section.testimonials .testi-card:hover{
   transform: translateY(-4px);
   box-shadow:0 14px 28px rgba(2,8,23,.08);
 }
 
-.testi-head{ display:flex; align-items:center; gap:12px; }
-.testi-name{ font-size:1rem; font-weight:800; margin:0 0 2px; line-height:1; }
-.testi-role{ font-size:.86rem; color:#64748b; font-weight:600; }
+section.testimonials .testi-head{ display:flex; align-items:center; gap:12px; }
+section.testimonials .testi-name{ font-size:1rem; font-weight:800; margin:0 0 2px; line-height:1; }
+section.testimonials .testi-role{ font-size:.86rem; color:#64748b; font-weight:600; }
 
-.avatar{
+/* Penting: scope .avatar ke dalam section.testimonials supaya tidak ketimpa .avatar global dari file lain */
+section.testimonials .avatar{
   width: 56px; height: 56px; border-radius: 50%;
   display:inline-flex; align-items:center; justify-content:center;
   font-weight:800; font-size:1rem; color:#0b1220;
@@ -181,7 +213,7 @@ body { background-color: #f9fbfc; color: #333; }
   box-shadow: 0 6px 18px rgba(0,0,0,.05);
 }
 
-.testi-text{
+section.testimonials .testi-text{
   color:#334155;
   line-height:1.6;
   position:relative;
@@ -189,13 +221,11 @@ body { background-color: #f9fbfc; color: #333; }
 
   display:-webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 5; /* clamp 5 baris */
+  -webkit-line-clamp: 5;   /* tetap 5 baris, rapi & tidak meluber */
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
-/* dekorasi kutip */
-.testi-text::before{
+section.testimonials .testi-text::before{
   content: "“";
   position:absolute;
   left:-10px; top:-6px;
@@ -206,3 +236,81 @@ body { background-color: #f9fbfc; color: #333; }
 .muted-center{ text-align:center; color:#64748b; }
 .center{ text-align:center; }
 .mt-16{ margin-top:16px; }
+
+/* =================== Reviews Minimal (rv-*) =================== */
+.rv-section{
+  padding: 72px 0;           /* ruang vertikal nyaman */
+  background: #ffffff;
+}
+.rv-head{ text-align:center; margin-bottom: 22px; }
+.rv-title{
+  font-size: clamp(1.4rem, 1.2vw + 1rem, 2rem);
+  font-weight: 800; color:#0f172a;
+}
+.rv-sub{
+  color:#64748b; max-width: 760px; margin: 8px auto 0; line-height: 1.6;
+}
+
+/* Grid 3 kolom, rapi dan konsisten */
+.rv-grid{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  align-items: stretch;
+}
+@media (max-width: 1024px){ .rv-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (max-width: 560px){  .rv-grid{ grid-template-columns: 1fr; } }
+
+/* Kartu minimalis: border tipis + bayangan lembut */
+.rv-card{
+  background:#fff;
+  border: 1px solid #e7eefc;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 8px 20px rgba(15,23,42,.06);
+  display:flex; flex-direction:column; gap:10px;
+  transition: transform .16s ease, box-shadow .16s ease;
+}
+.rv-card:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px rgba(15,23,42,.08);
+}
+
+/* Header sederhana: avatar + identitas */
+.rv-card-head{ display:flex; align-items:center; gap:12px; }
+.rv-avatar{
+  width:52px; height:52px; border-radius:50%;
+  display:inline-flex; align-items:center; justify-content:center;
+  font-weight:800; font-size:.98rem; color:#0b1220;
+  background: hsl(var(--hue, 220) 85% 92%);
+  border: 3px solid color-mix(in srgb, hsl(var(--hue,220) 85% 45%), transparent 85%);
+  box-shadow: 0 4px 12px rgba(0,0,0,.05);
+  flex: 0 0 auto;
+}
+.rv-id{ line-height:1.2; }
+.rv-name{ font-size:1rem; font-weight:800; color:#0f172a; margin:0 0 2px; }
+.rv-role{
+  font-size:.64rem; font-weight:700; color:#0d6efd;
+  background:#eaf2ff; padding:.16rem .55rem; border-radius:999px; width:max-content;
+}
+
+/* Isi teks: ringkas, rapi, tidak meluber */
+.rv-text{
+  color:#334155; line-height:1.7;
+  display:-webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6;    /* tampilkan 6 baris saja (tanpa tombol) */
+  overflow: hidden; text-overflow: ellipsis;
+}
+
+/* Footer & state kosong */
+.rv-foot{ text-align:center; margin-top: 18px; }
+.rv-btn{
+  display:inline-block; text-decoration:none;
+  background:#0d6efd; color:#fff; font-weight:800;
+  padding:10px 16px; border-radius:12px;
+  transition: background .2s ease, transform .08s ease;
+}
+.rv-btn:hover{ background:#0b5ed7; }
+.rv-btn:active{ transform: translateY(1px); }
+.rv-empty{ text-align:center; color:#64748b; }

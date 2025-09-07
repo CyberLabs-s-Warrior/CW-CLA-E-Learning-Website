@@ -1,28 +1,34 @@
 <?php
 
 namespace App\Http\Controllers\Guest;
-use App\Http\Controllers\Controller; // <- penting
-
-use Illuminate\Http\Request;
-
-// app/Http/Controllers/Guest/HomeClientController.php
-namespace App\Http\Controllers\Guest;
 
 use App\Http\Controllers\Controller;
 use App\Models\Testimonial;
+use App\Models\InstructorProfile;
 
 class HomeClientController extends Controller
 {
     public function index()
     {
-        $testimonials   = Testimonial::published()
-                            ->with('user:id,name')
-                            ->latest()
-                            ->take(6)
-                            ->get();
+        // 3 instruktur teratas untuk ditampilkan di beranda
+        $topInstructors = InstructorProfile::query()
+            ->with(['user:id,name'])
+            ->where('is_published', true)
+            ->whereHas('user')
+            ->orderBy('sort_order')
+            ->orderByDesc('updated_at')
+            ->take(3)
+            ->get();
 
-        $testiHasMore   = Testimonial::published()->count() > 6;
+        // testimoni seperti sebelumnya
+        $testimonials = Testimonial::published()
+            ->with('user:id,name')
+            ->latest()
+            ->take(6)
+            ->get();
 
-        return view('guest.home.index', compact('testimonials','testiHasMore'));
+        $testiHasMore = Testimonial::published()->count() > 6;
+
+        return view('guest.home.index', compact('topInstructors', 'testimonials', 'testiHasMore'));
     }
 }

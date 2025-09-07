@@ -3,29 +3,20 @@
 namespace App\Http\Controllers\Guest;
 
 use App\Http\Controllers\Controller;
+use App\Models\InstructorProfile;
 
 class InstrukturClientController extends Controller
 {
     public function index()
     {
-        $instructors = [
-            [
-                'name' => 'Budi Santoso',
-                'skill' => 'Fullstack Developer',
-                'img' => 'https://i.pravatar.cc/150?img=10'
-            ],
-            [
-                'name' => 'Siti Rahma',
-                'skill' => 'UI/UX Designer',
-                'img' => 'https://i.pravatar.cc/150?img=11'
-            ],
-            [
-                'name' => 'Andi Wijaya',
-                'skill' => 'Data Scientist',
-                'img' => 'https://i.pravatar.cc/150?img=12'
-            ],
-        ];
+        $profiles = InstructorProfile::query()
+            ->with(['user:id,name'])    
+            ->where('is_published', true)
+            ->whereHas('user')          
+            ->orderBy('sort_order')
+            ->orderByDesc('updated_at')
+            ->get();
 
-        return view('guest.instruktur.index', compact('instructors'));
+        return view('guest.instruktur.index', compact('profiles'));
     }
 }

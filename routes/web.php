@@ -34,7 +34,8 @@ use App\Http\Controllers\Admin\{
     CommentController,
     ShowcaseController,
     CourseDetailController,
-    LessonController
+    LessonController,
+    InstructorProfileController
  };
 
 /*
@@ -252,6 +253,9 @@ Route::middleware(['auth', 'role:admin|superadmin|instructor'])
         Route::resource('/showcase', ShowcaseController::class)->middleware('can:kelola_showcase');
         Route::resource('/testimoni', TestimoniController::class)
             ->except('show')->middleware('can:kelola_testimoni');
+        Route::resource('/instruktur', InstructorProfileController::class)
+        ->except('show')
+        ->middleware('can:kelola_instructor');
      });
 
 /*

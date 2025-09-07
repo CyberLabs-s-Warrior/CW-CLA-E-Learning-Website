@@ -118,69 +118,63 @@
     </div>
   </section>
 
-  {{-- ============== INSTRUKTUR (contoh statis) ============== --}}
-  <section class="instructors-pro">
-    <div class="container">
-      <h2 class="section-title" style="text-align:center">Instruktur Terverifikasi</h2>
-      <p class="section-sub">Foto besar, jabatan jelas, dan ringkasan pengalaman yang relevan.</p>
+  {{-- ============== INSTRUKTUR (dinamis) ============== --}}
+<section class="instructors-pro">
+  <div class="container">
+    <h2 class="section-title" style="text-align:center">Instruktur Terverifikasi</h2>
+    <p class="section-sub">Foto besar, jabatan jelas, dan ringkasan pengalaman yang relevan.</p>
 
-      <div class="mentor-grid">
-        @foreach([
-          [
-            'name'=>'Bahrul Rozak',
-            'role'=>'Technical Learning Facilitator',
-            'img'=>'https://randomuser.me/api/portraits/men/32.jpg',
-            'desc'=>'Fullstack Engineer yang pernah menangani aplikasi skala besar di sektor finansial & B2B. Fokus pada arsitektur, kinerja, dan reliability.',
-            'gh'=>'#','in'=>'#'
-          ],
-          [
-            'name'=>'Ahmad Oriza',
-            'role'=>'Education Hacker di KelasFullstack',
-            'img'=>'https://randomuser.me/api/portraits/men/47.jpg',
-            'desc'=>'Former Lead Programmer untuk proyek enterprise lintas industri. Lebih dari 20 proyek freelance dan konsultan kurikulum teknologi.',
-            'gh'=>'#','in'=>'#'
-          ],
-          [
-            'name'=>'Toni Haryanto',
-            'role'=>'Mentor Fullstack Developer',
-            'img'=>'https://randomuser.me/api/portraits/men/52.jpg',
-            'desc'=>'Pernah menjadi Lead Developer OTT Platform, terlibat dalam proyek LMS & pemerintahan. Pencipta framework internal komunitas.',
-            'gh'=>'#','in'=>'#'
-          ],
-          [
-            'name'=>'Aditya Fakhri Riansyah',
-            'role'=>'Technical Learning Facilitator',
-            'img'=>'https://randomuser.me/api/portraits/men/76.jpg',
-            'desc'=>'Aktif sebagai mentor, pembicara event teknologi, serta membimbing ratusan siswa dari nol hingga siap karier.',
-            'gh'=>'#','in'=>'#'
-          ],
-        ] as $m)
+    @if($topInstructors->isNotEmpty())
+      <div class="mentor-grid mentor-grid--3">
+        @foreach($topInstructors as $p)
+          @php
+            $name = $p->user->name ?? 'Instruktur';
+            $img  = $p->avatar_path
+                      ? asset('storage/'.$p->avatar_path)
+                      : 'https://ui-avatars.com/api/?name='.urlencode($name).'&background=EAF2FF&color=0D6EFD&bold=true';
+          @endphp
+
           <article class="mentor-card">
             <div class="mentor-photo">
-              <img src="{{ $m['img'] }}" alt="{{ $m['name'] }}">
+              <img src="{{ $img }}" alt="{{ $name }}" loading="lazy">
             </div>
             <div class="mentor-body">
-              <h3 class="mentor-name">{{ $m['name'] }}</h3>
-              <div class="mentor-role">{{ $m['role'] }}</div>
-              <p class="mentor-desc">{{ $m['desc'] }}</p>
-              <div class="mentor-social">
-                <a class="social-btn" href="{{ $m['gh'] }}" target="_blank" rel="noopener" aria-label="GitHub {{ $m['name'] }}">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58 0-.29-.01-1.06-.02-2.07-3.34.73-4.05-1.61-4.05-1.61-.55-1.41-1.34-1.79-1.34-1.79-1.09-.75.08-.74.08-.74 1.2.08 1.83 1.23 1.83 1.23 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.67-.31-5.48-1.34-5.48-5.95 0-1.31.47-2.38 1.23-3.22-.12-.31-.54-1.55.12-3.23 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 6.84c1.02.01 2.05.14 3.01.41 2.29-1.55 3.3-1.23 3.3-1.23.66 1.68.24 2.92.12 3.23.77.84 1.23 1.91 1.23 3.22 0 4.62-2.81 5.63-5.49 5.94.43.37.81 1.1.81 2.22 0 1.6-.01 2.89-.01 3.29 0 .32.22.7.83.58A12 12 0 0 0 12 .5Z"/>
-                  </svg>
-                </a>
-                <a class="social-btn" href="{{ $m['in'] }}" target="_blank" rel="noopener" aria-label="LinkedIn {{ $m['name'] }}">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5.001 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM14.5 9c-2.33 0-3.5 1.27-3.5 2.73V21h4v-6.2c0-1.07.74-1.8 1.8-1.8 1.02 0 1.7.69 1.7 1.8V21h4v-7.06C22.5 10.55 20.7 9 18.2 9c-1.24 0-2.38.54-3 1.41V9h-0.7z"/>
-                  </svg>
-                </a>
-              </div>
+              <h3 class="mentor-name">{{ $name }}</h3>
+              <div class="mentor-role">{{ $p->primary_skill }}</div>
+              <p class="mentor-desc">{{ $p->short_bio }}</p>
+
+              @if($p->github_url || $p->linkedin_url)
+                <div class="mentor-social">
+                  @if($p->github_url)
+                    <a class="social-btn" href="{{ $p->github_url }}" target="_blank" rel="noopener" aria-label="GitHub {{ $name }}">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58 0-.29-.01-1.06-.02-2.07-3.34.73-4.05-1.61-4.05-1.61-.55-1.41-1.34-1.79-1.34-1.79-1.09-.75.08-.74.08-.74 1.2.08 1.83 1.23 1.83 1.23 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.67-.31-5.48-1.34-5.48-5.95 0-1.31.47-2.38 1.23-3.22-.12-.31-.54-1.55.12-3.23 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 6.84c1.02.01 2.05.14 3.01.41 2.29-1.55 3.3-1.23 3.3-1.23.66 1.68.24 2.92.12 3.23.77.84 1.23 1.91 1.23 3.22 0 4.62-2.81 5.63-5.49 5.94.43.37.81 1.1.81 2.22 0 1.6-.01 2.89-.01 3.29 0 .32.22.7.83.58A12 12 0 0 0 12 .5Z"/>
+                      </svg>
+                    </a>
+                  @endif
+                  @if($p->linkedin_url)
+                    <a class="social-btn" href="{{ $p->linkedin_url }}" target="_blank" rel="noopener" aria-label="LinkedIn {{ $name }}">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5.001 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM14.5 9c-2.33 0-3.5 1.27-3.5 2.73V21h4v-6.2c0-1.07.74-1.8 1.8-1.8 1.02 0 1.7.69 1.7 1.8V21h4v-7.06C22.5 10.55 20.7 9 18.2 9c-1.24 0-2.38.54-3 1.41V9h-.7z"/>
+                      </svg>
+                    </a>
+                  @endif
+                </div>
+              @endif
             </div>
           </article>
         @endforeach
       </div>
-    </div>
-  </section>
+
+      <div class="center" style="margin-top:16px;">
+        <a href="{{ route('instruktur.index') }}" class="btn btn--light">Lihat semua instruktur</a>
+      </div>
+    @else
+      <p class="muted-center">Belum ada instruktur yang ditampilkan.</p>
+    @endif
+  </div>
+</section>
+
 
   {{-- ============== CTA ============== --}}
   <section class="cta-join">
@@ -197,41 +191,46 @@
     </div>
   </section>
 
-  {{-- ============== TESTIMONIALS (dinamis & rapi) ============== --}}
-  <section class="testimonials" id="testimonials">
-    <div class="container">
-      <h2 class="section-title">Apa Kata Mereka</h2>
-
-      <div class="testi-grid">
-        @forelse($testimonials as $t)
-          @php
-            $name = $t->user->name ?? 'Student';
-            $parts = preg_split('/\s+/', trim($name));
-            $initials = strtoupper(mb_substr($parts[0] ?? '', 0, 1) . mb_substr(end($parts) ?: '', 0, 1));
-            $hue = crc32($name) % 360;
-          @endphp
-
-          <article class="testi-card">
-            <div class="testi-head">
-              <div class="avatar" style="--hue: {{ $hue }}">{{ $initials }}</div>
-              <div>
-                <h4 class="testi-name">{{ $name }}</h4>
-                <span class="testi-role">Student</span>
-              </div>
-            </div>
-            {{-- tanpA kutip manual; kutip dibikin CSS ::before --}}
-            <p class="testi-text">{{ $t->content }}</p>
-          </article>
-        @empty
-          <p class="muted-center">Belum ada testimoni.</p>
-        @endforelse
-      </div>
-
-      @if(!empty($testiHasMore) && $testiHasMore)
-        <div class="center mt-16">
-          <a href="{{ route('testimoni.index') }}" class="btn btn--ghost">Lihat lainnya</a>
-        </div>
-      @endif
+ {{-- ============== REVIEWS (minimal) ============== --}}
+<section id="reviews" class="rv-section">
+  <div class="container">
+    <div class="rv-head">
+      <h2 class="rv-title">Apa Kata Mereka</h2>
+      <p class="rv-sub">Ulasan dari member yang telah mengikuti kursus di Learnify.</p>
     </div>
-  </section>
+
+    <div class="rv-grid">
+      @forelse($testimonials as $t)
+        @php
+          $name = $t->user->name ?? 'Student';
+          $parts = preg_split('/\s+/', trim($name));
+          $initials = strtoupper(mb_substr($parts[0] ?? '', 0, 1) . mb_substr(end($parts) ?: '', 0, 1));
+          $hue = crc32($name) % 360;
+        @endphp
+
+        <article class="rv-card">
+          <div class="rv-card-head">
+            <div class="rv-avatar" style="--hue: {{ $hue }}">{{ $initials }}</div>
+            <div class="rv-id">
+              <h3 class="rv-name">{{ $name }}</h3>
+              <span class="rv-role">Student</span>
+            </div>
+          </div>
+
+          <p class="rv-text">{{ $t->content }}</p>
+        </article>
+      @empty
+        <p class="rv-empty">Belum ada testimoni.</p>
+      @endforelse
+    </div>
+
+    @if(!empty($testiHasMore) && $testiHasMore)
+      <div class="rv-foot">
+        <a href="{{ route('testimoni.index') }}" class="rv-btn">Lihat semua testimoni</a>
+      </div>
+    @endif
+  </div>
+</section>
+
+  
 @endsection

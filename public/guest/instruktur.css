@@ -1,154 +1,169 @@
 /* Reset */
-* {
-    margin: 0;
-    padding: 0;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    font-family: "Segoe UI", sans-serif;
-    background-color: #f9f9f9;
-    color: #0f172a;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f9f9f9;
+  color: #0f172a;
 }
 
 /* Section Wrapper */
 .instruktur-section {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 3rem 1.5rem;
+  max-width: 1100px;            /* area konten */
+  margin: 0 auto;
+  padding: 2.5rem 1rem;
+  overflow: visible;             /* pastikan tombol panah tidak terpotong */
 }
 
 /* Header */
-.instruktur-header {
-    text-align: center;
-    margin-bottom: 2.5rem;
-}
-
+.instruktur-header { text-align: center; margin-bottom: 2rem; }
 .instruktur-title {
-    font-size: 2.3rem;
-    font-weight: 800;
-    color: #0d6efd;
-    margin-bottom: 0.5rem;
+  font-size: 1.9rem; font-weight: 800; color: #0d6efd; margin-bottom: .4rem;
 }
-
 .instruktur-subtitle {
-    font-size: 1.05rem;
-    color: #64748b;
-    max-width: 600px;
-    margin: 0 auto;
-    line-height: 1.6;
+  font-size: .98rem; color: #64748b; max-width: 560px; margin: 0 auto; line-height: 1.55;
 }
 
-/* Grid Layout */
-.instruktur-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.8rem;
-}
+/* Splide slide wrapper */
+.splide__slide { display: flex; align-items: stretch; }
 
 /* Card */
 .instruktur-card {
-    background: #fff;
-    border: 1px solid #e2e8f0;
-    border-radius: 18px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2rem 1.2rem;
-    text-align: center;
-    position: relative;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.05);
+  transition: transform .25s ease, box-shadow .25s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem .9rem;        /* compact */
+  text-align: center;
+  width: 100%;
 }
-
 .instruktur-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0,0,0,.08);
 }
 
-/* Gambar */
+/* Foto */
 .instruktur-img-wrapper {
-    width: 120px;
-    height: 120px;
-    margin-bottom: 1rem;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 3px solid #0d6efd20;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f1f5f9;
+  width: 88px; height: 88px;
+  margin-bottom: .75rem;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #0d6efd20;
+  display: flex; align-items: center; justify-content: center;
+  background: #f1f5f9;
 }
-
 .instruktur-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform .3s ease;
+  width: 100%; height: 100%; object-fit: cover; transition: transform .3s ease;
 }
-
-.instruktur-card:hover .instruktur-img-wrapper img {
-    transform: scale(1.05);
-}
+.instruktur-card:hover .instruktur-img-wrapper img { transform: scale(1.05); }
 
 /* Info */
-.instruktur-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.instruktur-name {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #0f172a;
-}
-
+.instruktur-info { display: flex; flex-direction: column; gap: .4rem; width: 100%; }
+.instruktur-name { font-size: 1.06rem; font-weight: 700; color: #0f172a; }
 .instruktur-skill {
-    font-size: 0.95rem;
-    color: #0d6efd;
-    background: #eaf2ff;
-    padding: 0.3rem 0.8rem;
-    border-radius: 999px;
-    display: inline-block;
-    margin: 0 auto;
-    font-weight: 600;
+  font-size: .86rem; color: #0d6efd; background: #eaf2ff;
+  padding: .2rem .6rem; border-radius: 999px; display: inline-block; margin: 0 auto; font-weight: 600;
 }
 
+/* Deskripsi: tidak dipotong, wrap rapi, hormati baris baru admin */
 .instruktur-desc {
-    font-size: 0.9rem;
-    color: #475569;
-    line-height: 1.5;
-    margin: 0.5rem 0 1rem;
-    max-width: 300px;
-    margin-left: auto;
-    margin-right: auto;
+  font-size: .95rem;
+  color: #475569;
+  line-height: 1.6;
+  margin: .4rem 0 .6rem;
+  max-width: 360px;
+  margin-left: auto; margin-right: auto;
+  white-space: pre-line;        /* hormati \n dari admin */
+  overflow-wrap: anywhere;      /* bungkus kata/URL panjang */
+  word-break: break-word;
 }
 
-/* Tombol */
-.instruktur-btn {
-    background: #0d6efd;
-    color: #fff;
-    padding: 0.55rem 1.1rem;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.95rem;
-    text-decoration: none;
-    transition: background 0.2s ease;
-    display: inline-block;
+/* Social */
+.instruktur-social{
+  display:flex; gap:8px; justify-content:center; margin-top:.1rem;
+}
+.social-btn{
+  width:34px; height:34px; display:grid; place-items:center;
+  border-radius:999px; background:#fff; border:1.5px solid #e5e7eb;
+  box-shadow:0 4px 10px rgba(0,0,0,.06);
+  transition:transform .12s ease, background .12s ease;
+  color:#0f172a; text-decoration:none;
+}
+.social-btn:hover{ transform:translateY(-2px); background:#f8fafc; }
+.social-btn i{ font-size:16px; line-height:1; }
+
+/* Empty state */
+.empty-box{
+  border:1px dashed #cbd5e1; border-radius:12px; padding:22px;
+  text-align:center; color:#64748b; background:#ffffff;
+}
+.empty-ico{ font-size:22px; margin-bottom:8px }
+
+/* ====== Splide tweaks ====== */
+.instructor-splide {
+  position: relative;      /* referensi posisi arrows */
+  overflow: visible;       /* jangan potong panah yang keluar sisi */
 }
 
-.instruktur-btn:hover {
-    background: #0b5ed7;
+/* ukuran tombol panah */
+.instruktur-arrows .splide__arrow {
+  width: 38px; height: 38px;
+  border-radius: 999px;
+  background: #0d6efd;
+  opacity: 1;
+  border: none;
+  box-shadow: 0 6px 14px rgba(13,110,253,.25);
+  display: grid; place-items: center;
+  transition: transform .15s ease, background .15s ease;
+  z-index: 2;              /* di atas area biasa, tapi bakal di luar kartu */
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .instruktur-title {
-        font-size: 1.8rem;
-    }
+/* ikon panah putih */
+.instruktur-arrows .splide__arrow svg { fill: #fff; }
 
-    .instruktur-subtitle {
-        font-size: 0.95rem;
-    }
+/* POSISI: di sisi LUAR kiri/kanan, sejajar vertikal tengah */
+.instruktur-arrows .splide__arrow--prev,
+.instruktur-arrows .splide__arrow--next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* geser ke luar area slider (tidak menutupi card) */
+.instruktur-arrows .splide__arrow--prev { left: -56px; }  /* keluar 56px kiri */
+.instruktur-arrows .splide__arrow--next { right: -56px; } /* keluar 56px kanan */
+
+.instruktur-arrows .splide__arrow:hover { background: #0b5ed7; }
+.instruktur-arrows .splide__arrow:active { transform: translateY(-50%) scale(.98); }
+
+/* Pagination aktif (kalau nanti diaktifkan) */
+.instruktur-pagination .splide__pagination__page.is-active { background: #0d6efd; }
+
+/* Responsif: dekatkan panah saat layar lebih sempit */
+@media (max-width: 1200px){
+  .instruktur-arrows .splide__arrow--prev { left: -44px; }
+  .instruktur-arrows .splide__arrow--next { right: -44px; }
+}
+
+/* Di mobile, letakkan tombol panah DI BAWAH slider (tidak menumpuk) */
+@media (max-width: 680px){
+  .instruktur-arrows .splide__arrow {
+    top: auto;
+    bottom: -46px;        /* muncul di bawah track */
+    transform: none;
+  }
+  .instruktur-arrows .splide__arrow--prev {
+    left: 50%;
+    transform: translateX(-120%);  /* geser ke kiri dari tengah */
+  }
+  .instruktur-arrows .splide__arrow--next {
+    left: 50%;
+    transform: translateX(20%);     /* geser ke kanan dari tengah */
+  }
+  /* beri ruang bawah agar tombol tak kepotong */
+  .instructor-splide { padding-bottom: 48px; }
 }

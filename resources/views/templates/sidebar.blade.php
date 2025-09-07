@@ -157,59 +157,70 @@
         @endrole
 
 {{-- Landing Page (CRUD) --}}
-@canany(['kelola_about','kelola_contact','kelola_showcase','kelola_testimoni'])
-<li class="nav-item has-treeview
-    {{ request()->routeIs('admin.about.*')
-    || request()->routeIs('admin.contact.*')
-    || request()->routeIs('admin.showcase.*')   /* perbaiki dari showcases -> showcase */
-    || request()->routeIs('admin.testimoni.*')  /* perbaiki active check */
-      ? 'active' : '' }}">
-  <a href="#" class="nav-link" aria-expanded="{{ request()->routeIs('admin.about.*') || request()->routeIs('admin.contact.*') || request()->routeIs('admin.showcase.*') || request()->routeIs('admin.testimoni.*') ? 'true' : 'false' }}">
-    <i class="fa-solid fa-layer-group me-2"></i>
-    Landing Page
-    <i class="fa-solid fa-caret-right ms-auto icon-collapsed"></i>
-    <i class="fa-solid fa-caret-down ms-auto icon-expanded"></i>
-  </a>
-
-  <ul class="nav nav-treeview">
-    @can('kelola_about')
-    <li class="nav-item">
-      <a href="{{ route('admin.about.index') }}"
-         class="nav-link {{ request()->routeIs('admin.about.*') ? 'active' : '' }}">
-        <i class="fa-solid fa-circle-info me-2 text-secondary"></i> About
+    @canany(['kelola_about','kelola_contact','kelola_showcase','kelola_testimoni'])
+    <li class="nav-item has-treeview
+        {{ request()->routeIs('admin.about.*')
+        || request()->routeIs('admin.contact.*')
+        || request()->routeIs('admin.showcase.*')   /* perbaiki dari showcases -> showcase */
+        || request()->routeIs('admin.testimoni.*')  /* perbaiki active check */
+          ? 'active' : '' }}">
+      <a href="#" class="nav-link" aria-expanded="{{ request()->routeIs('admin.about.*') || request()->routeIs('admin.contact.*') || request()->routeIs('admin.showcase.*') || request()->routeIs('admin.testimoni.*') ? 'true' : 'false' }}">
+        <i class="fa-solid fa-layer-group me-2"></i>
+        Landing Page
+        <i class="fa-solid fa-caret-right ms-auto icon-collapsed"></i>
+        <i class="fa-solid fa-caret-down ms-auto icon-expanded"></i>
       </a>
-    </li>
-    @endcan
 
-    @can('kelola_contact')
-    <li class="nav-item">
-      <a href="{{ route('admin.contact.index') }}"
-         class="nav-link {{ request()->routeIs('admin.contact.*') ? 'active' : '' }}">
-        <i class="fa-solid fa-envelope me-2 text-secondary"></i> Contact
-      </a>
-    </li>
-    @endcan
+      <ul class="nav nav-treeview">
+        @can('kelola_about')
+        <li class="nav-item">
+          <a href="{{ route('admin.about.index') }}"
+            class="nav-link {{ request()->routeIs('admin.about.*') ? 'active' : '' }}">
+            <i class="fa-solid fa-circle-info me-2 text-secondary"></i> About
+          </a>
+        </li>
+        @endcan
 
-    @can('kelola_showcase')
-    <li class="nav-item">
-      <a href="{{ route('admin.showcase.index') }}"
-         class="nav-link {{ request()->routeIs('admin.showcase.*') ? 'active' : '' }}">
-        <i class="fa-solid fa-lightbulb me-2 text-secondary"></i> Showcase
-      </a>
-    </li>
-    @endcan
+        @can('kelola_contact')
+        <li class="nav-item">
+          <a href="{{ route('admin.contact.index') }}"
+            class="nav-link {{ request()->routeIs('admin.contact.*') ? 'active' : '' }}">
+            <i class="fa-solid fa-envelope me-2 text-secondary"></i> Contact
+          </a>
+        </li>
+        @endcan
 
-    @can('kelola_testimoni')
-    <li class="nav-item">
-      <a href="{{ route('admin.testimoni.index') }}"
-         class="nav-link {{ request()->routeIs('admin.testimoni.*') ? 'active' : '' }}">
-        <i class="fa-solid fa-comment me-2 text-secondary"></i> Testimoni
-      </a>
+        @can('kelola_showcase')
+        <li class="nav-item">
+          <a href="{{ route('admin.showcase.index') }}"
+            class="nav-link {{ request()->routeIs('admin.showcase.*') ? 'active' : '' }}">
+            <i class="fa-solid fa-lightbulb me-2 text-secondary"></i> Showcase
+          </a>
+        </li>
+        @endcan
+
+        @can('kelola_testimoni')
+        <li class="nav-item">
+          <a href="{{ route('admin.testimoni.index') }}"
+            class="nav-link {{ request()->routeIs('admin.testimoni.*') ? 'active' : '' }}">
+            <i class="fa-solid fa-comment me-2 text-secondary"></i> Testimoni
+          </a>
+        </li>
+        @endcan
+
+        {{-- contoh di dalam dropdown Landing Page --}}
+        @can('kelola_instructor')
+        <li class="nav-item">
+          <a href="{{ route('admin.instruktur.index') }}"
+            class="nav-link {{ request()->routeIs('admin.instructors.*') ? 'active' : '' }}">
+            <i class="fa-solid fa-chalkboard-user me-2"></i> Instructors
+          </a>
+        </li>
+        @endcan
+
+      </ul>
     </li>
-    @endcan
-  </ul>
-</li>
-@endcanany
+    @endcanany
 
 
         {{-- Course (treeview) --}}
