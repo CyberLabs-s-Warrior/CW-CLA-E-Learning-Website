@@ -9,7 +9,7 @@ class CourseDetail extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
+     protected $fillable = [
         'course_id',
         'description',
         'outcomes',
@@ -33,5 +33,20 @@ class CourseDetail extends Model
         } else {
             return $remainingSeconds . ' detik';
         }
+    }
+
+    public function instructors()
+    {
+        return $this->belongsToMany(
+            InstructorProfile::class,
+            'course_detail_instructor',
+            'course_detail_id',
+            'instructor_id'
+        );
+    }
+
+        public function instructorProfile()
+    {
+        return $this->belongsTo(InstructorProfile::class, 'instructor_id');
     }
 }
