@@ -1,7 +1,6 @@
 <?php
 
 namespace Database\Seeders;
-use App\Models\User;
 
 use Illuminate\Database\Seeder;
 
@@ -10,12 +9,15 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            RoleSeeder::class,
-            PermissionSeeder::class, 
-            ContactSeeder::class,
-            UserSeeder::class,
+            RoleSeeder::class,         // BUAT roles (tanpa sync permission)
+            PermissionSeeder::class,   // BUAT permissions & SYNC ke roles
+            UserSeeder::class,         // BUAT user & assign role
             SuperadminSeeder::class,
+            ContactSeeder::class,
             AboutSeeder::class,
+            ShowcaseSeeder::class
         ]);
+
+        $this->command->call('permission:cache-reset');
     }
 }

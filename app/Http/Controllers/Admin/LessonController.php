@@ -65,7 +65,7 @@
 
                 $extension = $request->file('media')->extension();
                 if (in_array($extension, ['mp4', 'mov', 'avi'])) {
-                    $getID3 = new \getID3;
+                    $getID3 = new getID3;
                     $fileInfo = $getID3->analyze($request->file('media')->getPathname());
                     if (isset($fileInfo['playtime_seconds'])) {
                         $duration = (int) ceil($fileInfo['playtime_seconds']);

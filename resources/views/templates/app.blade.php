@@ -12,10 +12,12 @@
   <meta name="keywords" content="admin dashboard, bootstrap 5, adminlte">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-
   <title>@yield('title', 'Dashboard')</title>
-  
 
+  {{-- ⬇️ penting: render semua @push('styles') dari view --}}
+  @stack('styles')
+  {{-- opsional: jika ada section khusus head --}}
+  @yield('head')
 </head>
 
 <body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
@@ -31,10 +33,12 @@
     @include('templates.footer')
   </div>
 
-@stack('scripts')
-<script src="..."></script>
-@yield('scripts')
-<!-- SweetAlert2 CDN -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  {{-- script dari stack --}}
+  @stack('scripts')
+  {{-- kalau ada section scripts spesifik halaman --}}
+  @yield('scripts')
+
+  {{-- SweetAlert2 (pakai defer supaya tidak block) --}}
+  <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

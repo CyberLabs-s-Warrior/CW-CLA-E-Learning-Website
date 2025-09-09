@@ -1,6 +1,5 @@
 {{-- Font Awesome --}}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-  crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
 {{-- Inter Font --}}
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
@@ -64,7 +63,7 @@
     margin-left: 0.5rem;
   }
 
-  .nav-item.active>.nav-treeview {
+  .nav-item.active > .nav-treeview {
     display: block;
     animation: fadeIn 0.3s ease-in-out;
   }
@@ -122,24 +121,16 @@
   }
 
   @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-5px);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(-5px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 </style>
 
 <aside class="app-sidebar" data-bs-theme="dark">
-  <!-- Brand -->
   <div class="sidebar-brand p-3">
     <a href="{{ url('/') }}" class="text-decoration-none d-flex align-items-center">
-      <i class="fas fa-graduation-cap me-2 text-primary"></i>
-      <span class="fw-semibold">e‑Larning</span>
+      <i class="fa-solid fa-graduation-cap me-2 text-primary"></i>
+      <span class="fw-semibold">e-Learning</span>
     </a>
   </div>
 
@@ -147,12 +138,11 @@
   <div class="sidebar-wrapper p-3">
     <nav>
       <ul class="nav nav-pills nav-sidebar flex-column" role="menu" data-accordion="false">
-
         {{-- Dashboard --}}
         <li class="nav-item">
           <a href="{{ route('admin.dashboard.index') }}"
-            class="nav-link {{ request()->routeIs('admin.dashboard.index') ? 'active' : '' }}">
-            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+             class="nav-link {{ request()->routeIs('admin.dashboard.index') ? 'active' : '' }}">
+            <i class="fa-solid fa-gauge-high me-2"></i> Dashboard
           </a>
         </li>
 
@@ -160,76 +150,119 @@
         @role('superadmin')
         <li class="nav-item">
           <a href="{{ route('admin.users.index') }}"
-            class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-            <i class="fas fa-users me-2"></i> User Management
+             class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+            <i class="fa-solid fa-users me-2"></i> User Management
           </a>
         </li>
         @endrole
 
+{{-- Landing Page (CRUD) --}}
+    @canany(['kelola_about','kelola_contact','kelola_showcase','kelola_testimoni'])
+    <li class="nav-item has-treeview
+        {{ request()->routeIs('admin.about.*')
+        || request()->routeIs('admin.contact.*')
+        || request()->routeIs('admin.showcase.*')   /* perbaiki dari showcases -> showcase */
+        || request()->routeIs('admin.testimoni.*')  /* perbaiki active check */
+          ? 'active' : '' }}">
+      <a href="#" class="nav-link" aria-expanded="{{ request()->routeIs('admin.about.*') || request()->routeIs('admin.contact.*') || request()->routeIs('admin.showcase.*') || request()->routeIs('admin.testimoni.*') ? 'true' : 'false' }}">
+        <i class="fa-solid fa-layer-group me-2"></i>
+        Landing Page
+        <i class="fa-solid fa-caret-right ms-auto icon-collapsed"></i>
+        <i class="fa-solid fa-caret-down ms-auto icon-expanded"></i>
+      </a>
 
-
-
-        {{-- About --}}
+      <ul class="nav nav-treeview">
         @can('kelola_about')
-          <li class="nav-item">
-            <a href="{{ route('admin.about.index') }}"
-              class="nav-link {{ request()->routeIs('admin.about.*') ? 'active' : '' }}">
-              <i class="fas fa-info-circle me-2"></i> About
-            </a>
-          </li>
+        <li class="nav-item">
+          <a href="{{ route('admin.about.index') }}"
+            class="nav-link {{ request()->routeIs('admin.about.*') ? 'active' : '' }}">
+            <i class="fa-solid fa-circle-info me-2 text-secondary"></i> About
+          </a>
+        </li>
         @endcan
 
-        {{-- Contact --}}
         @can('kelola_contact')
-          <li class="nav-item">
-            <a href="{{ route('admin.contact.index') }}"
-              class="nav-link {{ request()->routeIs('admin.contact.*') ? 'active' : '' }}">
-              <i class="fas fa-envelope me-2"></i> Contact
-            </a>
-          </li>
+        <li class="nav-item">
+          <a href="{{ route('admin.contact.index') }}"
+            class="nav-link {{ request()->routeIs('admin.contact.*') ? 'active' : '' }}">
+            <i class="fa-solid fa-envelope me-2 text-secondary"></i> Contact
+          </a>
+        </li>
         @endcan
 
-        {{-- Course --}}
+        @can('kelola_showcase')
+        <li class="nav-item">
+          <a href="{{ route('admin.showcase.index') }}"
+            class="nav-link {{ request()->routeIs('admin.showcase.*') ? 'active' : '' }}">
+            <i class="fa-solid fa-lightbulb me-2 text-secondary"></i> Showcase
+          </a>
+        </li>
+        @endcan
+
+        @can('kelola_testimoni')
+        <li class="nav-item">
+          <a href="{{ route('admin.testimoni.index') }}"
+            class="nav-link {{ request()->routeIs('admin.testimoni.*') ? 'active' : '' }}">
+            <i class="fa-solid fa-comment me-2 text-secondary"></i> Testimoni
+          </a>
+        </li>
+        @endcan
+
+        {{-- contoh di dalam dropdown Landing Page --}}
+        @can('kelola_instructor')
+        <li class="nav-item">
+          <a href="{{ route('admin.instruktur.index') }}"
+            class="nav-link {{ request()->routeIs('admin.instructors.*') ? 'active' : '' }}">
+            <i class="fa-solid fa-chalkboard-user me-2"></i> Instructors
+          </a>
+        </li>
+        @endcan
+
+      </ul>
+    </li>
+    @endcanany
+
+
+        {{-- Course (treeview) --}}
         @can('kelola_course')
-              <li class="nav-item has-treeview
-              {{ request()->routeIs('admin.course.*') ||
-          request()->routeIs('admin.course-categories.*') ||
-          request()->routeIs('admin.detail.*') ||
-          request()->routeIs('admin.lessons.*') ? 'active' : '' }}">
-                <a href="#" class="nav-link">
-                  <i class="fas fa-book-reader me-2"></i> Course
-                  <i class="fas fa-caret-right ms-auto icon-collapsed"></i>
-                  <i class="fas fa-caret-down ms-auto icon-expanded"></i>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="{{ route('admin.course-categories.index') }}"
-                      class="nav-link {{ request()->routeIs('admin.course-categories.index') ? 'active' : '' }}">
-                      <i class="fas fa-layer-group me-2 text-secondary"></i> Category
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="{{ route('admin.course.index') }}"
-                      class="nav-link {{ request()->routeIs('admin.course.index') ? 'active' : '' }}">
-                      <i class="fas fa-list-ul me-2 text-secondary"></i> List
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="{{ route('admin.detail.index') }}"
-                      class="nav-link {{ request()->routeIs('admin.detail.*') ? 'active' : '' }}">
-                      <i class="fas fa-file-alt me-2 text-secondary"></i> Detail Course
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="{{ route('admin.lessons.index') }}"
-                      class="nav-link {{ request()->routeIs('admin.lessons.*') ? 'active' : '' }}">
-                      <i class="fas fa-chalkboard-teacher me-2 text-secondary"></i> Lessons
-                    </a>
-                  </li>
-                </ul>
-              </li>
+        <li class="nav-item has-treeview
+            {{ request()->routeIs('admin.course.*')
+            || request()->routeIs('admin.course-categories.*')
+            || request()->routeIs('admin.detail.*')
+            || request()->routeIs('admin.lessons.*') ? 'active' : '' }}">
+          <a href="#" class="nav-link">
+            <i class="fa-solid fa-book-open-reader me-2"></i> Course
+            <i class="fa-solid fa-caret-right ms-auto icon-collapsed"></i>
+            <i class="fa-solid fa-caret-down ms-auto icon-expanded"></i>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{ route('admin.course-categories.index') }}"
+                 class="nav-link {{ request()->routeIs('admin.course-categories.index') ? 'active' : '' }}">
+                <i class="fa-solid fa-layer-group me-2 text-secondary"></i> Category
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('admin.course.index') }}"
+                 class="nav-link {{ request()->routeIs('admin.course.index') ? 'active' : '' }}">
+                <i class="fa-solid fa-list-ul me-2 text-secondary"></i> List
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('admin.detail.index') }}"
+                 class="nav-link {{ request()->routeIs('admin.detail.*') ? 'active' : '' }}">
+                <i class="fa-solid fa-file-lines me-2 text-secondary"></i> Detail Course
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('admin.lessons.index') }}"
+                 class="nav-link {{ request()->routeIs('admin.lessons.*') ? 'active' : '' }}">
+                <i class="fa-solid fa-chalkboard-user me-2 text-secondary"></i> Lessons
+              </a>
+            </li>
+          </ul>
+        </li>
         @endcan
-
       </ul>
     </nav>
   </div>

@@ -1,0 +1,103 @@
+/* Base */
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Segoe UI",sans-serif;background:#f9f9f9;color:#0f172a}
+
+/* Section */
+.katalog-section{max-width:1280px;margin:0 auto;padding:3rem 1.25rem}
+.katalog-head{text-align:center;margin-bottom:1.4rem}
+.katalog-title{font-size:2.1rem;font-weight:800;color:#0d6efd;margin-bottom:.35rem}
+.katalog-subtitle{color:#64748b}
+
+/* Toolbar (dropdowns) */
+.katalog-toolbar{
+  background:#fff;border:1px solid #e2e8f0;border-radius:16px;
+  padding:1rem 1.25rem;box-shadow:0 6px 18px rgba(0,0,0,.04);
+  margin:1rem 0 1.5rem
+}
+.toolbar-row{display:flex;flex-wrap:wrap;align-items:end;gap:1rem;justify-content:center}
+.form-field{display:flex;flex-direction:column;gap:.35rem;min-width:200px}
+.label{font-size:.86rem;font-weight:700;color:#0f172a}
+.select{
+  border:1px solid #e2e8f0;border-radius:10px;padding:.62rem .9rem;background:#fff;
+  font-size:.95rem;cursor:pointer;transition:.2s ease
+}
+.select:focus{outline:none;border-color:#0d6efd;box-shadow:0 0 0 3px #0d6efd22}
+.btn-reset{
+  display:inline-block;padding:.62rem 1rem;border:1px solid #cbd5e1;border-radius:10px;
+  font-weight:700;color:#0f172a;background:#fff;text-decoration:none;transition:.2s ease;height:42px;align-content:center
+}
+.btn-reset:hover{background:rgba(15,23,42,.03)}
+
+/* Grid – muat ≥5 card/row di desktop */
+.katalog-grid{
+  display:grid;gap:1rem;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); /* 220px ⇒ 5 kolom nyaman di 1280px */
+}
+
+/* Card (ramping) */
+.katalog-card{
+  background:#fff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;
+  box-shadow:0 6px 18px rgba(0,0,0,.05);
+  transition:transform .22s ease, box-shadow .22s ease
+}
+.katalog-card:hover{transform:translateY(-6px);box-shadow:0 16px 32px rgba(0,0,0,.08)}
+
+/* Media dibuat compact */
+.katalog-media{position:relative;background:#f1f5f9}
+.katalog-media img{display:block;width:100%;height:140px;object-fit:cover}
+.katalog-badge{
+  position:absolute;left:10px;top:10px;background:#0d6efd;color:#fff;
+  font-weight:800;font-size:.75rem;padding:.22rem .5rem;border-radius:999px;
+  box-shadow:0 4px 12px rgba(13,110,253,.35)
+}
+
+/* Body & meta */
+.katalog-body{padding:.9rem .95rem 1.05rem}
+.katalog-name{font-size:1.02rem;font-weight:800;margin-bottom:.3rem}
+.katalog-meta{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;color:#64748b;font-size:.86rem;margin-bottom:.5rem}
+.meta-item{display:inline-flex;align-items:center;gap:.3rem}
+.meta-ico{opacity:.85}
+.meta-dot{opacity:.5}
+
+/* Stars */
+.stars{display:flex;align-items:center;gap:.25rem;margin:.1rem 0 .6rem}
+.star{font-size:.95rem;line-height:1;color:#cbd5e1}
+.star.is-full{color:#f59e0b} /* amber */
+.stars-num{font-size:.85rem;color:#64748b;margin-left:.15rem}
+
+/* Desc */
+.katalog-desc{color:#475569;font-size:.9rem;line-height:1.45;margin:.15rem 0 .85rem}
+
+/* Level + Price */
+.katalog-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem}
+.katalog-level{
+  background:#e8f1ff;color:#0d6efd;border-radius:999px;
+  font-size:.8rem;font-weight:800;padding:.25rem .6rem
+}
+.katalog-price{
+  font-weight:800;color:#0f172a;background:#f8fafc;border:1px solid #e2e8f0;
+  border-radius:10px;padding:.22rem .5rem;font-size:.85rem
+}
+.katalog-price.is-free{background:#ecf7ff;color:#0d6efd;border-color:#cae3ff}
+
+/* Actions */
+.katalog-actions{display:flex;gap:.45rem}
+.btn-join,.btn-outline{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:.5rem .8rem;border-radius:10px;font-weight:800;text-decoration:none;transition:all .2s ease;font-size:.9rem
+}
+.btn-join{background:#0d6efd;color:#fff;border:1px solid #0d6efd;box-shadow:0 6px 16px rgba(13,110,253,.2)}
+.btn-join:hover{filter:brightness(.96);transform:translateY(-1px)}
+.katalog-actions .btn-outline{border:1px solid #cbd5e1;background:#fff;color:#0f172a}
+.katalog-actions .btn-outline:hover{background:rgba(15,23,42,.03)}
+
+/* Empty */
+.empty{display:flex;justify-content:center;margin-top:2rem}
+.empty-box{border:1px dashed #cbd5e1;background:#fff;border-radius:16px;padding:2rem 2.5rem;color:#64748b;text-align:center}
+.empty-ico{font-size:1.6rem;margin-bottom:.35rem}
+
+/* Responsive */
+@media (max-width:640px){
+  .katalog-title{font-size:1.7rem}
+  .katalog-media img{height:130px}
+}

@@ -29,9 +29,14 @@ use App\Http\Controllers\Admin\{
     ContactController,
     CourseController,
     CourseCategoryController,
+    DetailCourseController,
+    TestimoniController,
+    CommentController,
+    ShowcaseController,
     CourseDetailController,
-    LessonController
-};
+    LessonController,
+    InstructorProfileController
+ };
 
 /*
 |--------------------------------------------------------------------------
@@ -40,8 +45,13 @@ use App\Http\Controllers\Admin\{
 */
 use App\Http\Controllers\Guest\{
     HomeClientController,
-    AboutClientController
-// LoginClientController  // (tidak dipakai; login pakai StudentAuthController)
+    AboutClientController,
+    ShowcaseClientController,
+    ContactClientController,
+    KatalogClientController,
+    TestimoniClientController,
+    InstrukturClientController,
+    // LoginClientController  // (tidak dipakai; login pakai StudentAuthController)
 };
 
 /*
@@ -67,10 +77,32 @@ use App\Http\Controllers\Student\{
 */
 Route::get('/', [HomeClientController::class, 'index'])->name('home.index');
 Route::get('/about', [AboutClientController::class, 'index'])->name('about.index');
+
+Route::get('/contact', [ContactClientController::class, 'index'])->name('contact.index');
+// Showcase publik
+Route::get('/showcase', [ShowcaseClientController::class, 'index'])->name('showcase.index');
+
+Route::get('/testimoni', [TestimoniClientController::class, 'index'])->name('testimoni.index');
+Route::get('/instruktur', [InstrukturClientController::class, 'index'])->name('instruktur.index');
+Route::get('/katalog', [KatalogClientController::class, 'index'])->name('katalog.index');
+
 // Courses (dipindah dari guest ke student)
 Route::get('/course', [CourseClientController::class, 'index'])->name('course.index');
+
+/* === DETAIL & LESSONS — RUTE ASLI (JANGAN DIUBAH) === */
 Route::get('/detail/{slug}', [DetailCourseClientController::class, 'index'])->name('detail.index');
 Route::get('/detail/{slug}/lessons', [LessonClientController::class, 'index'])->name('lesson.index');
+
+/* === ALIAS AMAN (TIDAK MENIMPA RUTE ASLI) ===
+   Alias ini hanya redirect ke rute asli supaya pemanggilan route('course.detail')
+   dan route('course.lessons') tetap bisa dipakai tanpa menimpa nama rute lama. */
+Route::get('/go/course/{slug}', function ($slug) {
+    return redirect()->route('detail.index', ['slug' => $slug]);
+})->name('course.detail');
+
+Route::get('/go/lessons/{slug}', function ($slug) {
+    return redirect()->route('lesson.index', ['slug' => $slug]);
+})->name('course.lessons');
 
 /*
 |--------------------------------------------------------------------------
@@ -203,24 +235,28 @@ Route::middleware(['auth', 'role:admin|superadmin|instructor'])
             Route::delete('/{id}', [CourseCategoryController::class, 'destroyPrice'])->name('course-prices.destroy');
         });
 
-        // Detail Courses
+        // Detail Courses (ADMIN)
         Route::resource('/detail', CourseDetailController::class, )
             ->middleware('can:kelola_course')
             ->names('detail');
 
-        // Tambahan AJAX endpoint untuk ambil data lengkap course
+        // Tambahan AJAX endpoint untuk ambil data lengkap course (ADMIN)
         Route::get('/detail/course/{id}/info', [CourseDetailController::class, 'getCourseInfo'])
             ->middleware('can:kelola_course')
             ->name('detail.course.info');
 
-
-
-        // Lessons
+        // Lessons (ADMIN)
         Route::resource('/lessons', LessonController::class);
-
         Route::get('course/{courseId}/modules', [LessonController::class, 'getModules'])->name('course.modules');
 
-    });
+        // Route::resource('/comments', CommentController::class)->except('show');
+        Route::resource('/showcase', ShowcaseController::class)->middleware('can:kelola_showcase');
+        Route::resource('/testimoni', TestimoniController::class)
+            ->except('show')->middleware('can:kelola_testimoni');
+        Route::resource('/instruktur', InstructorProfileController::class)
+        ->except('show')
+        ->middleware('can:kelola_instructor');
+     });
 
 /*
 |--------------------------------------------------------------------------

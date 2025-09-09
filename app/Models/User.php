@@ -80,4 +80,10 @@ class User extends Authenticatable implements MustVerifyEmail
             ->withTimestamps();
     }
 
+    
+    public function instructorProfile()
+    {
+        return $this->hasOne(\App\Models\InstructorProfile::class);
+    }
+
 }

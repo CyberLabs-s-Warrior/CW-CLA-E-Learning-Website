@@ -11,28 +11,37 @@ class ContactController extends Controller
     public function index()
     {
         $contact = Contact::first();
-        
-
         return view('admin.contact.index', compact('contact'));
     }
 
     public function edit()
     {
-        $contact = Contact::firstOrNew(); // Buat instance baru kalau belum ada
+        $contact = Contact::firstOrNew();
         return view('admin.contact.edit', compact('contact'));
     }
 
     public function update(Request $request)
     {
         $validated = $request->validate([
-            'email' => 'required|email',
-            'phone_number' => 'required|string|max:20',
-            'location_label' => 'required|string|max:100',
-            'location_url' => 'required|url',
+            'email'     => 'required|email',
+            'telepon'   => 'required|string|max:50',
+            'alamat'    => 'required|string',
+            'latitude'  => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
+            'link_maps' => 'nullable|url',
+            'url_email'   => 'nullable|string',
+            'url_telepon' => 'nullable|string',
+            'url_alamat'  => 'nullable|string',
         ]);
 
-        $contact = Contact::first();
+        // Jika link_maps kosong dan koordinat ada → bentuk embed GMaps otomatis
+        if (empty($validated['link_maps']) && !empty($validated['latitude']) && !empty($validated['longitude'])) {
+            $lat = $validated['latitude'];
+            $lng = $validated['longitude'];
+            $validated['link_maps'] = "https://www.google.com/maps?q={$lat},{$lng}&z=16&hl=id&output=embed";
+        }
 
+        $contact = Contact::first();
         if ($contact) {
             $contact->update($validated);
         } else {
@@ -41,5 +50,4 @@ class ContactController extends Controller
 
         return redirect()->route('admin.contact.index')->with('success', 'Kontak berhasil diperbarui.');
     }
-
 }

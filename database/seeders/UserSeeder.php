@@ -12,9 +12,7 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        // Bersihkan relasi role & permission
-        \DB::table('model_has_roles')->delete();
-        \DB::table('model_has_permissions')->delete();
+ 
 
         // Assign permissions ke admin
         $adminRole = Role::findByName('admin');
@@ -25,6 +23,7 @@ class UserSeeder extends Seeder
             'kelola_about',
             'kelola_contact',
             'kelola_course',
+            'kelola_showcase'
         ]);
 
         // Assign permissions ke instructor
