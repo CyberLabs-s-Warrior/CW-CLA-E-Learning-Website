@@ -7,8 +7,11 @@
 @section('content')
     <header class="hero container">
         <div class="hero-media">
-            <img src="{{ $course->img ? asset('storage/' . $course->img) : 'https://via.placeholder.com/600x300' }}" 
-                 alt="{{ $course->name }}">
+            <div class="img-protected"
+                 style="background-image: url('{{ $course->img ? asset('storage/' . $course->img) : 'https://via.placeholder.com/600x300' }}');"
+                 role="img"
+                 aria-label="{{ $course->name }}">
+            </div>
         </div>
 
         <div class="hero-info">
@@ -97,8 +100,11 @@
                 <div class="mentor-grid">
                     @forelse ($course->detail?->instructors as $mentor)
                         <div class="mentor-card">
-                            <img src="{{ $mentor->avatar_path ? asset('storage/' . $mentor->avatar_path) : 'https://via.placeholder.com/200' }}"
-                                alt="{{ $mentor->user->name }}" />
+                            <div class="img-protected mentor-avatar"
+                                 style="background-image: url('{{ $mentor->avatar_path ? asset('storage/' . $mentor->avatar_path) : 'https://via.placeholder.com/200' }}');"
+                                 role="img"
+                                 aria-label="{{ $mentor->user->name }}">
+                            </div>
                             <div class="mentor-info">
                                 <h3>{{ $mentor->user->name }}</h3>
                                 <p class="role">{{ $mentor->primary_skill ?? '-' }}</p>
@@ -140,8 +146,11 @@
                 <ul class="review-list">
                     @forelse ($course->reviews as $review)
                         <li class="review-item">
-                            <img src="{{ $review->user->avatar ?? 'https://i.pravatar.cc/80' }}"
-                                alt="{{ $review->user->name }}" />
+                            <div class="img-protected review-avatar"
+                                 style="background-image: url('{{ $review->user->avatar ?? 'https://i.pravatar.cc/80' }}');"
+                                 role="img"
+                                 aria-label="{{ $review->user->name }}">
+                            </div>
                             <div>
                                 <div class="name">
                                     {{ $review->user->name }}
@@ -168,8 +177,11 @@
         <div class="reco-row">
             @forelse ($relatedCourses as $rel)
                 <a class="reco-card" href="{{ route('detail.index', $rel->slug) }}">
-                    <img src="{{ $rel->img ? asset('storage/' . $rel->img) : 'https://via.placeholder.com/400x200' }}" 
-                         alt="{{ $rel->name }}" />
+                    <div class="img-protected reco-thumb"
+                         style="background-image: url('{{ $rel->img ? asset('storage/' . $rel->img) : 'https://via.placeholder.com/400x200' }}');"
+                         role="img"
+                         aria-label="{{ $rel->name }}">
+                    </div>
                     <div class="reco-body">
                         <h3>{{ $rel->name }}</h3>
                         <div class="mini">

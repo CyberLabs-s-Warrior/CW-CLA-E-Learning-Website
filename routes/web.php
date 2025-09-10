@@ -86,13 +86,6 @@ Route::get('/testimoni', [TestimoniClientController::class, 'index'])->name('tes
 Route::get('/instruktur', [InstrukturClientController::class, 'index'])->name('instruktur.index');
 Route::get('/katalog', [KatalogClientController::class, 'index'])->name('katalog.index');
 
-// Courses (dipindah dari guest ke student)
-Route::get('/course', [CourseClientController::class, 'index'])->name('course.index');
-
-/* === DETAIL & LESSONS — RUTE ASLI (JANGAN DIUBAH) === */
-Route::get('/detail/{slug}', [DetailCourseClientController::class, 'index'])->name('detail.index');
-Route::get('/detail/{slug}/lessons', [LessonClientController::class, 'index'])->name('lesson.index');
-
 /* === ALIAS AMAN (TIDAK MENIMPA RUTE ASLI) ===
    Alias ini hanya redirect ke rute asli supaya pemanggilan route('course.detail')
    dan route('course.lessons') tetap bisa dipakai tanpa menimpa nama rute lama. */
@@ -154,10 +147,12 @@ Route::middleware(['auth', 'role:student', \App\Http\Middleware\CheckUserProfile
     // Dashboard
     Route::get('/dashboard', [ProfileClientController::class, 'index'])->name('dashboard.index');
 
-    // // Courses (dipindah dari guest ke student)
-    // Route::get('/course',                      [CourseClientController::class,       'index'])->name('course.index');
-    // Route::get('/detail/{courseName}',         [DetailCourseClientController::class, 'index'])->name('detail.index');
-    // Route::get('/detail/{courseName}/lessons', [LessonClientController::class,       'index'])->name('lesson.index');
+    // Courses (dipindah dari guest ke student)
+    Route::get('/course', [CourseClientController::class, 'index'])->name('course.index');
+
+/* === DETAIL & LESSONS — RUTE ASLI (JANGAN DIUBAH) === */
+    Route::get('/detail/{slug}', [DetailCourseClientController::class, 'index'])->name('detail.index');
+    Route::get('/detail/{slug}/lessons', [LessonClientController::class, 'index'])->name('lesson.index');
 
     // Payments (dipindah dari guest ke student)
     Route::get('/payment', [PaymentClientController::class, 'index'])->name('payment.index');
