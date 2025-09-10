@@ -44,6 +44,32 @@
             </select>
           </div>
 
+          {{-- Pilih Instruktur (dinamis) --}}
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Instruktur</label>
+            <div id="instructor-wrapper">
+              <div class="input-group mb-2 instructor-item">
+                <select name="instructors[]" class="form-select shadow-sm instructor-select" required>
+                  <option value="">-- Pilih Instruktur --</option>
+                  @foreach($instructors as $ins)
+                    <option value="{{ $ins->id }}"
+                      data-avatar="{{ $ins->avatar_path ? asset('storage/' . $ins->avatar_path) : '/default-avatar.png' }}"
+                      data-skill="{{ $ins->primary_skill }}">
+                      {{ $ins->user->name }}
+                    </option>
+                  @endforeach
+                </select>
+                <button type="button" class="btn btn-outline-danger btn-remove-instructor d-none">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+            <button type="button" class="btn btn-outline-success btn-sm mt-2" id="btn-add-instructor">
+              <i class="fas fa-plus"></i> Tambah Instruktur
+            </button>
+            <small class="text-muted d-block mt-1">Anda bisa menambahkan lebih dari satu instruktur.</small>
+          </div>
+
           {{-- Preview Data Course --}}
           <div id="course-preview" class="mb-4 d-none">
             <div class="border rounded-3 p-3 bg-light">
@@ -104,6 +130,7 @@
 @push('scripts')
   {{-- CKEditor 5 --}}
   <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
+
   <script>
     // Init CKEditor
     document.querySelectorAll('.editor').forEach((el) => {
@@ -153,21 +180,75 @@
           // --- Lessons/Modules ---
           previewLessons.innerHTML = '';
           (data.lessons || []).forEach(l => {
-            // tampilkan sama seperti di lessons.index → "Judul (durasi)"
             previewLessons.innerHTML += `
-              <li>
-                <span class="fw-semibold">${l.title}</span> 
-                <span class="text-muted small">(${l.duration_formatted})</span>
-              </li>`;
+                  <li>
+                    <span class="fw-semibold">${l.title}</span> 
+                    <span class="text-muted small">(${l.duration_formatted})</span>
+                  </li>`;
           });
 
-          // --- Instructors ---
+          // --- Instructors dari Course (informasi tambahan dari server)
           previewInstructors.innerHTML = '';
           (data.instructors || []).forEach(i => {
             previewInstructors.innerHTML += `<li>${i.name}</li>`;
           });
+
+          // sinkron instruktur manual (dari form)
+          updatePreviewInstructors();
         })
         .catch(err => console.error("Fetch error:", err));
+    });
+
+    // --- Dynamic Instructors ---
+    document.addEventListener("DOMContentLoaded", function () {
+      const wrapper = document.getElementById("instructor-wrapper");
+      const btnAdd = document.getElementById("btn-add-instructor");
+
+      function updatePreviewInstructors() {
+        previewInstructors.innerHTML = "";
+        wrapper.querySelectorAll("select").forEach(select => {
+          let option = select.options[select.selectedIndex];
+          if (option && option.value) {
+            let avatar = option.dataset.avatar || "/default-avatar.png";
+            let skill = option.dataset.skill || "";
+            let name = option.text;
+            previewInstructors.innerHTML += `
+                <li class="d-flex align-items-center mb-1">
+                  <img src="${avatar}" class="rounded-circle me-2" style="width:28px;height:28px;object-fit:cover;">
+                  <div>
+                    <span class="fw-semibold">${name}</span>
+                    <small class="text-muted d-block">${skill}</small>
+                  </div>
+                </li>`;
+          }
+        });
+      }
+
+      // tambah instruktur
+      btnAdd.addEventListener("click", function () {
+        const firstItem = wrapper.querySelector(".instructor-item");
+        const newItem = firstItem.cloneNode(true);
+
+        newItem.querySelector("select").value = "";
+        newItem.querySelector(".btn-remove-instructor").classList.remove("d-none");
+
+        wrapper.appendChild(newItem);
+      });
+
+      // hapus instruktur
+      wrapper.addEventListener("click", function (e) {
+        if (e.target.closest(".btn-remove-instructor")) {
+          e.target.closest(".instructor-item").remove();
+          updatePreviewInstructors();
+        }
+      });
+
+      // update preview saat ganti select
+      wrapper.addEventListener("change", function (e) {
+        if (e.target.tagName === "SELECT") {
+          updatePreviewInstructors();
+        }
+      });
     });
   </script>
 @endpush

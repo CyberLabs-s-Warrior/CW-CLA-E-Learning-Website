@@ -7,7 +7,8 @@
 @section('content')
     <header class="hero container">
         <div class="hero-media">
-            <img src="{{ asset('storage/' . $course->img) }}" alt="{{ $course->name }}">
+            <img src="{{ $course->img ? asset('storage/' . $course->img) : 'https://via.placeholder.com/600x300' }}" 
+                 alt="{{ $course->name }}">
         </div>
 
         <div class="hero-info">
@@ -16,8 +17,7 @@
             <div class="rating-line">
                 <div class="stars" aria-label="Rating {{ number_format($course->reviews_avg_rating, 1) }} dari 5">
                     @for ($i = 1; $i <= 5; $i++)
-                        <i
-                            class="{{ $i <= round($course->reviews_avg_rating) ? 'fa-solid fa-star' : 'fa-regular fa-star' }}"></i>
+                        <i class="{{ $i <= round($course->reviews_avg_rating) ? 'fa-solid fa-star' : 'fa-regular fa-star' }}"></i>
                     @endfor
                 </div>
                 <span class="rating-number">{{ number_format($course->reviews_avg_rating, 1) }}</span>
@@ -89,21 +89,37 @@
                 @empty
                     <p>Belum ada modul.</p>
                 @endforelse
-
             </article>
 
             <!-- Mentor -->
             <article id="panel-mentor" class="tab-panel">
                 <h2>Mentor</h2>
                 <div class="mentor-grid">
-                    <div class="mentor-card">
-                        <img src="{{ $course->mentor_avatar ?? 'https://via.placeholder.com/200' }}" alt="Foto Mentor" />
-                        <div class="mentor-info">
-                            <h3>{{ $course->mentor_name ?? 'Mentor Belum Ditentukan' }}</h3>
-                            <p class="role">{{ $course->mentor_role ?? '-' }}</p>
-                            <p class="bio">{{ $course->mentor_bio ?? '-' }}</p>
+                    @forelse ($course->detail?->instructors as $mentor)
+                        <div class="mentor-card">
+                            <img src="{{ $mentor->avatar_path ? asset('storage/' . $mentor->avatar_path) : 'https://via.placeholder.com/200' }}"
+                                alt="{{ $mentor->user->name }}" />
+                            <div class="mentor-info">
+                                <h3>{{ $mentor->user->name }}</h3>
+                                <p class="role">{{ $mentor->primary_skill ?? '-' }}</p>
+                                <p class="bio">{{ $mentor->short_bio ?? '-' }}</p>
+                                <div class="socials">
+                                    @if($mentor->github_url)
+                                        <a href="{{ $mentor->github_url }}" target="_blank" aria-label="GitHub">
+                                            <i class="fa-brands fa-github"></i>
+                                        </a>
+                                    @endif
+                                    @if($mentor->linkedin_url)
+                                        <a href="{{ $mentor->linkedin_url }}" target="_blank" aria-label="LinkedIn">
+                                            <i class="fa-brands fa-linkedin"></i>
+                                        </a>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    @empty
+                        <p>Belum ada mentor yang ditambahkan.</p>
+                    @endforelse
                 </div>
             </article>
 
@@ -114,8 +130,7 @@
                         <div class="avg-score">{{ number_format($course->reviews_avg_rating, 1) }}</div>
                         <div class="avg-stars">
                             @for ($i = 1; $i <= 5; $i++)
-                                <i
-                                    class="{{ $i <= round($course->reviews_avg_rating) ? 'fa-solid fa-star' : 'fa-regular fa-star' }}"></i>
+                                <i class="{{ $i <= round($course->reviews_avg_rating) ? 'fa-solid fa-star' : 'fa-regular fa-star' }}"></i>
                             @endfor
                         </div>
                         <p class="count">({{ $course->reviews->count() }} ulasan)</p>
@@ -152,8 +167,9 @@
         <h2>Orang lain juga kursus di sini</h2>
         <div class="reco-row">
             @forelse ($relatedCourses as $rel)
-                <a class="reco-card" href="{{ route('course.detail', $rel->slug) }}">
-                    <img src="{{ $rel->thumbnail ?? 'https://via.placeholder.com/400x200' }}" alt="{{ $rel->name }}" />
+                <a class="reco-card" href="{{ route('detail.index', $rel->slug) }}">
+                    <img src="{{ $rel->img ? asset('storage/' . $rel->img) : 'https://via.placeholder.com/400x200' }}" 
+                         alt="{{ $rel->name }}" />
                     <div class="reco-body">
                         <h3>{{ $rel->name }}</h3>
                         <div class="mini">

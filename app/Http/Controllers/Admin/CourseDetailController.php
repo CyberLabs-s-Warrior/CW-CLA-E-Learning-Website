@@ -11,7 +11,9 @@ class CourseDetailController extends Controller
 {
     public function index()
     {
-        $details = CourseDetail::with('course')->paginate(10);
+        $details = CourseDetail::with(['course.level', 'course.lessons', 'instructorProfile.user'])
+            ->paginate(10);
+
         $courses = Course::with('detail')->get();
 
         return view('admin.detail.index', compact('details', 'courses'));
@@ -19,25 +21,34 @@ class CourseDetailController extends Controller
 
     public function create()
     {
-        // Ambil semua course
-        $courseList = Course::pluck('name', 'id'); // ambil id => name
+        $courseList = Course::pluck('name', 'id');
 
-        return view('admin.detail.create', compact('courseList'));
+        $instructors = \App\Models\InstructorProfile::with('user')
+            ->where('is_published', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('admin.detail.create', compact('courseList', 'instructors'));
     }
+
 
     public function store(Request $request)
     {
         $request->validate([
             'course_id' => 'required|exists:courses,id',
+            'instructors' => 'required|array',
+            'instructors.*' => 'exists:instructor_profiles,id',
             'description' => 'nullable|string',
             'outcomes' => 'nullable|string',
         ]);
 
-        CourseDetail::create($request->only([
-            'course_id',
-            'description',
-            'outcomes',
-        ]));
+        $detail = CourseDetail::create([
+            'course_id' => $request->course_id,
+            'description' => $request->description,
+            'outcomes' => $request->outcomes,
+        ]);
+
+        $detail->instructors()->sync($request->instructors);
 
         return redirect()->route('admin.detail.index')
             ->with('success', 'Detail kursus berhasil ditambahkan.');
@@ -50,26 +61,35 @@ class CourseDetailController extends Controller
 
     public function edit(CourseDetail $detail)
     {
-        // Samakan dengan create: kirim id => name saja, preview via AJAX
         $courseList = Course::pluck('name', 'id');
 
-        return view('admin.detail.edit', compact('detail', 'courseList'));
+        $instructors = \App\Models\InstructorProfile::with('user')
+            ->where('is_published', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('admin.detail.edit', compact('detail', 'courseList', 'instructors'));
     }
+
 
 
     public function update(Request $request, CourseDetail $detail)
     {
         $request->validate([
             'course_id' => 'required|exists:courses,id',
+            'instructors' => 'required|array',
+            'instructors.*' => 'exists:instructor_profiles,id',
             'description' => 'nullable|string',
             'outcomes' => 'nullable|string',
         ]);
 
-        $detail->update($request->only([
-            'course_id',
-            'description',
-            'outcomes',
-        ]));
+        $detail->update([
+            'course_id' => $request->course_id,
+            'description' => $request->description,
+            'outcomes' => $request->outcomes,
+        ]);
+
+        $detail->instructors()->sync($request->instructors);
 
         return redirect()->route('admin.detail.index')
             ->with('success', 'Detail kursus berhasil diperbarui.');
