@@ -77,7 +77,10 @@
                     
                     {{-- Gambar --}}
                     <div class="card-image">
-                        <img src="{{ asset('storage/' . $course->img) }}" alt="{{ $course->name }}" />
+                        <div class="img-protected"
+                            style="background-image: url('{{ asset('storage/' . $course->img) }}');"
+                            title="{{ $course->name }}">
+                        </div>
                     </div>
 
                     <div class="card-body">
@@ -156,6 +159,13 @@
         input.addEventListener('change', () => {
             document.getElementById('filterForm').submit();
         });
+    });
+
+    // Disable klik kanan khusus gambar
+    document.addEventListener('contextmenu', e => {
+        if (e.target.closest('.img-protected')) {
+            e.preventDefault();
+        }
     });
 </script>
 @endpush

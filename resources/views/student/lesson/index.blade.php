@@ -18,12 +18,18 @@
                     @endphp
 
                     @if (in_array($ext, ['mp4', 'mov', 'avi']))
-                        <video controls>
+                        <video controls oncontextmenu="return false;" controlsList="nodownload">
                             <source src="{{ asset('storage/' . $lesson->media) }}" type="video/mp4" />
                             Browser tidak mendukung video.
                         </video>
                     @elseif (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
-                        <img src="{{ asset('storage/' . $lesson->media) }}" alt="Lesson Media" class="lesson-image" />
+                        <img 
+                            src="{{ asset('storage/' . $lesson->media) }}" 
+                            alt="Lesson Media" 
+                            class="lesson-image img-protected"
+                            oncontextmenu="return false;"
+                            draggable="false"
+                        />
                     @else
                         <div class="no-video">
                             <p class="text-muted">Media tidak dikenali.</p>
@@ -84,11 +90,17 @@
                                     $ext = strtolower(pathinfo($item->media, PATHINFO_EXTENSION));
                                 @endphp
                                 @if ($item->media && in_array($ext, ['mp4', 'mov', 'avi']))
-                                    <video muted preload="metadata">
+                                    <video muted preload="metadata" oncontextmenu="return false;" controlsList="nodownload">
                                         <source src="{{ asset('storage/' . $item->media) }}" type="video/mp4" />
                                     </video>
                                 @elseif ($item->media && in_array($ext, ['jpg','jpeg','png','gif','webp']))
-                                    <img src="{{ asset('storage/' . $item->media) }}" alt="thumb" class="thumb-img" />
+                                    <img 
+                                        src="{{ asset('storage/' . $item->media) }}" 
+                                        alt="thumb" 
+                                        class="thumb-img img-protected"
+                                        oncontextmenu="return false;"
+                                        draggable="false"
+                                    />
                                 @else
                                     <div class="thumb-placeholder">🎬</div>
                                 @endif
@@ -111,6 +123,19 @@
 
 @push('scripts')
     <script>
+        // Cegah klik kanan khusus di gambar & video
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.closest('.img-protected, video')) {
+                e.preventDefault();
+            }
+        });
+
+        // Disable drag pada semua gambar
+        document.querySelectorAll('.img-protected').forEach(img => {
+            img.setAttribute('draggable', 'false');
+        });
+
+        // Komentar
         const form = document.getElementById("comment-form");
         const input = document.getElementById("comment-input");
         const commentList = document.getElementById("comment-list");

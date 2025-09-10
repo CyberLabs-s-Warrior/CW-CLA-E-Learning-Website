@@ -269,3 +269,44 @@ a, h1, h2, li, .rating-number, .divider, .reviews{
   .mentor-grid{ grid-template-columns:1fr; }
   .review-header{ grid-template-columns:1fr; }
 }
+
+/* Proteksi gambar */
+.img-protected {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  border-radius: 16px;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  user-select: none;
+  pointer-events: none; /* disable klik kanan & drag */
+}
+
+/* Hero khusus */
+.hero-media .img-protected {
+  height: 340px;
+  border: 1px solid #d1d5db;
+  filter: saturate(1.05) contrast(1.02);
+}
+
+/* Mentor avatar */
+.mentor-avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 12px;
+  border: 1px solid #262a3a;
+}
+
+/* Review avatar */
+.review-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid #2a3047;
+}
+
+/* Rekomendasi thumbnail */
+.reco-thumb {
+  height: 140px;
+}
