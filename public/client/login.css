@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
 
 * {
@@ -81,12 +80,51 @@ form {
 	text-align: center;
 }
 
+/* ===== Alert (bar status & error) ===== */
+.alert {
+  width: 100%;
+  text-align: left;
+  margin-top: 12px;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.4;
+}
+.alert i { font-size: 14px; }
+
+.alert-success {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+}
+
+.alert-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+/* Khusus error per-field */
+.field-error {
+  width: 100%;
+  text-align: left;
+  color: #dc2626;
+  font-size: 12px;
+  margin-top: 2px;
+  margin-bottom: 6px;
+}
+
 input {
 	background-color: #eee;
 	border: none;
 	padding: 12px 15px;
 	margin: 8px 0;
 	width: 100%;
+  border-radius: 6px;
 }
 
 .container {
@@ -106,6 +144,8 @@ input {
 	top: 0;
 	height: 100%;
 	transition: all 0.6s ease-in-out;
+  /* beri ruang atas sedikit agar alert tidak terlalu mepet ke top */
+  padding-top: 12px;
 }
 
 .sign-in-container {
@@ -249,4 +289,10 @@ footer i {
 footer a {
     color: #3c97bf;
     text-decoration: none;
+}
+
+/* Opsional: sedikit responsif agar spacing nyaman di layar sempit */
+@media (max-width: 780px) {
+  .form-container { padding-top: 16px; }
+  form { padding: 0 30px; }
 }

@@ -11,7 +11,8 @@ use App\Http\Controllers\Auth\{
     NewPasswordController,
     StudentAuthController,
     PasswordResetLinkController,
-    AuthenticatedSessionController
+    AuthenticatedSessionController,
+    PendingVerificationController
 };
 
 /*
@@ -107,17 +108,28 @@ Route::get('/go/lessons/{slug}', function ($slug) {
 Route::middleware(['guest'])->group(function () {
     // Login & Register
     Route::get('/login', [StudentAuthController::class, 'showLoginRegisterForm'])->name('login');
+    
     Route::post('/login', [StudentAuthController::class, 'login'])->name('login.submit');
 
-    Route::get('/register', [StudentAuthController::class, 'showLoginRegisterForm'])->name('register');
-    Route::post('/register', [StudentAuthController::class, 'register'])->name('register.submit');
 
+    Route::get('/register', [StudentAuthController::class, 'showLoginRegisterForm'])->name('register');
+    // Route::post('/register', [StudentAuthController::class, 'register'])->name('register.submit');
+
+    Route::post('/register-pending', [PendingVerificationController::class, 'storePending'])
+        ->name('register.pending')
+        ->middleware('throttle:5,1');
+
+    // NOTE: rute verify-pending DIPINDAH ke luar grup guest (lihat di bawah)
     // Forgot & Reset Password
     Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
     Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
     Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
     Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.store');
 });
+
+// >>> VERIFY-PENDING: letakkan DI LUAR semua grup agar tidak terblokir middleware guest
+Route::get('/verify-pending', [PendingVerificationController::class, 'verify'])
+    ->name('pending.verify');
 
 // Logout student
 Route::middleware(['auth'])->post('/logout', [StudentAuthController::class, 'logout'])->name('logout');
@@ -142,7 +154,11 @@ Route::middleware(['auth', 'role:student'])->group(function () {
 | ===========================================
 | Semua fitur siswa lain wajib lewat CheckUserProfileMiddleware.
 */
-Route::middleware(['auth', 'role:student', \App\Http\Middleware\CheckUserProfileMiddleware::class])->group(function () {
+Route::middleware([
+    'auth',
+    'role:student',
+    \App\Http\Middleware\CheckUserProfileMiddleware::class
+])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [ProfileClientController::class, 'index'])->name('dashboard.index');
@@ -158,15 +174,6 @@ Route::middleware(['auth', 'role:student', \App\Http\Middleware\CheckUserProfile
     Route::get('/payment', [PaymentClientController::class, 'index'])->name('payment.index');
 });
 
-/*
-|--------------------------------------------------------------------------
-| ==========================
-| ADMIN AUTH ROUTES
-| ==========================
-*/
-Route::get('/login-admin', [AuthenticatedSessionController::class, 'create'])->name('admin.login');
-Route::post('/login-admin', [AuthenticatedSessionController::class, 'store'])->name('admin.login.submit');
-Route::post('/logout-admin', [AuthenticatedSessionController::class, 'destroy'])->name('admin.logout');
 
 /*
 |--------------------------------------------------------------------------
