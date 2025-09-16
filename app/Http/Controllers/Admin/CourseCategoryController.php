@@ -10,14 +10,40 @@ use App\Models\CoursePriceRange;
 
 class CourseCategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return view('admin.course.categories.index', [
-            'categories' => CourseCategory::latest()->paginate(10),
-            'levels'     => CourseLevel::latest()->paginate(10),
-            'prices'     => CoursePriceRange::latest()->paginate(10),
-        ]);
+        $tab = $request->tab ?? 'kategori'; // default tab kategori
+
+        // Default query
+        $categories = CourseCategory::latest()->paginate(10, ['*'], 'categories_page');
+        $levels = CourseLevel::latest()->paginate(10, ['*'], 'levels_page');
+        $prices = CoursePriceRange::latest()->paginate(10, ['*'], 'prices_page');
+
+        // Apply search sesuai tab aktif
+        if ($tab === 'kategori' && $request->search) {
+            $categories = CourseCategory::where('category', 'like', "%{$request->search}%")
+                ->latest()
+                ->paginate(10, ['*'], 'categories_page');
+        }
+
+        if ($tab === 'level' && $request->search) {
+            $levels = CourseLevel::where('level', 'like', "%{$request->search}%")
+                ->latest()
+                ->paginate(10, ['*'], 'levels_page');
+        }
+
+        if ($tab === 'harga' && $request->search) {
+            $prices = CoursePriceRange::where(function ($q) use ($request) {
+                $q->where('min_price', 'like', "%{$request->search}%")
+                    ->orWhere('max_price', 'like', "%{$request->search}%");
+            })
+                ->latest()
+                ->paginate(10, ['*'], 'prices_page');
+        }
+
+        return view('admin.course.categories.index', compact('categories', 'levels', 'prices'));
     }
+
 
     public function create()
     {

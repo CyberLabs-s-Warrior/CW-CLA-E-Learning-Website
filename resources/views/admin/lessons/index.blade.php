@@ -25,6 +25,29 @@
       </a>
     </div>
 
+{{-- 🔍 Search + Filter Kursus --}}
+<form method="GET" action="{{ route('admin.lessons.index') }}" class="mb-3 d-flex gap-2" style="max-width: 700px;">
+  {{-- Input Search --}}
+  <div class="input-group" style="max-width: 300px;">
+    <input type="text" name="search" value="{{ request('search') }}" 
+           class="form-control" placeholder="Cari judul...">
+    <button class="btn btn-primary" type="submit">
+      <i class="fas fa-search"></i>
+    </button>
+  </div>
+
+  {{-- Dropdown Filter Kursus --}}
+  <select name="course_id" class="form-select" style="max-width: 250px;" onchange="this.form.submit()">
+    <option value="">Semua Kursus</option>
+    @foreach($courses as $course)
+      <option value="{{ $course->id }}" {{ request('course_id') == $course->id ? 'selected' : '' }}>
+        {{ $course->name }}
+      </option>
+    @endforeach
+  </select>
+</form>
+
+
     {{-- SweetAlert untuk success --}}
     @if(session('success'))
       <script>
@@ -57,7 +80,6 @@
             <table class="table table-hover align-middle text-nowrap mb-0">
               <thead class="table-light">
                 <tr>
-                  <th>No</th>
                   <th>Kursus</th>
                   <th>Modul</th>
                   <th>Judul</th>
@@ -69,12 +91,29 @@
                 </tr>
               </thead>
               <tbody>
-                @php $currentModule = null; @endphp
+                @php 
+                  $currentCourse = null;
+                  $currentModule = null; 
+                @endphp
+
                 @foreach($lessons as $lesson)
-                  {{-- Header modul --}}
+                  {{-- Header Kursus --}}
+                  @if($currentCourse !== $lesson->course_id)
+                    <tr class="table-primary">
+                      <td colspan="8" class="fw-bold">
+                        <i class="fas fa-chalkboard me-2"></i> Kursus: {{ $lesson->course->name ?? '-' }}
+                      </td>
+                    </tr>
+                    @php 
+                      $currentCourse = $lesson->course_id;
+                      $currentModule = null;
+                    @endphp
+                  @endif
+
+                  {{-- Header Modul --}}
                   @if($currentModule !== $lesson->module_name)
                     <tr class="table-secondary">
-                      <td colspan="11" class="fw-bold">
+                      <td colspan="8" class="fw-bold">
                         <i class="fas fa-layer-group me-2"></i> Modul: {{ $lesson->module_name }}
                       </td>
                     </tr>
@@ -86,8 +125,9 @@
                     $isImage = in_array($mediaExt, ['jpg', 'jpeg', 'png', 'webp']);
                     $isVideo = in_array($mediaExt, ['mp4', 'mov', 'avi', 'mkv']);
                   @endphp
+
+                  {{-- Baris Lesson --}}
                   <tr>
-                    <td>{{ $loop->iteration + ($lessons->currentPage() - 1) * $lessons->perPage() }}</td>
                     <td>{{ optional($lesson->course)->name ?? '-' }}</td>
                     <td>{{ $lesson->module_name }}</td>
                     <td class="fw-semibold">{{ $lesson->title }}</td>
