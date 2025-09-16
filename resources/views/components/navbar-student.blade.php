@@ -26,13 +26,21 @@
       <div class="profile-wrap">
         <button id="profileBtn" class="avatar-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="profileMenu">
           @php
-            $avatarUrl = optional(auth()->user()->profile)->avatar_url ?? 'https://ui-avatars.com/api/?rounded=true&name='.urlencode(auth()->user()->name ?? 'User');
+            $avatarUrl = auth()->user()->profile?->avatar_url
+              ?? 'https://ui-avatars.com/api/?rounded=true&name='.urlencode(auth()->user()->name ?? 'User');
           @endphp
           <img src="{{ $avatarUrl }}" alt="Profile" class="avatar-img">
+
         </button>
 
         <div id="profileMenu" class="profile-menu" role="menu" aria-labelledby="profileBtn">
-          <a href="{{ route('dashboard.index') }}" role="menuitem">Profile</a>
+         <li>
+            <a class="bs-item {{ request()->routeIs('student.profile.*') ? 'active' : '' }}"
+              href="{{ route('student.profile.show') }}">
+              <span class="icon"><i class="fa-solid fa-user"></i></span> Profile
+            </a>
+          </li>
+
           <form action="{{ route('logout') }}" method="POST">
             @csrf
             <button class="link-like" type="submit" role="menuitem">Logout</button>

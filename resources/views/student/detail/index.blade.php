@@ -1,7 +1,6 @@
 @extends('layouts.student')
 
 @push('styles')
-    {{-- Pastikan file ini ada di public/client/detail.css --}}
     <link rel="stylesheet" href="{{ asset('client/detail.css') }}">
 @endpush
 

@@ -15,40 +15,55 @@
 <body>
 <a href="#main" class="skip-link">Lewati ke konten</a>
 
-<header class="header">
-  <div class="header-container"><!-- BUKAN .container -->
-
+<header class="header" role="banner">
+  <div class="header-container">
     <a href="{{ route('home.index') }}" class="logo" aria-label="Home">LandPage</a>
 
     {{-- Desktop Nav --}}
-    <nav class="nav-center" aria-label="Primary">
+    <nav class="nav-center" id="desktopNav" aria-label="Primary">
+      {{-- Item prioritas --}}
       <a href="{{ route('home.index') }}"
          class="{{ request()->routeIs('home.*') ? 'is-active' : '' }}"
          @if(request()->routeIs('home.*')) aria-current="page" @endif>Home</a>
 
-      <a href="{{ route('about.index')}}"
-         class="{{ request()->routeIs('about.*') ? 'is-active' : '' }}"
-         @if(request()->routeIs('about.*')) aria-current="page" @endif>About</a>
+      {{-- Explore --}}
+      <div class="dropdown" data-priority="1">
+        <button class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+          Explore <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </button>
+        <div class="dropdown-menu" role="menu">
+          <a href="{{ route('katalog.index') }}" role="menuitem"
+            class="{{ request()->routeIs('katalog.*') ? 'is-active' : '' }}">Katalog</a>
+          <a href="{{ route('instruktur.index') }}" role="menuitem"
+            class="{{ request()->routeIs('instruktur.*') ? 'is-active' : '' }}">Instruktur</a>
+        </div>
+      </div>
 
-      <a href="{{ route('contact.index') }}"
-         class="{{ request()->routeIs('contact.*') ? 'is-active' : '' }}"
-         @if(request()->routeIs('contact.*')) aria-current="page" @endif>Kontak kami</a>
+      {{-- Community --}}
+      <div class="dropdown" data-priority="2">
+        <button class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+          Community <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </button>
+        <div class="dropdown-menu" role="menu">
+          <a href="{{ route('showcase.index') }}" role="menuitem"
+            class="{{ request()->routeIs('showcase.*') ? 'is-active' : '' }}">Karya member</a>
+          <a href="{{ route('testimoni.index') }}" role="menuitem"
+            class="{{ request()->routeIs('testimoni.*') ? 'is-active' : '' }}">Testimoni</a>
+        </div>
+      </div>
 
-      <a href="{{ route('showcase.index') }}"
-         class="{{ request()->routeIs('showcase.*') ? 'is-active' : '' }}"
-         @if(request()->routeIs('showcase.*')) aria-current="page" @endif>Karya member</a>
-
-      <a href="{{ route('testimoni.index') }}"
-         class="{{ request()->routeIs('testimoni.*') ? 'is-active' : '' }}"
-         @if(request()->routeIs('testimoni.*')) aria-current="page" @endif>Testimoni</a>
-
-      <a href="{{ route('katalog.index') }}"
-         class="{{ request()->routeIs('katalog.*') ? 'is-active' : '' }}"
-         @if(request()->routeIs('katalog.*')) aria-current="page" @endif>Katalog</a>
-
-      <a href="{{ route('instruktur.index') }}"
-         class="{{ request()->routeIs('instruktur.*') ? 'is-active' : '' }}"
-         @if(request()->routeIs('instruktur.*')) aria-current="page" @endif>Instruktur</a>
+      {{-- About --}}
+      <div class="dropdown" data-priority="3">
+        <button class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+          About <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </button>
+        <div class="dropdown-menu" role="menu">
+          <a href="{{ route('about.index') }}" role="menuitem"
+            class="{{ request()->routeIs('about.*') ? 'is-active' : '' }}">About</a>
+          <a href="{{ route('contact.index') }}" role="menuitem"
+            class="{{ request()->routeIs('contact.*') ? 'is-active' : '' }}">Kontak</a>
+        </div>
+      </div>
     </nav>
 
     {{-- Right --}}
@@ -63,13 +78,19 @@
         @endhasanyrole
       @endguest
 
+      {{-- More (Priority+ overflow) --}}
+      <div class="dropdown more-wrap" id="moreWrap" hidden>
+        <button class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+          More <i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i>
+        </button>
+        <div class="dropdown-menu" role="menu" id="moreMenu"></div>
+      </div>
+
       <button class="hamburger" id="hamburger"
               aria-label="Buka menu"
               aria-controls="mobile-menu"
               aria-expanded="false">
-        <span class="hamburger-box">
-          <span class="hamburger-inner"></span>
-        </span>
+        <span class="hamburger-box"><span class="hamburger-inner"></span></span>
       </button>
     </div>
   </div>
@@ -87,14 +108,28 @@
       </button>
     </div>
 
-    <div class="drawer-links">
-      <a href="{{ route('home.index') }}"><i class="fa-solid fa-house"></i> Home</a>
-      <a href="{{ route('about.index')}}"><i class="fa-solid fa-circle-info"></i> About</a>
-      <a href="{{ route('contact.index') }}"><i class="fa-solid fa-envelope"></i> Kontak kami</a>
-      <a href="{{ route('showcase.index') }}"><i class="fa-solid fa-images"></i> Karya member</a>
-      <a href="{{ route('testimoni.index') }}"><i class="fa-solid fa-comments"></i> Testimoni</a>
-      <a href="{{ route('katalog.index') }}"><i class="fa-solid fa-list"></i> Katalog</a>
-      <a href="{{ route('instruktur.index') }}"><i class="fa-solid fa-chalkboard-user"></i> Instruktur</a>
+    <div class="drawer-group">
+      <div class="drawer-title">Explore</div>
+      <div class="drawer-links">
+        <a href="{{ route('katalog.index') }}"><i class="fa-solid fa-list"></i> Katalog</a>
+        <a href="{{ route('instruktur.index') }}"><i class="fa-solid fa-chalkboard-user"></i> Instruktur</a>
+      </div>
+    </div>
+
+    <div class="drawer-group">
+      <div class="drawer-title">Community</div>
+      <div class="drawer-links">
+        <a href="{{ route('showcase.index') }}"><i class="fa-solid fa-images"></i> Karya member</a>
+        <a href="{{ route('testimoni.index') }}"><i class="fa-solid fa-comments"></i> Testimoni</a>
+      </div>
+    </div>
+
+    <div class="drawer-group">
+      <div class="drawer-title">About</div>
+      <div class="drawer-links">
+        <a href="{{ route('about.index')}}"><i class="fa-solid fa-circle-info"></i> About</a>
+        <a href="{{ route('contact.index') }}"><i class="fa-solid fa-envelope"></i> Kontak kami</a>
+      </div>
     </div>
 
     <div class="drawer-actions">
@@ -110,6 +145,7 @@
     </div>
   </nav>
 </header>
+
 
 <main id="main">
   @yield('content')
@@ -181,5 +217,136 @@
     window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeMenu(); });
   })();
 </script>
+<script>
+  // Dropdown (desktop)
+  (function(){
+    const dropdowns = document.querySelectorAll('.dropdown');
+    dropdowns.forEach(dd=>{
+      const btn = dd.querySelector('.dropdown-toggle');
+      const menu = dd.querySelector('.dropdown-menu');
+      if(!btn || !menu) return;
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const open = dd.classList.contains('open');
+        document.querySelectorAll('.dropdown.open').forEach(x=>{
+          x.classList.remove('open');
+          x.querySelector('.dropdown-toggle')?.setAttribute('aria-expanded','false');
+        });
+        if(!open){
+          dd.classList.add('open');
+          btn.setAttribute('aria-expanded','true');
+        }
+      });
+    });
+    document.addEventListener('click', ()=>{
+      document.querySelectorAll('.dropdown.open').forEach(x=>{
+        x.classList.remove('open');
+        x.querySelector('.dropdown-toggle')?.setAttribute('aria-expanded','false');
+      });
+    });
+  })();
+
+  // Priority+ : pindahkan item yang tidak muat ke "More"
+  (function(){
+    const nav = document.getElementById('desktopNav');
+    const right = document.querySelector('.nav-right');
+    const moreWrap = document.getElementById('moreWrap');
+    const moreMenu = document.getElementById('moreMenu');
+
+    if(!nav || !right || !moreWrap || !moreMenu) return;
+
+    function items(){
+      // Ambil semua anak nav (anchor atau .dropdown), selain yang disembunyikan
+      return Array.from(nav.children).filter(el => !el.classList.contains('measure-ignore'));
+    }
+
+    function toMore(el){
+      const clone = el.cloneNode(true);
+      // Hilangkan chevron di dropdown
+      const icon = clone.querySelector('.fa-chevron-down'); if(icon) icon.remove();
+      clone.classList.remove('dropdown');
+      // Buka sublink dropdown menjadi link biasa
+      if (clone.querySelector('.dropdown-menu')) {
+        const links = clone.querySelectorAll('.dropdown-menu a');
+        const frag = document.createDocumentFragment();
+        links.forEach(a=>{
+          const item = document.createElement('a');
+          item.href = a.getAttribute('href');
+          item.textContent = a.textContent;
+          item.setAttribute('role','menuitem');
+          frag.appendChild(item);
+        });
+        moreMenu.appendChild(frag);
+      } else {
+        // anchor biasa
+        clone.classList.remove('is-active');
+        clone.removeAttribute('aria-current');
+        clone.setAttribute('role','menuitem');
+        moreMenu.appendChild(clone);
+      }
+      el.classList.add('hidden-priority');
+      el.style.display = 'none';
+    }
+
+    function fromMore(el){
+      el.style.display = '';
+      el.classList.remove('hidden-priority');
+      // hapus link terkait di moreMenu
+      const labels = [];
+      if (el.classList.contains('dropdown')){
+        el.querySelectorAll('.dropdown-menu a').forEach(a=>labels.push(a.textContent.trim()));
+      } else {
+        labels.push(el.textContent.trim());
+      }
+      Array.from(moreMenu.querySelectorAll('a')).forEach(a=>{
+        if (labels.includes(a.textContent.trim())) a.remove();
+      });
+    }
+
+    function layout(){
+      // Reset dulu
+      items().forEach(el=>{
+        if (el.classList.contains('hidden-priority')) fromMore(el);
+      });
+      moreWrap.hidden = true;
+
+      const headerContainer = document.querySelector('.header-container');
+      if(!headerContainer) return;
+
+      // Berapa ruang tersisa antara nav-center & nav-right?
+      const maxWidth = headerContainer.clientWidth
+        - right.getBoundingClientRect().width
+        - 40; // buffer
+
+      // Hitung lebar kumulatif nav
+      let width = 0;
+      const navItems = items();
+
+      // Urutkan berdasar priority (angka kecil = prioritas tinggi)
+      navItems.sort((a,b)=>{
+        const pa = Number(a.dataset.priority || 99);
+        const pb = Number(b.dataset.priority || 99);
+        return pa - pb;
+      });
+
+      for (const el of navItems){
+        el.style.display = ''; // pastikan terlihat untuk pengukuran
+        width += el.getBoundingClientRect().width + 24; // gap
+        if (width > maxWidth){
+          toMore(el);
+          moreWrap.hidden = false;
+        }
+      }
+
+      // Jika More kosong → sembunyikan
+      if (!moreMenu.children.length) moreWrap.hidden = true;
+    }
+
+    window.addEventListener('resize', ()=> requestAnimationFrame(layout));
+    window.addEventListener('load', layout);
+    layout();
+  })();
+</script>
+
 </body>
 </html>

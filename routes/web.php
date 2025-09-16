@@ -172,6 +172,20 @@ Route::middleware([
 
     // Payments (dipindah dari guest ke student)
     Route::get('/payment', [PaymentClientController::class, 'index'])->name('payment.index');
+
+      // === Student Profile (Settings) ===
+    Route::get('/profile', [\App\Http\Controllers\Student\ProfileSettingsController::class, 'show'])
+        ->name('student.profile.show');
+
+    Route::put('/profile/biodata', [\App\Http\Controllers\Student\ProfileSettingsController::class, 'updateBiodata'])
+        ->name('student.profile.biodata');
+
+    Route::put('/profile/account', [\App\Http\Controllers\Student\ProfileSettingsController::class, 'updateAccount'])
+        ->name('student.profile.account');
+
+    // Ganti password: pakai controller Auth kamu (punya error bag "updatePassword")
+    Route::put('/profile/password', [\App\Http\Controllers\Auth\PasswordController::class, 'update'])
+        ->name('student.profile.password');
 });
 
 
