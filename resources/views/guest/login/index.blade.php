@@ -5,54 +5,85 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="{{ asset('client/login.css') }}" />
+    {{-- gunakan cache-busting agar CSS terbaru terbaca --}}
+    <link rel="stylesheet" href="{{ asset('client/login.css') }}?v={{ filemtime(public_path('client/login.css')) }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
     <div class="container" id="container">
+        {{-- ======================= SIGN UP PANEL ======================= --}}
         <div class="form-container sign-up-container">
-            <form action="{{ route('register.submit') }}" method="POST">
+            <form action="{{ route('register.pending') }}" method="POST" novalidate>
                 @csrf
+
                 <h1>Create Account</h1>
                 <span>Use your data to register</span>
 
+                {{-- ALERT: status sukses (misal tautan verifikasi terkirim) --}}
+                @if (session('status'))
+                  <div class="alert alert-success" role="alert">
+                    <i class="fa-solid fa-circle-check"></i>
+                    {{ session('status') }}
+                  </div>
+                @endif
+
                 <input type="text" name="name" placeholder="Nama Lengkap" value="{{ old('name') }}" required />
-                @error('name') <small style="color:red">{{ $message }}</small> @enderror
+                @error('name') <small class="field-error">{{ $message }}</small> @enderror
 
                 <input type="text" name="username" placeholder="Username" value="{{ old('username') }}" required />
-                @error('username') <small style="color:red">{{ $message }}</small> @enderror
+                @error('username') <small class="field-error">{{ $message }}</small> @enderror
 
                 <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" required />
-                @error('email') <small style="color:red">{{ $message }}</small> @enderror
+                @error('email') <small class="field-error">{{ $message }}</small> @enderror
 
                 <input type="text" name="phone" placeholder="No HP" value="{{ old('phone') }}" required />
-                @error('phone') <small style="color:red">{{ $message }}</small> @enderror
+                @error('phone') <small class="field-error">{{ $message }}</small> @enderror
 
                 <input type="password" name="password" placeholder="Password" required />
-                @error('password') <small style="color:red">{{ $message }}</small> @enderror
+                @error('password') <small class="field-error">{{ $message }}</small> @enderror
 
                 <input type="password" name="password_confirmation" placeholder="Confirm Password" required />
 
                 <button type="submit">Sign Up</button>
             </form>
-
-
         </div>
+
+        {{-- ======================= SIGN IN PANEL ======================= --}}
         <div class="form-container sign-in-container">
-            <form action="{{ route('login.submit') }}" method="POST">
+            <form action="{{ route('login.submit') }}" method="POST" novalidate>
                 @csrf 
                 <h1>Sign in</h1>
-                <input type="email" name="email" placeholder="Email" required />
-                    @error('email')
-                        <small style="color: red">{{ $message }}</small>
-                    @enderror
+
+                {{-- ALERT: status sukses (misal "Anda berhasil keluar.") --}}
+                @if (session('status'))
+                  <div class="alert alert-success" role="alert">
+                    <i class="fa-solid fa-circle-check"></i>
+                    {{ session('status') }}
+                  </div>
+                @endif
+
+                {{-- ALERT: error login (misal "Email atau password salah.") --}}
+                @if ($errors->has('email'))
+                  <div class="alert alert-error" role="alert">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    {{ $errors->first('email') }}
+                  </div>
+                @endif
+
+                <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" required />
+                @error('email')
+                    <small class="field-error">{{ $message }}</small>
+                @enderror
+
                 <input type="password" name="password" placeholder="Password" required />
 
                 <a href="{{ route('password.request') }}">Forgot your password?</a>
                 <button type="submit">Sign In</button>
             </form>
         </div>
+
+        {{-- ======================= OVERLAY (asli dipertahankan) ======================= --}}
         <div class="overlay-container">
             <div class="overlay">
                 <div class="overlay-panel overlay-left">
@@ -69,20 +100,20 @@
         </div>
     </div>
 
- 
-        <script>
-            const signUpButton = document.getElementById('signUp');
-            const signInButton = document.getElementById('signIn');
-            const container = document.getElementById('container');
+    {{-- Script toggle panel (asli) --}}
+    <script>
+        const signUpButton = document.getElementById('signUp');
+        const signInButton = document.getElementById('signIn');
+        const container = document.getElementById('container');
 
-            signUpButton.addEventListener('click', () => {
-                container.classList.add("right-panel-active");
-            });
+        signUpButton.addEventListener('click', () => {
+            container.classList.add("right-panel-active");
+        });
 
-            signInButton.addEventListener('click', () => {
-                container.classList.remove("right-panel-active");
-            });
-        </script>
+        signInButton.addEventListener('click', () => {
+            container.classList.remove("right-panel-active");
+        });
+    </script>
 </body>
 
 </html>
