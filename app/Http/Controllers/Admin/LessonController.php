@@ -12,16 +12,29 @@
 
     class LessonController extends Controller
     {
-        public function index()
-        {
-            $lessons = Lesson::with('course')
-                ->orderBy('course_id')
-                ->orderBy('module_name')
-                ->orderBy('order')
-                ->paginate(10);
+public function index(Request $request)
+{
+    $query = Lesson::with('course');
 
-            return view('admin.lessons.index', compact('lessons'));
-        }
+    if ($request->filled('search')) {
+        $query->where('title', 'like', '%' . $request->search . '%');
+    }
+
+    if ($request->filled('course_id')) {
+        $query->where('course_id', $request->course_id);
+    }
+
+    $lessons = $query
+        ->orderBy('course_id')
+        ->orderBy('module_name')
+        ->orderBy('order')
+        ->paginate(10);
+
+    $courses = \App\Models\Course::orderBy('name')->get();
+
+    return view('admin.lessons.index', compact('lessons', 'courses'));
+}
+
 
 
         public function create()
