@@ -216,6 +216,46 @@
             <!-- HIDDEN KOORDINAT -->
             <input type="hidden" name="latitude" id="latitude" value="{{ old('latitude', $contact->latitude ?? '') }}">
             <input type="hidden" name="longitude" id="longitude" value="{{ old('longitude', $contact->longitude ?? '') }}">
+            {{-- BLOK: SOSIAL MEDIA --}}
+<div class="mb-4">
+  <label class="form-label fw-semibold">
+    <i class="fas fa-share-alt me-2"></i>Sosial Media
+  </label>
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label for="social_facebook" class="form-label small"><i class="fab fa-facebook me-1"></i>Facebook (URL)</label>
+      <input type="url" name="social_facebook" id="social_facebook" class="form-control"
+             placeholder="https://www.facebook.com/yourpage"
+             value="{{ old('social_facebook', $contact->social_facebook ?? '') }}">
+    </div>
+
+    <div class="col-md-6">
+      <label for="social_instagram" class="form-label small"><i class="fab fa-instagram me-1"></i>Instagram (URL)</label>
+      <input type="url" name="social_instagram" id="social_instagram" class="form-control"
+             placeholder="https://www.instagram.com/yourhandle"
+             value="{{ old('social_instagram', $contact->social_instagram ?? '') }}">
+    </div>
+
+    <div class="col-md-6">
+      <label for="social_tiktok" class="form-label small"><i class="fab fa-tiktok me-1"></i>TikTok (URL)</label>
+      <input type="url" name="social_tiktok" id="social_tiktok" class="form-control"
+             placeholder="https://www.tiktok.com/@yourhandle"
+             value="{{ old('social_tiktok', $contact->social_tiktok ?? '') }}">
+    </div>
+
+    <div class="col-md-6">
+      <label for="social_x" class="form-label small"><i class="fab fa-x-twitter me-1"></i>X / Twitter (URL)</label>
+      <input type="url" name="social_x" id="social_x" class="form-control"
+             placeholder="https://x.com/yourhandle"
+             value="{{ old('social_x', $contact->social_x ?? '') }}">
+    </div>
+  </div>
+
+  <div class="form-text mt-1">
+    Masukkan URL penuh (diawali <code>https://</code>). Kosongkan jika tidak ingin ditampilkan.
+  </div>
+</div>
 
             <!-- BLOK: LINK GMAPS -->
             <div class="mb-3">

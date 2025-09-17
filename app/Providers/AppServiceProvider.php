@@ -7,7 +7,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Middleware\IsSuperadmin;
-use App\Models\Contact;  
+use App\Models\Contact;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,13 +19,27 @@ class AppServiceProvider extends ServiceProvider
 
         app('router')->aliasMiddleware('is_superadmin', IsSuperadmin::class);
 
+        // Share data Contact khusus ke footer + cache 30 menit
         View::composer('components.footer', function ($view) {
             $contact = Cache::remember(
                 'footer_contact',
-                now()->addMinutes(30),  
+                now()->addMinutes(30),
                 function () {
                     return Contact::query()
-                        ->select('email','telepon','alamat','latitude','longitude','link_maps','updated_at')
+                        ->select(
+                            'email',
+                            'telepon',
+                            'alamat',
+                            'latitude',
+                            'longitude',
+                            'link_maps',
+                            // tambahkan kolom sosial ↓↓↓
+                            'social_facebook',
+                            'social_instagram',
+                            'social_tiktok',
+                            'social_x',
+                            'updated_at'
+                        )
                         ->latest('updated_at')
                         ->first();
                 }

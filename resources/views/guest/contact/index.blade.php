@@ -127,65 +127,94 @@
           </div>
         </div>
 
+        {{-- Sosial Media --}}
+        @php
+          $fb = trim($contact->social_facebook ?? '');
+          $ig = trim($contact->social_instagram ?? '');
+          $tt = trim($contact->social_tiktok ?? '');
+          $xx = trim($contact->social_x ?? '');
+          $hasSocial = $fb || $ig || $tt || $xx;
+        @endphp
+        <div class="card" style="grid-column: 1 / -1;">
+          <div class="card__body">
+            <div class="card__icon" aria-hidden="true">
+              <i class="fas fa-share-alt" style="color:#0d6efd"></i>
+            </div>
+            <div class="card__text">
+              <div class="card__label">Sosial Media</div>
+              @if(!$hasSocial)
+                <div class="card__value card__value-muted">-</div>
+              @else
+                <div class="d-flex flex-wrap gap-2">
+                  @if($fb)<a class="btn-chip" href="{{ $fb }}" target="_blank" rel="noopener"><i class="fab fa-facebook me-1"></i>Facebook</a>@endif
+                  @if($ig)<a class="btn-chip" href="{{ $ig }}" target="_blank" rel="noopener"><i class="fab fa-instagram me-1"></i>Instagram</a>@endif
+                  @if($tt)<a class="btn-chip" href="{{ $tt }}" target="_blank" rel="noopener"><i class="fab fa-tiktok me-1"></i>TikTok</a>@endif
+                  @if($xx)<a class="btn-chip" href="{{ $xx }}" target="_blank" rel="noopener"><i class="fab fa-x-twitter me-1"></i>X</a>@endif
+                </div>
+              @endif
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
     {{-- RIGHT: Map --}}
-<div class="contact-right">
-  @php
-    $addr = trim($contact->alamat ?? '');
-    $link = trim($contact->link_maps ?? '');
-    $lat  = $contact->latitude ?? null;
-    $lng  = $contact->longitude ?? null;
+    <div class="contact-right">
+      @php
+        $addr = trim($contact->alamat ?? '');
+        $link = trim($contact->link_maps ?? '');
+        $lat  = $contact->latitude ?? null;
+        $lng  = $contact->longitude ?? null;
 
-    // 1) buang shortlink (tak bisa di-embed)
-    if ($link && str_contains($link, 'maps.app.goo.gl')) {
-      $link = '';
-    }
+        // 1) buang shortlink (tak bisa di-embed)
+        if ($link && str_contains($link, 'maps.app.goo.gl')) {
+          $link = '';
+        }
 
-    $gmapsEmbed = null;
+        $gmapsEmbed = null;
 
-    // 2) jika sudah embed resmi → pakai apa adanya
-    if ($link && preg_match('~^https?://(www\.)?google\.[^/]+/maps/embed\?~i', $link)) {
-      $gmapsEmbed = $link;
-    }
+        // 2) jika sudah embed resmi → pakai apa adanya
+        if ($link && preg_match('~^https?://(www\.)?google\.[^/]+/maps/embed\?~i', $link)) {
+          $gmapsEmbed = $link;
+        }
 
-    // 3) jika link berformat /maps/place|/maps/search → tambah output=embed (agar kartu tempat muncul)
-    if (!$gmapsEmbed && $link && preg_match('~^https?://(www\.)?google\.[^/]+/maps/(place|search)/~i', $link)) {
-      $gmapsEmbed = $link . (str_contains($link,'?') ? '&' : '?') . 'output=embed';
-      if (!str_contains($gmapsEmbed, 'hl=')) $gmapsEmbed .= '&hl=id';
-    }
+        // 3) jika link berformat /maps/place|/maps/search → tambah output=embed (agar kartu tempat muncul)
+        if (!$gmapsEmbed && $link && preg_match('~^https?://(www\.)?google\.[^/]+/maps/(place|search)/~i', $link)) {
+          $gmapsEmbed = $link . (str_contains($link,'?') ? '&' : '?') . 'output=embed';
+          if (!str_contains($gmapsEmbed, 'hl=')) $gmapsEmbed .= '&hl=id';
+        }
 
-    // 4) kalau belum ada link valid, pakai ALAMAT sebagai query (sering resolve ke Place → tampilkan nama)
-    if (!$gmapsEmbed && $addr !== '') {
-      $gmapsEmbed = 'https://www.google.com/maps?hl=id&q=' . urlencode($addr) . '&output=embed';
-    }
+        // 4) kalau belum ada link valid, pakai ALAMAT sebagai query (sering resolve ke Place → tampilkan nama)
+        if (!$gmapsEmbed && $addr !== '') {
+          $gmapsEmbed = 'https://www.google.com/maps?hl=id&q=' . urlencode($addr) . '&output=embed';
+        }
 
-    // 5) fallback terakhir: koordinat (biasanya tanpa nama tempat)
-    if (!$gmapsEmbed && $lat && $lng) {
-      $gmapsEmbed = 'https://www.google.com/maps?q=' . $lat . ',' . $lng . '&z=16&hl=id&output=embed';
-    }
-  @endphp
+        // 5) fallback terakhir: koordinat (biasanya tanpa nama tempat)
+        if (!$gmapsEmbed && $lat && $lng) {
+          $gmapsEmbed = 'https://www.google.com/maps?q=' . $lat . ',' . $lng . '&z=16&hl=id&output=embed';
+        }
+      @endphp
 
-  @if($gmapsEmbed)
-    <div class="map-card">
-      <div class="map-card__header">Lokasi Kami</div>
-      <div class="map-embed">
-        <iframe
-          src="{{ $gmapsEmbed }}"
-          class="map-iframe"
-          allowfullscreen
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"></iframe>
-      </div>
+      @if($gmapsEmbed)
+        <div class="map-card">
+          <div class="map-card__header">Lokasi Kami</div>
+          <div class="map-embed">
+            <iframe
+              src="{{ $gmapsEmbed }}"
+              class="map-iframe"
+              allowfullscreen
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+        </div>
+      @else
+        <div class="map-card">
+          <div class="map-card__header">Lokasi Kami</div>
+          <div style="padding: 1rem; color: var(--c-muted);">Peta belum tersedia.</div>
+        </div>
+      @endif
     </div>
-  @else
-    <div class="map-card">
-      <div class="map-card__header">Lokasi Kami</div>
-      <div style="padding: 1rem; color: var(--c-muted);">Peta belum tersedia.</div>
-    </div>
-  @endif
-</div>
 
   </div>
 </section>

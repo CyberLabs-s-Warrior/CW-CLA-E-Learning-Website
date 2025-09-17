@@ -12,7 +12,7 @@
   // Normalisasi tel untuk href
   $telHref = $tel ? preg_replace('/[^0-9+]/','',$tel) : null;
 
-  // Buat tautan Google Maps (tanpa embed)
+  // Buat tautan Google Maps (tanpa embed) — metode alamat
   $gmapsLink = null;
   // buang shortlink app (biasanya tak bisa di-embed / dibuka konsisten)
   if ($link && str_contains($link, 'maps.app.goo.gl')) { $link = ''; }
@@ -26,6 +26,29 @@
   if (!$gmapsLink && $lat && $lng) {
     $gmapsLink = 'https://www.google.com/maps?q='.$lat.','.$lng.'&z=16';
   }
+
+  // ====== METODE SAMA DITERAPKAN KE SOSIAL MEDIA ======
+  // Ambil dari CRUD Contact (kolom social_facebook, social_instagram, social_tiktok, social_x)
+  $rawFb = trim($contact->social_facebook ?? '');
+  $rawIg = trim($contact->social_instagram ?? '');
+  $rawTt = trim($contact->social_tiktok ?? '');
+  $rawX  = trim($contact->social_x ?? '');
+
+  // Normalisasi URL: kalau tidak ada skema, tambah https:// ; kalau kosong / "#" → null
+  $normalizeUrl = function ($url) {
+    if (!$url) return null;
+    $u = trim($url);
+    if ($u === '#' || $u === '-') return null;
+    if (!preg_match('~^https?://~i', $u)) {
+      $u = 'https://' . ltrim($u, '/');
+    }
+    return $u;
+  };
+
+  $fb = $normalizeUrl($rawFb);
+  $ig = $normalizeUrl($rawIg);
+  $tt = $normalizeUrl($rawTt);
+  $xx = $normalizeUrl($rawX);
 
   $appName = config('app.name', 'LandPage');
 @endphp
@@ -42,18 +65,30 @@
       <p class="brand-copy">Belajar lebih mudah dan fleksibel di platform kami. Materi terstruktur, proyek nyata, dan komunitas suportif.</p>
 
       <div class="social-icons" aria-label="Sosial media">
-        <a href="#" target="_blank" aria-label="Facebook" class="soc">
-          <i class="fab fa-facebook"></i>
-        </a>
-        <a href="#" target="_blank" aria-label="Instagram" class="soc">
-          <i class="fab fa-instagram"></i>
-        </a>
-        <a href="#" target="_blank" aria-label="TikTok" class="soc">
-          <i class="fab fa-tiktok"></i>
-        </a>
-        <a href="#" target="_blank" aria-label="X (Twitter)" class="soc">
-          <i class="fab fa-x-twitter"></i>
-        </a>
+        @if($fb)
+          <a href="{{ $fb }}" target="_blank" rel="noopener" aria-label="Facebook" class="soc">
+            <i class="fab fa-facebook"></i>
+          </a>
+        @endif
+        @if($ig)
+          <a href="{{ $ig }}" target="_blank" rel="noopener" aria-label="Instagram" class="soc">
+            <i class="fab fa-instagram"></i>
+          </a>
+        @endif
+        @if($tt)
+          <a href="{{ $tt }}" target="_blank" rel="noopener" aria-label="TikTok" class="soc">
+            <i class="fab fa-tiktok"></i>
+          </a>
+        @endif
+        @if($xx)
+          <a href="{{ $xx }}" target="_blank" rel="noopener" aria-label="X (Twitter)" class="soc">
+            <i class="fab fa-x-twitter"></i>
+          </a>
+        @endif
+        {{-- Jika semua kosong, bisa tampilkan placeholder atau biarkan kosong --}}
+        @if(!$fb && !$ig && !$tt && !$xx)
+          {{-- <span class="ci-muted">Sosial media belum ditambahkan.</span> --}}
+        @endif
       </div>
     </div>
 
@@ -62,8 +97,11 @@
       <h4>Menu</h4>
       <ul>
         <li><a href="{{ route('home.index') }}">Home</a></li>
-        <li><a href="{{ route('course.index') }}">Categories</a></li>
-        <li><a href="{{ route('about.index') }}">About</a></li>
+        <li><a href="{{ route('course.index') }}">about</a></li>
+        <li><a href="{{ route('katalog.index') }}">katalog</a></li>
+                <li><a href="{{ route('instruktur.index') }}">instruktur</a></li>
+        <li><a href="{{ route('showcase.index') }}">karya member</a></li>
+        <li><a href="{{ route('testimoni.index') }}">testimoni</a></li>
         @isset($extraLinks)
           @foreach($extraLinks as $text => $url)
             <li><a href="{{ $url }}">{{ $text }}</a></li>
@@ -120,8 +158,6 @@
     <p>&copy; {{ date('Y') }} {{ $appName }}. All rights reserved.</p>
     <a href="#top" class="backTop" aria-label="Kembali ke atas"><i class="fas fa-arrow-up"></i></a>
   </div>
-
- 
 </footer>
 
 @push('scripts')
