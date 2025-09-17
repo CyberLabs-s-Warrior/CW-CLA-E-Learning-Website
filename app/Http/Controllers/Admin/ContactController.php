@@ -23,18 +23,24 @@ class ContactController extends Controller
     public function update(Request $request)
     {
         $validated = $request->validate([
-            'email'     => 'required|email',
-            'telepon'   => 'required|string|max:50',
-            'alamat'    => 'required|string',
-            'latitude'  => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
-            'link_maps' => 'nullable|url',
+            'email'       => 'required|email',
+            'telepon'     => 'required|string|max:50',
+            'alamat'      => 'required|string',
+            'latitude'    => 'nullable|numeric',
+            'longitude'   => 'nullable|numeric',
+            'link_maps'   => 'nullable|url',
             'url_email'   => 'nullable|string',
             'url_telepon' => 'nullable|string',
             'url_alamat'  => 'nullable|string',
+
+            // social media (opsional)
+            'social_facebook'  => 'nullable|url|max:255',
+            'social_instagram' => 'nullable|url|max:255',
+            'social_tiktok'    => 'nullable|url|max:255',
+            'social_x'         => 'nullable|url|max:255',
         ]);
 
-        // Jika link_maps kosong dan koordinat ada → bentuk embed GMaps otomatis
+        // Jika link_maps kosong & koordinat ada → bentuk embed GMaps otomatis
         if (empty($validated['link_maps']) && !empty($validated['latitude']) && !empty($validated['longitude'])) {
             $lat = $validated['latitude'];
             $lng = $validated['longitude'];

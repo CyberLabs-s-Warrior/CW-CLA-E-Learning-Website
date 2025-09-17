@@ -21,5 +21,11 @@ class Contact extends Model
         'phone_number',
         'location_label',
         'location_url',
+
+        // social links
+        'social_facebook',
+        'social_instagram',
+        'social_tiktok',
+        'social_x',
     ];
 }

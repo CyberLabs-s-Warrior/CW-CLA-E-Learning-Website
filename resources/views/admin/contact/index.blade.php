@@ -32,10 +32,17 @@
     $lng      = $contact->longitude ?? null;
     $linkMaps = $contact->link_maps ?? null;
 
-    // Normalisasi nomor telp untuk link tel:
-    $telHref = $telepon ? preg_replace('/[^0-9+]/','',$telepon) : null;
+    // Sosial media
+    $fb = trim($contact->social_facebook ?? '');
+    $ig = trim($contact->social_instagram ?? '');
+    $tt = trim($contact->social_tiktok ?? '');
+    $xx = trim($contact->social_x ?? '');
+    $hasSocial = $fb || $ig || $tt || $xx;
 
-    // Link Google Maps
+    // Normalisasi nomor telp untuk link tel:
+    $telHref = $telepon ? preg_replace('/[^0-9+]/','', $telepon) : null;
+
+    // Link Google Maps (klik)
     $gmapsClick = null;
     if (!empty($alamat)) {
       $gmapsClick = 'https://www.google.com/maps/search/?api=1&query=' . urlencode($alamat);
@@ -43,17 +50,17 @@
       $gmapsClick = 'https://www.google.com/maps?q=' . $lat . ',' . $lng;
     }
 
-    // Sumber iframe Google Maps
+    // Sumber iframe Google Maps (embed)
     $gmapsEmbed = null;
     if (!empty($linkMaps)) {
       $gmapsEmbed = str_contains($linkMaps,'output=embed')
         ? $linkMaps
-        : $linkMaps . (str_contains($linkMaps,'?')?'&':'?') . 'output=embed';
+        : $linkMaps . (str_contains($linkMaps,'?') ? '&' : '?') . 'output=embed';
     } elseif (!empty($lat) && !empty($lng)) {
       $gmapsEmbed = "https://www.google.com/maps?q={$lat},{$lng}&z=16&hl=id&output=embed";
     }
 
-    $hasAny = $alamat || $email || $telepon || ($lat && $lng);
+    $hasAny = $alamat || $email || $telepon || ($lat && $lng) || $hasSocial;
   @endphp
 
   <div class="row g-4">
@@ -95,6 +102,37 @@
                   <a href="tel:{{ $telHref }}">{{ $telepon }}</a>
                 @else
                   <span class="text-muted">-</span>
+                @endif
+              </div>
+
+              {{-- SOSIAL MEDIA --}}
+              <div class="list-group-item py-3">
+                <div class="fw-semibold mb-1"><i class="fas fa-share-alt me-2"></i>Sosial Media</div>
+                @if(!$hasSocial)
+                  <span class="text-muted">-</span>
+                @else
+                  <div class="d-flex flex-wrap gap-2">
+                    @if($fb)
+                      <a href="{{ $fb }}" target="_blank" rel="noopener" class="btn btn-sm btn-light border">
+                        <i class="fab fa-facebook me-1"></i>Facebook
+                      </a>
+                    @endif
+                    @if($ig)
+                      <a href="{{ $ig }}" target="_blank" rel="noopener" class="btn btn-sm btn-light border">
+                        <i class="fab fa-instagram me-1"></i>Instagram
+                      </a>
+                    @endif
+                    @if($tt)
+                      <a href="{{ $tt }}" target="_blank" rel="noopener" class="btn btn-sm btn-light border">
+                        <i class="fab fa-tiktok me-1"></i>TikTok
+                      </a>
+                    @endif
+                    @if($xx)
+                      <a href="{{ $xx }}" target="_blank" rel="noopener" class="btn btn-sm btn-light border">
+                        <i class="fab fa-x-twitter me-1"></i>X
+                      </a>
+                    @endif
+                  </div>
                 @endif
               </div>
 

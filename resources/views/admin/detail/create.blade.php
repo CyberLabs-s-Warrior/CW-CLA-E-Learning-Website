@@ -166,7 +166,7 @@
         return;
       }
 
-      fetch(`/admin/detail/course/${courseId}/info`)
+      fetch(/admin/detail/course/${courseId}/info)
         .then(res => res.json())
         .then(data => {
           previewBox.classList.remove('d-none');
@@ -190,7 +190,7 @@
           // --- Instructors dari Course (informasi tambahan dari server)
           previewInstructors.innerHTML = '';
           (data.instructors || []).forEach(i => {
-            previewInstructors.innerHTML += `<li>${i.name}</li>`;
+            previewInstructors.innerHTML += <li>${i.name}</li>;
           });
 
           // sinkron instruktur manual (dari form)
