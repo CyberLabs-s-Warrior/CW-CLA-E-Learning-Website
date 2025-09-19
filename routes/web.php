@@ -40,6 +40,25 @@ use App\Http\Controllers\Admin\{
 
 /*
 |--------------------------------------------------------------------------
+| FORUM CONTROLLERS (ADMIN)
+|--------------------------------------------------------------------------
+*/
+use App\Http\Controllers\Admin\Forum\CategoryController as AdminForumCategoryController;
+
+/*
+|--------------------------------------------------------------------------
+| FORUM CONTROLLERS (PUBLIK & MODERATOR)  // [FORUM] (baru)
+|--------------------------------------------------------------------------
+*/
+use App\Http\Controllers\Forum\{
+    ForumController,
+    ThreadController,
+    PostController
+};
+use App\Http\Controllers\Forum\Moderator\ThreadModerationController;
+
+/*
+|--------------------------------------------------------------------------
 | GUEST CONTROLLERS (publik)
 |--------------------------------------------------------------------------
 */
@@ -96,6 +115,55 @@ Route::get('/go/course/{slug}', function ($slug) {
 Route::get('/go/lessons/{slug}', function ($slug) {
     return redirect()->route('lesson.index', ['slug' => $slug]);
 })->name('course.lessons');
+
+/*
+|--------------------------------------------------------------------------
+| ==========================
+| [FORUM] RUTE PUBLIK (baru)
+| ==========================
+| Sesuai blueprint: beranda forum, per-kategori, detail thread,
+| buat topik & balas (hanya user login), tandai jawaban terbaik (opsional).
+*/
+Route::prefix('forum')->name('forum.')->group(function () {
+    // Beranda forum (kategori + topik terbaru)
+    Route::get('/', [ForumController::class, 'index'])->name('index');
+
+    // List thread per kategori
+    Route::get('c/{slug}', [ForumController::class, 'category'])->name('category');
+
+    // Detail thread
+    Route::get('t/{id}-{slug?}', [ThreadController::class, 'show'])->name('thread.show');
+
+    // Hanya untuk user login
+    Route::middleware('auth')->group(function () {
+        Route::get('create', [ThreadController::class, 'create'])->name('thread.create');
+        Route::post('store', [ThreadController::class, 'store'])->name('thread.store');
+
+        // Balas thread
+        Route::post('t/{id}/reply', [PostController::class, 'store'])->name('post.store');
+
+        // (Opsional) Tandai jawaban terbaik
+        Route::post('t/{id}/resolve/{postId}', [ThreadController::class, 'resolve'])
+            ->name('thread.resolve');
+    });
+});
+
+/*
+|--------------------------------------------------------------------------
+| ==========================
+| [FORUM] RUTE MODERATOR (baru)
+| ==========================
+| Aksi cepat: Pin/Unpin, Lock/Unlock.
+| Guard role: superadmin|admin|instructor.
+*/
+Route::middleware(['auth','role:superadmin|admin|instructor'])
+    ->prefix('forum/mod')->name('forum.mod.')
+    ->group(function () {
+        Route::post('t/{id}/pin',    [ThreadModerationController::class, 'pin'])->name('pin');
+        Route::post('t/{id}/unpin',  [ThreadModerationController::class, 'unpin'])->name('unpin');
+        Route::post('t/{id}/lock',   [ThreadModerationController::class, 'lock'])->name('lock');
+        Route::post('t/{id}/unlock', [ThreadModerationController::class, 'unlock'])->name('unlock');
+    });
 
 /*
 |--------------------------------------------------------------------------
@@ -251,6 +319,17 @@ Route::middleware(['auth', 'role:admin|superadmin|instructor'])
         Route::resource('/instruktur', InstructorProfileController::class)
         ->except('show')
         ->middleware('can:kelola_instructor');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Forum (ADMIN) — Kategori
+        | --------------------------------------------------------------------------
+        | Mengikuti penamaan step-by-step sebelumnya: admin.forum.categories.*
+        | URL: /admin/forum/categories
+        */
+        Route::prefix('forum')->name('forum.')->middleware('role:admin|superadmin')->group(function () {
+            Route::resource('/categories', AdminForumCategoryController::class);
+        });
      });
 
 /*
