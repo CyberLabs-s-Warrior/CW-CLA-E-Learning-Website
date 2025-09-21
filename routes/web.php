@@ -272,7 +272,17 @@ Route::middleware(['auth', 'role:admin|superadmin|instructor'])
         Route::resource('/instruktur', InstructorProfileController::class)
         ->except('show')
         ->middleware('can:kelola_instructor');
-     });
+});
+
+// Route Payment Gateaway (Midtrans) - untuk AJAX dari client
+Route::post('/checkout', [App\Http\Controllers\PaymentController::class, 'checkout'])->name('checkout');
+Route::get('/test-midtrans', function () {
+    return [
+        'server' => config('midtrans.serverKey'),
+        'client' => config('midtrans.clientKey'),
+        'prod' => config('midtrans.isProduction'),
+    ];
+});
 
 /*
 |--------------------------------------------------------------------------
