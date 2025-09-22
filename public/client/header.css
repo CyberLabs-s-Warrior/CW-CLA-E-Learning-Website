@@ -178,6 +178,31 @@ a:focus-visible, button:focus-visible {
 
 .drawer-actions { margin-top: auto; padding: 12px; border-top: 1px solid #e2e8f0; }
 .block { display: block; text-align: center; }
+/* Dropdown (desktop) */
+.dropdown { position: relative; }
+.dropdown-toggle{
+  display:flex; align-items:center; gap:6px; padding:6px 0; cursor:pointer;
+  background:none; border:none; color:#334155; font-size:1rem; font-weight:500;
+}
+.dropdown-toggle:hover { color:#2563eb; }
+.dropdown-menu{
+  position:absolute; top: calc(100% + 10px); left:0; min-width: 200px;
+  background:#fff; border:1px solid #e2e8f0; border-radius:10px; box-shadow:0 12px 30px rgba(2,8,23,.08);
+  padding:8px; display:none; z-index:1001;
+}
+.dropdown.open .dropdown-menu{ display:block; }
+.dropdown-menu a{
+  display:block; padding:10px 12px; border-radius:8px; color:#334155; text-decoration:none;
+}
+.dropdown-menu a:hover { background:#f8fafc; color:#2563eb; }
+
+/* More (Priority+) */
+.more-wrap[hidden]{ display:none !important; }
+.more-wrap .dropdown-menu { right:0; left:auto; }
+
+/* Mobile drawer section title */
+.drawer-group { padding: 10px 12px; }
+.drawer-title { font-size:.9rem; color:#64748b; font-weight:700; padding: 6px 0 4px; }
 
 /* Responsive */
 @media (max-width: 960px) {

@@ -5,19 +5,49 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\CourseDetail;
+use App\Models\CourseLevel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CourseDetailController extends Controller
 {
-    public function index()
-    {
-        $details = CourseDetail::with(['course.level', 'course.lessons', 'instructorProfile.user'])
-            ->paginate(10);
+public function index(Request $request)
+{
+    $query = CourseDetail::query()
+        ->with(['course.level', 'instructors.user'])
+        ->leftJoin('courses', 'course_details.course_id', '=', 'courses.id')
+        ->leftJoin('lessons', 'courses.id', '=', 'lessons.course_id')
+        ->select('course_details.*', DB::raw('COALESCE(SUM(lessons.duration),0) as total_duration'))
+        ->groupBy('course_details.id');
 
-        $courses = Course::with('detail')->get();
-
-        return view('admin.detail.index', compact('details', 'courses'));
+    // search
+    if ($request->filled('search')) {
+        $query->whereHas('course', function ($q) use ($request) {
+            $q->where('name', 'like', "%{$request->search}%");
+        });
     }
+
+    // filter level
+    if ($request->filled('level')) {
+        $query->whereHas('course.level', function ($q) use ($request) {
+            $q->where('id', $request->level);
+        });
+    }
+
+    // sort durasi
+    if ($request->sort === 'shortest') {
+        $query->orderBy('total_duration', 'asc');
+    } elseif ($request->sort === 'longest') {
+        $query->orderBy('total_duration', 'desc');
+    }
+
+    $details = $query->paginate(10);
+
+    // ✅ ambil semua level untuk filter
+    $levels = CourseLevel::all();
+
+    return view('admin.detail.index', compact('details', 'levels'));
+}
 
     public function create()
     {

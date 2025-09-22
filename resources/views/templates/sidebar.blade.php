@@ -221,7 +221,7 @@
                   @can('kelola_instructor')
                     <li class="nav-item">
                       <a href="{{ route('admin.instruktur.index') }}"
-                        class="nav-link {{ request()->routeIs('admin.instructors.*') ? 'active' : '' }}">
+                        class="nav-link {{ request()->routeIs('admin.instruktur.*') ? 'active' : '' }}">
                         <i class="fa-solid fa-chalkboard-user me-2"></i> Instructors
                       </a>
                     </li>
@@ -272,7 +272,59 @@
                 </ul>
               </li>
         @endcan
+
+        {{-- Forum (treeview) --}}
+@role('admin|superadmin')
+  <li class="nav-item has-treeview {{ request()->routeIs('admin.forum.*') ? 'active' : '' }}">
+    <a href="#" class="nav-link">
+      <i class="fa-solid fa-comments me-2"></i> Forum
+      <i class="fa-solid fa-caret-right ms-auto icon-collapsed"></i>
+      <i class="fa-solid fa-caret-down ms-auto icon-expanded"></i>
+    </a>
+
+    <ul class="nav nav-treeview">
+      <li class="nav-item">
+        <a href="{{ route('admin.forum.categories.index') }}"
+           class="nav-link {{ request()->routeIs('admin.forum.categories.*') ? 'active' : '' }}">
+          <i class="fa-solid fa-folder-tree me-2 text-secondary"></i> Kategori
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a href="{{ route('admin.forum.threads.index') }}"
+           class="nav-link {{ request()->routeIs('admin.forum.threads.*') ? 'active' : '' }}">
+          <i class="fa-solid fa-comments me-2 text-secondary"></i> Threads
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a href="{{ route('admin.forum.posts.index') }}"
+           class="nav-link {{ request()->routeIs('admin.forum.posts.*') ? 'active' : '' }}">
+          <i class="fa-solid fa-reply me-2 text-secondary"></i> Posts
+        </a>
+      </li>
+
+      {{-- (Opsional, nanti saat fitur Laporan siap)
+      <li class="nav-item">
+        <a href="{{ route('admin.forum.reports.index') }}"
+           class="nav-link {{ request()->routeIs('admin.forum.reports.*') ? 'active' : '' }}">
+          <i class="fa-solid fa-flag me-2 text-secondary"></i> Laporan
+        </a>
+      </li>
+      --}}
+
+      <li class="nav-item">
+        <a href="{{ route('forum.index') }}" class="nav-link" target="_blank">
+          <i class="fa-solid fa-up-right-from-square me-2 text-secondary"></i> Buka Forum Publik
+        </a>
+      </li>
+    </ul>
+  </li>
+@endrole
+
       </ul>
+
+
     </nav>
   </div>
 </aside>

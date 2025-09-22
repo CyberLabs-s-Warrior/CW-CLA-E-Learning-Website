@@ -7,6 +7,7 @@ use App\Models\ForumThread;
 use App\Models\ForumCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class ThreadController extends Controller
 {
@@ -20,9 +21,8 @@ class ThreadController extends Controller
         $status      = $request->string('status')->toString(); // pinned|locked|trashed|all
         $perPage     = $request->integer('per_page') ?: 20;
 
-        $query = ForumThread::query()->with(['category','user']);
+        $query = ForumThread::query()->withCount('posts')->with(['category','user']);
 
-        // status filter
         if ($status === 'trashed') {
             $query->onlyTrashed();
         } elseif ($status === 'all') {
@@ -48,7 +48,6 @@ class ThreadController extends Controller
             $query->where('is_locked', true);
         }
 
-        // urutan: pinned dulu, lalu terbaru update
         $threads = $query
             ->orderByRaw('pinned_at IS NULL')
             ->orderByDesc('pinned_at')
@@ -81,53 +80,77 @@ class ThreadController extends Controller
     {
         $this->authorizeAdmin($request);
         $thread = ForumThread::withTrashed()->findOrFail($id);
+
+        if ($thread->image_path) {
+            Storage::disk('public')->delete($thread->image_path);
+        }
+        foreach ($thread->posts()->withTrashed()->get() as $post) {
+            if ($post->image_path) {
+                Storage::disk('public')->delete($post->image_path);
+            }
+        }
+
         $thread->forceDelete();
         return back()->with('success','Thread dihapus permanen.');
     }
 
-    public function move(Request $request, $id)
+
+    public function trashedList(Request $request)
+    {
+        $this->authorizeAdmin($request);
+
+        $items = ForumThread::onlyTrashed()
+            ->with(['category:id,name','user:id,name'])
+            ->orderByDesc('deleted_at')
+            ->limit(300)
+            ->get(['id','title','deleted_at','category_id','user_id']);
+
+        return response()->json([
+            'data' => $items->map(function ($t) {
+                return [
+                    'id'         => $t->id,
+                    'title'      => $t->title,
+                    'deleted_at' => $t->deleted_at?->format('d M Y H:i'),
+                    'category'   => $t->category?->name,
+                    'author'     => $t->user?->name,
+                ];
+            }),
+        ]);
+    }
+
+    public function bulkRestore(Request $request)
     {
         $this->authorizeAdmin($request);
         $data = $request->validate([
-            'category_id' => 'required|exists:forum_categories,id',
+            'ids'   => 'required|array|min:1',
+            'ids.*' => 'integer',
         ]);
 
-        $thread = ForumThread::withTrashed()->findOrFail($id);
-        $thread->update(['category_id' => $data['category_id']]);
-
-        return back()->with('success','Thread dipindahkan ke kategori baru.');
+        ForumThread::onlyTrashed()->whereIn('id', $data['ids'])->restore();
+        return response()->json(['ok' => true, 'message' => 'Dipulihkan.']);
     }
 
-    public function pin(Request $request, $id)
+    public function bulkForceDelete(Request $request)
     {
         $this->authorizeAdmin($request);
-        $thread = ForumThread::withTrashed()->findOrFail($id);
-        $thread->update(['pinned_at' => Carbon::now()]);
-        return back()->with('success','Thread di-pin.');
-    }
+        $data = $request->validate([
+            'ids'   => 'required|array|min:1',
+            'ids.*' => 'integer',
+        ]);
 
-    public function unpin(Request $request, $id)
-    {
-        $this->authorizeAdmin($request);
-        $thread = ForumThread::withTrashed()->findOrFail($id);
-        $thread->update(['pinned_at' => null]);
-        return back()->with('success','Pin dihapus.');
-    }
+        $threads = ForumThread::withTrashed()->whereIn('id', $data['ids'])->get();
 
-    public function lock(Request $request, $id)
-    {
-        $this->authorizeAdmin($request);
-        $thread = ForumThread::withTrashed()->findOrFail($id);
-        $thread->update(['is_locked' => true]);
-        return back()->with('success','Thread dikunci.');
-    }
+        foreach ($threads as $thread) {
+            if ($thread->image_path) {
+                Storage::disk('public')->delete($thread->image_path);
+            }
+            foreach ($thread->posts()->withTrashed()->get() as $post) {
+                if ($post->image_path) Storage::disk('public')->delete($post->image_path);
+            }
+            $thread->forceDelete();
+        }
 
-    public function unlock(Request $request, $id)
-    {
-        $this->authorizeAdmin($request);
-        $thread = ForumThread::withTrashed()->findOrFail($id);
-        $thread->update(['is_locked' => false]);
-        return back()->with('success','Thread dibuka.');
+        return response()->json(['ok' => true, 'message' => 'Dihapus permanen.']);
     }
 
     private function authorizeAdmin(Request $request): void

@@ -22,6 +22,95 @@
       </a>
     </div>
 
+    {{-- 🔍 Search ringkas --}}
+    <form method="GET" action="{{ route('admin.course.index') }}" class="mb-3" style="max-width: 320px;">
+      <div class="input-group">
+        <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Cari...">
+        <button class="btn btn-primary" type="submit">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </form>
+
+    {{-- Filter Form --}}
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+      <div class="card-body">
+        <form method="GET" action="{{ route('admin.course.index') }}" class="row g-3 align-items-end">
+
+          {{-- Hidden biar search tetap terbawa saat filter --}}
+          <input type="hidden" name="search" value="{{ request('search') }}">
+
+          {{-- Kategori --}}
+          <div class="col-md-3">
+            <label class="form-label">Kategori</label>
+            <select name="category" class="form-select">
+              <option value="">Semua</option>
+              @foreach($categories as $cat)
+                <option value="{{ $cat->id }}" {{ request('category') == $cat->id ? 'selected' : '' }}>
+                  {{ $cat->category }}
+                </option>
+              @endforeach
+            </select>
+          </div>
+
+          {{-- Level --}}
+          <div class="col-md-3">
+            <label class="form-label">Level</label>
+            <select name="level" class="form-select">
+              <option value="">Semua</option>
+              @foreach($levels as $lvl)
+                <option value="{{ $lvl->id }}" {{ request('level') == $lvl->id ? 'selected' : '' }}>
+                  {{ $lvl->level }}
+                </option>
+              @endforeach
+            </select>
+          </div>
+
+          {{-- Range Harga --}}
+          <div class="col-md-3">
+            <label class="form-label">Rentang Harga</label>
+            <select name="price_range" class="form-select">
+              <option value="">Semua</option>
+              <option value="0-500000" {{ request('price_range') == '0-500000' ? 'selected' : '' }}>0 - 500rb</option>
+              <option value="500000-1000000" {{ request('price_range') == '500000-1000000' ? 'selected' : '' }}>500rb - 1jt
+              </option>
+              <option value="1000000-2000000" {{ request('price_range') == '1000000-2000000' ? 'selected' : '' }}>1jt - 2jt
+              </option>
+              <option value="2000000-99999999" {{ request('price_range') == '2000000-99999999' ? 'selected' : '' }}>2jt+
+              </option>
+            </select>
+          </div>
+
+          {{-- Sort --}}
+          <div class="col-md-3">
+            <label class="form-label">Urutkan</label>
+            <select name="sort" class="form-select">
+              <option value="">Default</option>
+              <option value="duration_asc" {{ request('sort') == 'duration_asc' ? 'selected' : '' }}>Durasi Terpendek</option>
+              <option value="duration_desc" {{ request('sort') == 'duration_desc' ? 'selected' : '' }}>Durasi Terlama</option>
+              <option value="students_desc" {{ request('sort') == 'students_desc' ? 'selected' : '' }}>Jumlah Siswa Terbanyak
+              </option>
+              <option value="students_asc" {{ request('sort') == 'students_asc' ? 'selected' : '' }}>Jumlah Siswa Tersedikit
+              </option>
+              <option value="rating_desc" {{ request('sort') == 'rating_desc' ? 'selected' : '' }}>Rating Tertinggi</option>
+              <option value="rating_asc" {{ request('sort') == 'rating_asc' ? 'selected' : '' }}>Rating Terendah</option>
+            </select>
+          </div>
+
+          {{-- Tombol --}}
+          <div class="col-12 d-flex gap-2">
+            <button type="submit" class="btn btn-primary rounded-pill px-4">
+              <i class="fas fa-filter me-1"></i>Filter
+            </button>
+            <a href="{{ route('admin.course.index') }}" class="btn btn-outline-secondary rounded-pill px-4">
+              <i class="fas fa-times me-1"></i>Reset
+            </a>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
     {{-- Alert kosong --}}
     @if($courses->isEmpty())
       <div class="alert alert-info d-flex align-items-center gap-2" role="alert">
@@ -39,7 +128,7 @@
               <thead class="table-light">
                 <tr>
                   <th>Gambar</th>
-                  <th>Nama</th>
+                  <th>Course</th>
                   <th>Slug</th>
                   <th>Kategori</th>
                   <th>Level</th>

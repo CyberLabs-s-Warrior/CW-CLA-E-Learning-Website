@@ -1,17 +1,17 @@
 @extends('templates.app')
-@section('title','Form Kategori Forum')
+@section('title','Form Kategori Forum — Edit')
 
 @section('content')
 <div class="container-fluid">
   {{-- Header --}}
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 mb-0 fw-bold text-dark">{{ isset($category) ? 'Edit' : 'Tambah' }} Kategori</h1>
+    <h1 class="h3 mb-0 fw-bold text-dark">Edit Kategori</h1>
     <a href="{{ route('admin.forum.categories.index') }}" class="btn btn-outline-secondary">
       <i class="fa fa-arrow-left me-1"></i> Kembali
     </a>
   </div>
 
-  {{-- Error summary (opsional, memudahkan lihat semua error) --}}
+  {{-- Error summary --}}
   @if ($errors->any())
     <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
       <strong>Periksa kembali isian kamu:</strong>
@@ -25,15 +25,13 @@
   @endif
 
   <div class="card shadow-sm border-0">
-    <div class="card-header bg-light fw-semibold">
-      Detail Kategori
-    </div>
+    <div class="card-header bg-light fw-semibold">Detail Kategori</div>
     <div class="card-body">
       <form class="needs-validation" novalidate
             method="POST"
-            action="{{ isset($category) ? route('admin.forum.categories.update',$category) : route('admin.forum.categories.store') }}">
+            action="{{ route('admin.forum.categories.update', $category) }}">
         @csrf
-        @if(isset($category)) @method('PUT') @endif
+        @method('PUT')
 
         <div class="row g-4">
           {{-- Nama --}}
@@ -41,7 +39,7 @@
             <label for="name" class="form-label">Nama <span class="text-danger">*</span></label>
             <input id="name" name="name" type="text"
                    class="form-control @error('name') is-invalid @enderror"
-                   value="{{ old('name', $category->name ?? '') }}" required maxlength="100"
+                   value="{{ old('name', $category->name) }}" required maxlength="100"
                    placeholder="Mis. Pengumuman, Tanya Jawab, Tips & Trik">
             <div class="form-text d-flex justify-content-between">
               <span>Nama kategori yang ditampilkan publik.</span>
@@ -57,12 +55,12 @@
               <span class="input-group-text d-none d-md-inline">/forum/</span>
               <input id="slug" name="slug" type="text"
                      class="form-control @error('slug') is-invalid @enderror"
-                     value="{{ old('slug', $category->slug ?? '') }}"
+                     value="{{ old('slug', $category->slug) }}"
                      placeholder="pengumuman">
             </div>
             <div class="form-text">
-              Biarkan kosong untuk dibuat otomatis dari Nama. <br class="d-md-none">
-              <span class="text-muted">Pratinjau: <code id="slug-preview">/forum/{{ old('slug', $category->slug ?? '') }}</code></span>
+              Biarkan kosong untuk dibuat otomatis dari Nama.
+              <span class="text-muted">Pratinjau: <code id="slug-preview">/forum/{{ old('slug', $category->slug) }}</code></span>
             </div>
             @error('slug') <div class="invalid-feedback">{{ $message }}</div> @enderror
           </div>
@@ -72,7 +70,7 @@
             <label for="description" class="form-label">Deskripsi</label>
             <textarea id="description" name="description" rows="3"
                       class="form-control @error('description') is-invalid @enderror"
-                      placeholder="Gambaran singkat kategori ini.">{{ old('description', $category->description ?? '') }}</textarea>
+                      placeholder="Gambaran singkat kategori ini.">{{ old('description', $category->description) }}</textarea>
             <div class="form-text">Opsional tapi disarankan untuk memandu pengguna.</div>
             @error('description') <div class="invalid-feedback">{{ $message }}</div> @enderror
           </div>
@@ -82,7 +80,7 @@
             <label for="sort_order" class="form-label">Urutan</label>
             <input id="sort_order" type="number" name="sort_order"
                    class="form-control @error('sort_order') is-invalid @enderror"
-                   value="{{ old('sort_order', $category->sort_order ?? 0) }}" min="0" step="1">
+                   value="{{ old('sort_order', $category->sort_order) }}" min="0" step="1">
             <div class="form-text">Angka lebih kecil tampil lebih atas.</div>
             @error('sort_order') <div class="invalid-feedback">{{ $message }}</div> @enderror
           </div>
@@ -90,7 +88,7 @@
           <div class="col-md-6 d-flex align-items-end">
             <div class="form-check form-switch">
               <input id="is_private" class="form-check-input" type="checkbox" name="is_private" value="1"
-                     {{ old('is_private', $category->is_private ?? false) ? 'checked' : '' }}>
+                     {{ old('is_private', $category->is_private) ? 'checked' : '' }}>
               <label class="form-check-label" for="is_private">Kategori Privat</label>
             </div>
           </div>
@@ -98,7 +96,7 @@
 
         <div class="d-flex gap-2 mt-4">
           <button id="btn-submit" class="btn btn-primary">
-            <span class="submit-label"><i class="fa fa-save me-1"></i> Simpan</span>
+            <span class="submit-label"><i class="fa fa-save me-1"></i> Simpan Perubahan</span>
             <span class="submit-loading d-none">
               <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Menyimpan…
             </span>
@@ -110,7 +108,6 @@
   </div>
 </div>
 
-{{-- UX helpers --}}
 @push('scripts')
 <script>
   (function () {
@@ -124,20 +121,15 @@
     const loadingSpan = submitBtn?.querySelector('.submit-loading');
 
     function slugify(text) {
-      return text
-        .toString()
-        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')   // hapus diakritik
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9\s-]/g, '')                      // buang simbol
-        .replace(/\s+/g, '-')                              // spasi -> dash
-        .replace(/-+/g, '-');                              // dash ganda -> tunggal
+      return text.toString()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase().trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
     }
 
-    // Auto-generate slug jika user belum mengisi slug manual
-    const initialSlugTouched = !!slugInput.value;
-    let slugTouched = initialSlugTouched;
-
+    let slugTouched = !!slugInput.value;
     slugInput.addEventListener('input', () => {
       slugTouched = slugInput.value.length > 0;
       preview.textContent = '/forum/' + slugify(slugInput.value);
@@ -153,21 +145,16 @@
     }
 
     nameInput.addEventListener('input', updatePreviewFromName);
-    // Init preview & counter
+    // init
     updatePreviewFromName();
 
-    // Bootstrap client-side validation + anti double submit
+    // Bootstrap validation + anti double submit
     form.addEventListener('submit', function (e) {
       if (!form.checkValidity()) {
-        e.preventDefault();
-        e.stopPropagation();
+        e.preventDefault(); e.stopPropagation();
       } else {
-        // proteksi double submit
         submitBtn.disabled = true;
-        if (labelSpan && loadingSpan) {
-          labelSpan.classList.add('d-none');
-          loadingSpan.classList.remove('d-none');
-        }
+        if (labelSpan && loadingSpan) { labelSpan.classList.add('d-none'); loadingSpan.classList.remove('d-none'); }
       }
       form.classList.add('was-validated');
     }, false);

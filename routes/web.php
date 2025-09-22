@@ -11,7 +11,8 @@ use App\Http\Controllers\Auth\{
     NewPasswordController,
     StudentAuthController,
     PasswordResetLinkController,
-    AuthenticatedSessionController
+    AuthenticatedSessionController,
+    PendingVerificationController
 };
 
 /*
@@ -175,17 +176,28 @@ Route::middleware(['auth','role:superadmin|admin|instructor'])
 Route::middleware(['guest'])->group(function () {
     // Login & Register
     Route::get('/login', [StudentAuthController::class, 'showLoginRegisterForm'])->name('login');
+    
     Route::post('/login', [StudentAuthController::class, 'login'])->name('login.submit');
 
-    Route::get('/register', [StudentAuthController::class, 'showLoginRegisterForm'])->name('register');
-    Route::post('/register', [StudentAuthController::class, 'register'])->name('register.submit');
 
+    Route::get('/register', [StudentAuthController::class, 'showLoginRegisterForm'])->name('register');
+    // Route::post('/register', [StudentAuthController::class, 'register'])->name('register.submit');
+
+    Route::post('/register-pending', [PendingVerificationController::class, 'storePending'])
+        ->name('register.pending')
+        ->middleware('throttle:5,1');
+
+    // NOTE: rute verify-pending DIPINDAH ke luar grup guest (lihat di bawah)
     // Forgot & Reset Password
     Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
     Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
     Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
     Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.store');
 });
+
+// >>> VERIFY-PENDING: letakkan DI LUAR semua grup agar tidak terblokir middleware guest
+Route::get('/verify-pending', [PendingVerificationController::class, 'verify'])
+    ->name('pending.verify');
 
 // Logout student
 Route::middleware(['auth'])->post('/logout', [StudentAuthController::class, 'logout'])->name('logout');
@@ -210,7 +222,11 @@ Route::middleware(['auth', 'role:student'])->group(function () {
 | ===========================================
 | Semua fitur siswa lain wajib lewat CheckUserProfileMiddleware.
 */
-Route::middleware(['auth', 'role:student', \App\Http\Middleware\CheckUserProfileMiddleware::class])->group(function () {
+Route::middleware([
+    'auth',
+    'role:student',
+    \App\Http\Middleware\CheckUserProfileMiddleware::class
+])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [ProfileClientController::class, 'index'])->name('dashboard.index');
@@ -224,17 +240,22 @@ Route::middleware(['auth', 'role:student', \App\Http\Middleware\CheckUserProfile
 
     // Payments (dipindah dari guest ke student)
     Route::get('/payment', [PaymentClientController::class, 'index'])->name('payment.index');
+
+      // === Student Profile (Settings) ===
+    Route::get('/profile', [\App\Http\Controllers\Student\ProfileSettingsController::class, 'show'])
+        ->name('student.profile.show');
+
+    Route::put('/profile/biodata', [\App\Http\Controllers\Student\ProfileSettingsController::class, 'updateBiodata'])
+        ->name('student.profile.biodata');
+
+    Route::put('/profile/account', [\App\Http\Controllers\Student\ProfileSettingsController::class, 'updateAccount'])
+        ->name('student.profile.account');
+
+    // Ganti password: pakai controller Auth kamu (punya error bag "updatePassword")
+    Route::put('/profile/password', [\App\Http\Controllers\Auth\PasswordController::class, 'update'])
+        ->name('student.profile.password');
 });
 
-/*
-|--------------------------------------------------------------------------
-| ==========================
-| ADMIN AUTH ROUTES
-| ==========================
-*/
-Route::get('/login-admin', [AuthenticatedSessionController::class, 'create'])->name('admin.login');
-Route::post('/login-admin', [AuthenticatedSessionController::class, 'store'])->name('admin.login.submit');
-Route::post('/logout-admin', [AuthenticatedSessionController::class, 'destroy'])->name('admin.logout');
 
 /*
 |--------------------------------------------------------------------------
@@ -320,16 +341,37 @@ Route::middleware(['auth', 'role:admin|superadmin|instructor'])
         ->except('show')
         ->middleware('can:kelola_instructor');
 
-        /*
-        |--------------------------------------------------------------------------
-        | Forum (ADMIN) — Kategori
-        | --------------------------------------------------------------------------
-        | Mengikuti penamaan step-by-step sebelumnya: admin.forum.categories.*
-        | URL: /admin/forum/categories
-        */
-        Route::prefix('forum')->name('forum.')->middleware('role:admin|superadmin')->group(function () {
-            Route::resource('/categories', AdminForumCategoryController::class);
-        });
+       
+       
+        Route::prefix('forum')
+            ->name('forum.')
+            ->middleware('can:kelola_forum')
+            ->group(function () {
+                // Kategori (resource standar)
+                Route::resource('/categories', \App\Http\Controllers\Admin\Forum\CategoryController::class);
+
+                // ===== Threads (Admin) =====
+                Route::get('/threads',                           [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'index'])->name('threads.index');
+                Route::delete('/threads/{id}',                   [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'destroy'])->name('threads.destroy');           // soft delete
+                Route::post('/threads/{id}/restore',             [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'restore'])->name('threads.restore');           // restore
+                Route::post('/threads/{id}/force-delete',        [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'forceDelete'])->name('threads.forceDelete');   // hard delete
+
+                // Modal "Tong Sampah" + Bulk (AJAX)
+                Route::get('/threads/trashed/list',              [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'trashedList'])->name('threads.trashedList');
+                Route::post('/threads/bulk/restore',             [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'bulkRestore'])->name('threads.bulkRestore');
+                Route::post('/threads/bulk/force-delete',        [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'bulkForceDelete'])->name('threads.bulkForceDelete');
+
+                // ===== Posts (Admin) =====
+                Route::get('/posts',                             [\App\Http\Controllers\Admin\Forum\PostController::class, 'index'])->name('posts.index');
+                Route::delete('/posts/{id}',                     [\App\Http\Controllers\Admin\Forum\PostController::class, 'destroy'])->name('posts.destroy');               // soft delete
+                Route::post('/posts/{id}/restore',               [\App\Http\Controllers\Admin\Forum\PostController::class, 'restore'])->name('posts.restore');               // restore
+                Route::post('/posts/{id}/force-delete',          [\App\Http\Controllers\Admin\Forum\PostController::class, 'forceDelete'])->name('posts.forceDelete');       // hard delete
+
+                // Modal "Tong Sampah" + Bulk (AJAX)
+                Route::get('/posts/trashed/list',                [\App\Http\Controllers\Admin\Forum\PostController::class, 'trashedList'])->name('posts.trashedList');
+                Route::post('/posts/bulk/restore',               [\App\Http\Controllers\Admin\Forum\PostController::class, 'bulkRestore'])->name('posts.bulkRestore');
+                Route::post('/posts/bulk/force-delete',          [\App\Http\Controllers\Admin\Forum\PostController::class, 'bulkForceDelete'])->name('posts.bulkForceDelete');
+            });
      });
 
 /*

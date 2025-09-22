@@ -22,7 +22,8 @@ class PermissionSeeder extends Seeder
             'kelola_course',
             'kelola_showcase',
             'kelola_testimoni',
-            'kelola_instructor'
+            'kelola_instructor',
+            'kelola_forum',
         ];
 
         foreach ($permissions as $permission) {

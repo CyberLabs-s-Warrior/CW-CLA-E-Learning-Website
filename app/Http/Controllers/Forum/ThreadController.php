@@ -19,25 +19,34 @@ class ThreadController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $data = $request->validate([
-            'category_id' => 'required|exists:forum_categories,id',
-            'title'       => 'required|string|min:5|max:140',
-            'body'        => 'required|string|min:10',
-        ]);
+{
+    $data = $request->validate([
+        'category_id' => 'required|exists:forum_categories,id',
+        'title'       => 'required|string|min:5|max:140',
+        'body'        => 'required|string|min:10',
+        'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:2048', // <-- TAMBAH
+    ]);
 
-        $thread = ForumThread::create([
-            'category_id' => $data['category_id'],
-            'user_id'     => $request->user()->id,
-            'title'       => $data['title'],
-            'body'        => $data['body'],
-        ]);
-
-        return redirect()->route('forum.thread.show', [
-            'id' => $thread->id,
-            'slug' => Str::slug($thread->title),
-        ])->with('success','Topik berhasil dibuat.');
+    $imagePath = null;
+    if ($request->hasFile('image')) {
+        // simpan ke storage/app/public/forum/threads
+        $imagePath = $request->file('image')->store('forum/threads', 'public');
     }
+
+    $thread = ForumThread::create([
+        'category_id' => $data['category_id'],
+        'user_id'     => $request->user()->id,
+        'title'       => $data['title'],
+        'body'        => $data['body'],
+        'image_path'  => $imagePath,  
+    ]);
+
+    return redirect()->route('forum.thread.show', [
+        'id' => $thread->id,
+        'slug' => \Illuminate\Support\Str::slug($thread->title),
+    ])->with('success','Topik berhasil dibuat.');
+}
+
 
     public function show($id, $slug = null)
     {

@@ -1,170 +1,218 @@
+{{-- resources/views/forum/thread/show.blade.php --}}
 @extends('layouts.guest')
 @section('title', $thread->title)
 
+@push('styles')
+  {{-- cache-busting agar update CSS langsung terbaca --}}
+  <link rel="stylesheet" href="{{ asset('guest/forum-thread.css') }}?v={{ filemtime(public_path('guest/forum-thread.css')) }}">
+@endpush
+
 @section('content')
-<style>
-  /* ===== Tokens (gampang diubah) ===== */
-  :root{
-    --bg:#0b0f19; --surface:#111827; --surface-2:#0f172a;
-    --text:#e5e7eb; --muted:#94a3b8; --brand:#3b82f6;
-    --border:#1f2937; --success:#16a34a; --warning:#f59e0b;
-    --secondary:#64748b; --radius:14px; --shadow:0 10px 30px rgba(0,0,0,.25);
-  }
-  .thread-page{color:var(--text);}
-  .thread-page .container{max-width:900px;margin:0 auto;padding:0 16px;}
+<section class="th-wrap">
+  <div class="th-container">
 
-  /* Header */
-  .th-head{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
-  .th-title{margin:0;font-size:clamp(22px,2.2vw,30px);font-weight:800;letter-spacing:.2px}
-  .th-meta{color:var(--muted);font-size:12px;margin-top:6px}
-  .chip{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:999px;
-    font-size:11px;font-weight:800;letter-spacing:.2px;border:1px solid transparent}
-  .chip-pin{background:rgba(245,158,11,.15);color:#fbbf24;border-color:rgba(245,158,11,.35)}
-  .chip-lock{background:rgba(100,116,139,.15);color:#cbd5e1;border-color:rgba(100,116,139,.35)}
-
-  /* Buttons */
-  .btnx{display:inline-flex;align-items:center;justify-content:center;height:36px;padding:0 12px;
-    border-radius:10px;border:1px solid transparent;font-weight:700;text-decoration:none;cursor:pointer;
-    transition:transform .08s ease,filter .2s ease,border-color .2s ease}
-  .btnx:active{transform:translateY(1px)}
-  .btnx-warn{background:linear-gradient(180deg,#fbbf24,#f59e0b);color:#111827}
-  .btnx-outline-warn{background:transparent;border-color:#f59e0b;color:#fbbf24}
-  .btnx-sec{background:#334155;color:#e5e7eb}
-  .btnx-outline-sec{background:transparent;border-color:#94a3b8;color:#cbd5e1}
-
-  /* Blocks */
-  .block{background:linear-gradient(180deg,var(--surface),var(--surface-2));border:1px solid var(--border);
-    border-radius:var(--radius);box-shadow:0 0 0 rgba(0,0,0,0)}
-  .op-post{padding:16px}
-  .divider{height:1px;background:var(--border);border:0;margin:16px 0}
-
-  /* Best Answer */
-  .best{border:1px solid rgba(22,163,74,.4);background:linear-gradient(180deg,rgba(22,163,74,.12),rgba(22,163,74,.08));padding:16px;border-radius:var(--radius)}
-  .best h6{margin:0 0 6px;font-size:13px;color:#86efac;letter-spacing:.2px}
-  .best .who{color:var(--muted);font-size:12px}
-  .best .content{margin-top:8px}
-
-  /* Replies */
-  .replies{display:grid;gap:10px}
-  .reply{padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius);
-    background:linear-gradient(180deg,var(--surface),var(--surface-2));transition:border-color .2s ease, box-shadow .2s ease, transform .12s ease}
-  .reply:hover{border-color:rgba(59,130,246,.35);box-shadow:var(--shadow);transform:translateY(-1px)}
-  .reply-top{display:flex;justify-content:space-between;gap:10px;align-items:center}
-  .reply-meta{color:var(--muted);font-size:12px}
-  .reply-body{margin-top:8px;line-height:1.6}
-
-  /* Composer */
-  .composer{margin-top:16px}
-  .form-label{display:block;margin-bottom:8px;font-weight:700;color:var(--muted)}
-  .textarea{width:100%;min-height:120px;border-radius:12px;border:1px solid var(--border);
-    background:var(--surface-2);color:var(--text);padding:10px 12px;outline:none}
-  .textarea:focus{border-color:rgba(59,130,246,.45);box-shadow:0 0 0 3px rgba(59,130,246,.15)}
-  .btn-primary{background:linear-gradient(180deg,var(--brand),#60a5fa);color:#fff;border:0}
-  .alert{padding:12px 14px;border-radius:12px}
-  .alert-info{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.35);color:#bfdbfe}
-  .alert-muted{background:rgba(100,116,139,.12);border:1px solid rgba(100,116,139,.35);color:#cbd5e1}
-
-  /* Stack moderator buttons neatly on small screens */
-  .th-actions{display:flex;gap:8px;flex-wrap:wrap}
-  @media (max-width:640px){.th-head{grid-template-columns:1fr}.th-actions{justify-content:flex-start}}
-</style>
-
-<section class="thread-page">
-  <div class="container py-4">
-
-    {{-- Header --}}
-    <div class="th-head">
-      <div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
-          @if($thread->pinned_at)<span class="chip chip-pin">Pinned</span>@endif
-          @if($thread->is_locked)<span class="chip chip-lock">Locked</span>@endif
+    {{-- Breadcrumb + Header --}}
+    <header class="th-topbar">
+      <a href="{{ route('forum.index') }}" class="crumb" aria-label="Kembali ke Forum">
+        <i class="fa-solid fa-angle-left"></i> Forum
+      </a>
+      <div class="th-head">
+        <div>
+          <div class="th-badges">
+            @if($thread->pinned_at)<span class="chip chip--pinned">Pinned</span>@endif
+            @if($thread->is_locked)<span class="chip chip--locked">Locked</span>@endif
+          </div>
+          <h1 class="th-title">{{ $thread->title }}</h1>
+          <div class="th-meta">
+            <a class="th-cat" href="{{ route('forum.category', $thread->category->slug) }}">{{ $thread->category->name }}</a>
+            <span class="sep">•</span>
+            <span class="author">
+              <span class="avatar" aria-hidden="true">{{ mb_substr($thread->user->name,0,1) }}</span>
+              oleh {{ $thread->user->name }}
+            </span>
+            <span class="sep">•</span>
+            <time datetime="{{ $thread->created_at->toIso8601String() }}">{{ $thread->created_at->diffForHumans() }}</time>
+          </div>
         </div>
-        <h1 class="th-title">{{ $thread->title }}</h1>
-        <div class="th-meta">
-          {{ $thread->category->name }} • oleh {{ $thread->user->name }} • {{ $thread->created_at->diffForHumans() }}
+
+        @role('superadmin|admin|instructor')
+        <div class="th-actions">
+          <form method="POST" action="{{ $thread->pinned_at ? route('forum.mod.unpin',$thread->id) : route('forum.mod.pin',$thread->id) }}">
+            @csrf
+            <button class="btnx {{ $thread->pinned_at ? 'btnx-outline-warn' : 'btnx-warn' }}">
+              {{ $thread->pinned_at ? 'Unpin' : 'Pin' }}
+            </button>
+          </form>
+          <form method="POST" action="{{ $thread->is_locked ? route('forum.mod.unlock',$thread->id) : route('forum.mod.lock',$thread->id) }}">
+            @csrf
+            <button class="btnx {{ $thread->is_locked ? 'btnx-outline-sec' : 'btnx-sec' }}">
+              {{ $thread->is_locked ? 'Unlock' : 'Lock' }}
+            </button>
+          </form>
+        </div>
+        @endrole
+      </div>
+    </header>
+
+    <hr class="th-divider" aria-hidden="true"/>
+
+    {{-- OP (post pertama / isi topik) --}}
+    <article class="th-card op-card">
+      <div class="op-header">
+        <span class="op-badge">OP</span>
+        <div class="op-author">
+          <span class="avatar">{{ mb_substr($thread->user->name,0,1) }}</span>
+          <div class="op-meta">
+            <div class="name">{{ $thread->user->name }}</div>
+            <div class="time">{{ $thread->created_at->format('d M Y H:i') }}</div>
+          </div>
         </div>
       </div>
 
-      @role('superadmin|admin|instructor')
-      <div class="th-actions">
-        <form method="POST" action="{{ $thread->pinned_at ? route('forum.mod.unpin',$thread->id) : route('forum.mod.pin',$thread->id) }}">
-          @csrf
-          <button class="btnx {{ $thread->pinned_at ? 'btnx-outline-warn' : 'btnx-warn' }}">
-            {{ $thread->pinned_at ? 'Unpin' : 'Pin' }}
-          </button>
-        </form>
-        <form method="POST" action="{{ $thread->is_locked ? route('forum.mod.unlock',$thread->id) : route('forum.mod.lock',$thread->id) }}">
-          @csrf
-          <button class="btnx {{ $thread->is_locked ? 'btnx-outline-sec' : 'btnx-sec' }}">
-            {{ $thread->is_locked ? 'Unlock' : 'Lock' }}
-          </button>
-        </form>
+      <div class="th-body prose">
+        {!! nl2br(e($thread->body)) !!}
       </div>
-      @endrole
-    </div>
 
-    <hr class="divider">
-
-    {{-- Post Pertama (OP) --}}
-    <article class="op-post block">
-      <h6 class="th-meta" style="margin:0 0 8px">OP</h6>
-      <div class="reply-body">{{ $thread->body }}</div>
+      {{-- Gambar OP (jika ada) --}}
+      @if(!empty($thread->image_url))
+        <button type="button" class="iv-trigger op-image" data-view="{{ $thread->image_url }}">
+          <img src="{{ $thread->image_url }}" alt="Lampiran topik: {{ $thread->title }}" loading="lazy">
+        </button>
+      @endif
     </article>
 
     {{-- Jawaban Terbaik (jika ada) --}}
     @if($thread->bestAnswer && $thread->bestAnswer->post)
-      <div class="best" style="margin-top:12px">
-        <h6>Jawaban Terbaik</h6>
-        <div class="who">oleh {{ $thread->bestAnswer->post->user->name }}</div>
-        <div class="content">{{ $thread->bestAnswer->post->body }}</div>
-      </div>
+      <section class="th-best" id="best-answer">
+        <div class="best-head">
+          <span class="best-icon" aria-hidden="true">✔</span>
+          <div>
+            <h6 class="best-title">Jawaban Terbaik</h6>
+            <div class="best-sub">oleh {{ $thread->bestAnswer->post->user->name }}</div>
+          </div>
+        </div>
+        <div class="best-body prose">
+          {!! nl2br(e($thread->bestAnswer->post->body)) !!}
+        </div>
+      </section>
     @endif
 
-    {{-- Daftar Balasan --}}
-    <h5 style="margin:24px 0 12px;color:var(--muted);letter-spacing:.3px;">Balasan</h5>
+    {{-- Balasan --}}
+    <div class="th-replies-head">
+      <h2 class="th-replies-title">Balasan</h2>
+      <a href="#reply-box" class="btnx btnx-outline">Tulis Balasan</a>
+    </div>
 
     @forelse($posts as $p)
-      <div class="reply">
+      <article class="reply" id="reply-{{ $p->id }}">
         <div class="reply-top">
-          <div class="reply-meta">oleh {{ $p->user->name }} • {{ $p->created_at->diffForHumans() }}</div>
-          @auth
-            @if(auth()->id()===$thread->user_id || auth()->user()->hasAnyRole(['superadmin','admin','instructor']))
-              <form method="POST" action="{{ route('forum.thread.resolve',['id'=>$thread->id,'postId'=>$p->id]) }}">
-                @csrf
-                <button class="btnx btnx-outline-warn" title="Tandai sebagai jawaban terbaik">Tandai Jawaban Terbaik</button>
-              </form>
-            @endif
-          @endauth
+          <div class="author">
+            <span class="avatar">{{ mb_substr($p->user->name,0,1) }}</span>
+            <div class="meta">
+              <div class="name">{{ $p->user->name }}</div>
+              <div class="time">{{ $p->created_at->diffForHumans() }}</div>
+            </div>
+          </div>
+
+          <div class="r-actions">
+            @auth
+              @if(auth()->id()===$thread->user_id || auth()->user()->hasAnyRole(['superadmin','admin','instructor']))
+                <form method="POST" action="{{ route('forum.thread.resolve',['id'=>$thread->id,'postId'=>$p->id]) }}">
+                  @csrf
+                  <button class="btnx btnx-outline-warn" title="Tandai sebagai jawaban terbaik">Tandai Terbaik</button>
+                </form>
+              @endif
+            @endauth
+            <a class="btnx btnx-outline" href="#reply-{{ $p->id }}" title="Salin tautan">#</a>
+          </div>
         </div>
-        <div class="reply-body">{{ $p->body }}</div>
-      </div>
+
+        <div class="reply-body prose">
+          {!! nl2br(e($p->body)) !!}
+        </div>
+
+        {{-- Gambar balasan (jika ada) --}}
+        @if(!empty($p->image_url))
+          <button type="button" class="iv-trigger reply-image" data-view="{{ $p->image_url }}">
+            <img src="{{ $p->image_url }}" alt="Lampiran balasan oleh {{ $p->user->name }}" loading="lazy">
+          </button>
+        @endif
+      </article>
     @empty
       <div class="alert alert-muted">Belum ada balasan.</div>
     @endforelse
 
-    <div class="mt-3">
+    <div class="th-pagination">
       {{ $posts->links() }}
     </div>
 
-    {{-- Form Balas --}}
+    {{-- Composer Balasan --}}
+    <div id="reply-box"></div>
     @auth
       @if(!$thread->is_locked)
-        <div class="composer block">
-          <form method="POST" action="{{ route('forum.post.store',$thread->id) }}">
+        <div class="composer th-card">
+          <form method="POST" action="{{ route('forum.post.store',$thread->id) }}" enctype="multipart/form-data">
             @csrf
             <label class="form-label">Tulis Balasan</label>
-            <textarea name="body" class="textarea" required></textarea>
-            <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+            <textarea name="body" class="textarea" required placeholder="Ketik jawabanmu di sini…"></textarea>
+
+            {{-- Lampiran gambar (opsional, SINGLE) --}}
+            <div class="field mt-8">
+              <div class="label">
+                <label for="reply_image">Lampiran Gambar <span class="muted">(opsional)</span></label>
+                <span class="hint">JPG/PNG/GIF/WEBP • maks 2MB</span>
+              </div>
+
+              <input id="reply_image" name="image" type="file" accept="image/*" class="file-one" aria-label="Pilih gambar">
+            </div>
+
+            <div class="compose-actions">
               <button class="btnx btn-primary">Kirim</button>
             </div>
           </form>
         </div>
       @else
-        <div class="alert alert-muted" style="margin-top:16px">Topik ini terkunci. Tidak dapat dibalas.</div>
+        <div class="alert alert-muted">Topik ini terkunci. Tidak dapat dibalas.</div>
       @endif
     @else
-      <div class="alert alert-info" style="margin-top:16px">Masuk untuk menulis balasan.</div>
+      <div class="alert alert-info">Masuk untuk menulis balasan.</div>
     @endauth
+
+  </div>
+
+  {{-- Image Viewer Overlay --}}
+  <div class="img-viewer" id="imgViewer" hidden>
+    <button class="iv-close" id="ivClose" aria-label="Tutup pratinjau">✕</button>
+    <img id="ivImg" alt="Pratinjau lampiran">
   </div>
 </section>
 @endsection
+
+@push('scripts')
+<script>
+  (function(){
+    // ===== Image Viewer (klik gambar → overlay) =====
+    const viewer = document.getElementById('imgViewer');
+    const ivImg  = document.getElementById('ivImg');
+    const ivClose= document.getElementById('ivClose');
+
+    document.querySelectorAll('.iv-trigger').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const src = btn.getAttribute('data-view');
+        if(!src) return;
+        ivImg.src = src;
+        viewer.hidden = false;
+        viewer.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+    function closeViewer(){
+      viewer.classList.remove('show');
+      setTimeout(()=>{ viewer.hidden = true; ivImg.src=''; document.body.style.overflow=''; }, 120);
+    }
+    ivClose?.addEventListener('click', closeViewer);
+    viewer?.addEventListener('click', (e)=>{ if(e.target === viewer) closeViewer(); });
+    document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape' && !viewer.hidden) closeViewer(); });
+  })();
+</script>
+@endpush

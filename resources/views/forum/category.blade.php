@@ -1,121 +1,123 @@
+{{-- resources/views/forum/category.blade.php --}}
 @extends('layouts.guest')
 @section('title','Forum - '.$category->name)
 
+@php
+  use Illuminate\Support\Str;
+@endphp
+
+@push('styles')
+  {{-- cache-busting agar update CSS langsung terbaca --}}
+  <link rel="stylesheet" href="{{ asset('guest/forum-category.css') }}?v={{ filemtime(public_path('guest/forum-category.css')) }}">
+@endpush
+
 @section('content')
-<style>
-  /* ====== Tokens (ubah gampang) ====== */
-  :root {
-    --bg: #0b0f19;
-    --surface: #111827;
-    --surface-2: #0f172a;
-    --text: #e5e7eb;
-    --muted: #94a3b8;
-    --brand: #3b82f6;
-    --border: #1f2937;
-    --warning: #f59e0b;
-    --secondary: #64748b;
-    --shadow: 0 10px 30px rgba(0,0,0,.25);
-    --radius: 14px;
-  }
-  .forum-cat { color: var(--text); }
-  .forum-cat .container { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
 
-  /* Header */
-  .fc-head {
-    display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center;
-    margin-bottom: 10px;
-  }
-  .fc-title { font-size: clamp(22px, 2vw, 30px); font-weight: 800; letter-spacing: .2px; margin: 0; }
-  .fc-desc { color: var(--muted); margin: 0 0 16px; }
+{{-- ===== HERO KATEGORI ===== --}}
+<section class="fc-hero" aria-labelledby="fcHeroTitle">
+  <div class="fc-hero__bg" aria-hidden="true"></div>
+  <div class="fc-hero__container">
+    <div class="fc-hero__left">
+      <a href="{{ route('forum.index') }}" class="fc-crumb" aria-label="Kembali ke beranda forum">
+        <i class="fa-solid fa-angle-left"></i> Forum
+      </a>
 
-  /* Buttons (local minimal) */
-  .btnx {
-    display:inline-flex; align-items:center; justify-content:center;
-    height:40px; padding:0 14px; border-radius:10px; border:1px solid transparent;
-    font-weight:700; text-decoration:none; cursor:pointer;
-    transition: transform .08s ease, filter .2s ease, border-color .2s ease;
-  }
-  .btnx:active { transform: translateY(1px); }
-  .btnx-primary { background: linear-gradient(180deg, var(--brand), #60a5fa); color:#fff; box-shadow: var(--shadow); }
+      <div class="fc-hero__title-wrap">
+        <div class="fc-hero__avatar" aria-hidden="true">{{ Str::substr($category->name,0,1) }}</div>
+        <h1 id="fcHeroTitle" class="fc-hero__title">{{ $category->name }}</h1>
+      </div>
 
-  /* Thread list */
-  .threads { display: grid; gap: 10px; }
-  .thread {
-    display:block; text-decoration:none; color: var(--text);
-    background: linear-gradient(180deg, var(--surface), var(--surface-2));
-    border:1px solid var(--border); border-radius: var(--radius);
-    padding:14px 16px; transition: border-color .2s ease, box-shadow .2s ease, transform .12s ease;
-  }
-  .thread:hover { border-color: rgba(59,130,246,.35); box-shadow: var(--shadow); transform: translateY(-1px); }
-  .thread-top { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-  .thread-title { font-weight:800; letter-spacing:.2px; }
-  .thread-meta { color: var(--muted); font-size: 12px; margin-top: 6px; }
+      @if($category->description)
+        <p class="fc-hero__desc">{{ $category->description }}</p>
+      @endif
+    </div>
 
-  /* Chips */
-  .chip {
-    display:inline-flex; align-items:center; height:22px; padding:0 8px;
-    border-radius:999px; font-size:11px; font-weight:800; letter-spacing:.2px;
-    border:1px solid transparent;
-  }
-  .chip-pin   { background: rgba(245,158,11,.15); color:#fbbf24; border-color: rgba(245,158,11,.35); }
-  .chip-lock  { background: rgba(100,116,139,.15); color:#cbd5e1; border-color: rgba(100,116,139,.35); }
-
-  /* Empty */
-  .empty {
-    color: var(--muted); background: linear-gradient(180deg, var(--surface), var(--surface-2));
-    border:1px dashed var(--border); border-radius: var(--radius);
-    padding:18px; text-align:center;
-  }
-
-  /* Pagination (opsional, sentuhan ringan) */
-  .pagination { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
-  .pagination a, .pagination span {
-    display:inline-block; min-width:34px; text-align:center; padding:6px 10px;
-    border-radius:10px; border:1px solid var(--border); color:var(--muted); text-decoration:none;
-    background: var(--surface-2);
-  }
-  .pagination .active span { background: var(--brand); color:#fff; border-color:transparent; }
-
-  @media (max-width: 640px) {
-    .fc-head { grid-template-columns: 1fr; }
-  }
-</style>
-
-<section class="forum-cat">
-  <div class="container py-4">
-    <header class="fc-head">
-      <h1 class="fc-title">{{ $category->name }}</h1>
+    <div class="fc-hero__right">
       @auth
-        <a href="{{ route('forum.thread.create') }}" class="btnx btnx-primary">Buat Topik</a>
+        <a href="{{ route('forum.thread.create') }}" class="btn-cta btn-cta--primary">
+          <i class="fa-solid fa-pen-to-square"></i> Buat Topik
+        </a>
+      @else
+        <a href="{{ route('login') }}" class="btn-cta btn-cta--ghost">
+          <i class="fa-solid fa-right-to-bracket"></i> Masuk untuk Buat Topik
+        </a>
       @endauth
-    </header>
+    </div>
+  </div>
+</section>
 
-    @if($category->description)
-      <p class="fc-desc">{{ $category->description }}</p>
-    @endif
+<section class="fc-wrap">
+  <div class="fc-container">
 
+    {{-- ===== DAFTAR THREAD ===== --}}
     @if($threads->count())
-      <div class="threads">
+      <div class="fc-threads">
         @foreach($threads as $t)
-          <a class="thread" href="{{ route('forum.thread.show',['id'=>$t->id,'slug'=>Str::slug($t->title)]) }}"
+          <a class="fc-thread reveal-up"
+             href="{{ route('forum.thread.show',['id'=>$t->id,'slug'=>Str::slug($t->title)]) }}"
              aria-label="Buka topik: {{ $t->title }}">
-            <div class="thread-top">
-              @if($t->pinned_at) <span class="chip chip-pin">Pinned</span> @endif
-              @if($t->is_locked) <span class="chip chip-lock">Locked</span> @endif
-              <span class="thread-title">{{ $t->title }}</span>
+            <div class="fc-thread__row">
+              <div class="fc-thread__left">
+
+                {{-- Thumbnail jika ada gambar; jika tidak, avatar huruf --}}
+                @if(!empty($t->image_url))
+                  <img class="thread-thumb"
+                       src="{{ $t->image_url }}"
+                       alt="Gambar topik: {{ $t->title }}"
+                       loading="lazy">
+                @else
+                  <div class="avatar" aria-hidden="true">
+                    {{ isset($t->user->name) ? Str::upper(Str::substr($t->user->name,0,1)) : 'U' }}
+                  </div>
+                @endif
+
+              </div>
+
+              <div class="fc-thread__main">
+                <div class="fc-thread__line">
+                  <div class="badges">
+                    @if($t->pinned_at)
+                      <span class="chip chip--pinned"><i class="fa-solid fa-thumbtack"></i> Pinned</span>
+                    @endif
+                    @if($t->is_locked)
+                      <span class="chip chip--locked"><i class="fa-solid fa-lock"></i> Locked</span>
+                    @endif
+                  </div>
+                  <div class="fc-thread__title">{{ $t->title }}</div>
+                </div>
+                <div class="fc-thread__meta">
+                  <span class="meta-item"><i class="fa-regular fa-user"></i> {{ $t->user->name ?? 'Pengguna' }}</span>
+                  <span class="meta-dot" aria-hidden="true">•</span>
+                  <time class="meta-item" title="{{ $t->updated_at->format('d M Y H:i') }}">
+                    <i class="fa-regular fa-clock"></i> {{ $t->updated_at->diffForHumans() }}
+                  </time>
+                </div>
+              </div>
+
+              <div class="fc-thread__right">
+                <span class="chev" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
+              </div>
             </div>
-            <div class="thread-meta">oleh {{ $t->user->name }} • {{ $t->updated_at->diffForHumans() }}</div>
           </a>
         @endforeach
       </div>
 
-      {{-- pagination default Laravel --}}
-      <div class="mt-3">
+      {{-- Pagination Laravel --}}
+      <div class="fc-pagination">
         {{ $threads->links() }}
       </div>
     @else
-      <div class="empty">Belum ada topik di kategori ini.</div>
+      <div class="fc-empty reveal-up" role="status">
+        <div class="empty-illus" aria-hidden="true">📂</div>
+        <div class="empty-text">Belum ada topik di kategori ini.</div>
+        @auth
+          <a href="{{ route('forum.thread.create') }}" class="btn-cta btn-cta--mini btn-cta--primary mt-8">
+            Mulai Diskusi
+          </a>
+        @endauth
+      </div>
     @endif
+
   </div>
 </section>
 @endsection

@@ -13,8 +13,6 @@
     integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer">
   <link rel="stylesheet" href="{{ asset('client/footer.css') }}">
   @stack('styles')
-
-  @stack('styles')
 </head>
 
 <body>
