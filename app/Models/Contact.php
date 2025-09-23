@@ -17,10 +17,6 @@ class Contact extends Model
         'latitude',
         'longitude',
 
-        // legacy (biar mass-assign gak error kalau masih dipakai di form lama)
-        'phone_number',
-        'location_label',
-        'location_url',
 
         // social links
         'social_facebook',

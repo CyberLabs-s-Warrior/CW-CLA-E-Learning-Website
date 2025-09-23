@@ -33,7 +33,7 @@
           <label class="form-label fw-semibold">Section <span class="text-danger">*</span></label>
           <input list="section-list" name="section" id="section"
                  class="form-control rounded-3 shadow-sm @error('section') is-invalid @enderror"
-                 value="{{ old('section', $content->section) }}" placeholder="Ketik atau pilih section..." required>
+                 value="{{ old('section', $content->section) }}" placeholder="Ketik nama section..." required>
           <datalist id="section-list">
             @foreach ($sections as $section)
               <option value="{{ $section }}">
@@ -44,7 +44,6 @@
               <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
             </small>
           @enderror
-          <div class="form-text text-muted mt-1">Anda bisa memilih dari daftar atau mengetik section baru.</div>
         </div>
 
         <div class="mb-4">
@@ -140,3 +139,4 @@
     });
   </script>
 @endsection
+

@@ -330,8 +330,8 @@ Route::middleware(['auth', 'role:admin|superadmin|instructor'])
             ->name('detail.course.info');
 
         // Lessons (ADMIN)
-        Route::resource('/lessons', LessonController::class);
-        Route::get('course/{courseId}/modules', [LessonController::class, 'getModules'])->name('course.modules');
+        Route::resource('/lessons', LessonController::class)->middleware('can:kelola_course');
+        Route::get('course/{courseId}/modules', [LessonController::class, 'getModules'])->middleware('can:kelola_course')->name('course.modules');
 
         // Route::resource('/comments', CommentController::class)->except('show');
         Route::resource('/showcase', ShowcaseController::class)->middleware('can:kelola_showcase');

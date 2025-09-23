@@ -3,6 +3,8 @@
 @section('title', 'User Management')
 
 @section('content')
+    @php use Illuminate\Support\Facades\Storage; @endphp
+
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
             <h4 class="fw-bold mb-0 d-flex align-items-center">
@@ -94,10 +96,17 @@
                 </thead>
                 <tbody>
                     @forelse ($users as $index => $user)
+                        @php
+                            // Tentukan avatar: student → profile, lainnya → users.foto, fallback ke UI-Avatars
+                            $avatar = $user->hasRole('student')
+                                ? ($user->profile?->avatar_url ?? 'https://ui-avatars.com/api/?rounded=true&name='.urlencode($user->name))
+                                : ($user->foto ? Storage::url($user->foto) : 'https://ui-avatars.com/api/?rounded=true&name='.urlencode($user->name));
+                        @endphp
+
                         <tr>
                             <td class="text-center">{{ ($users->currentPage() - 1) * $users->perPage() + $index + 1 }}</td>
                             <td>
-                                <img src="{{ asset('storage/' . $user->foto) }}" width="50" height="50" class="rounded-circle">
+                                <img src="{{ $avatar }}" width="50" height="50" class="rounded-circle object-fit-cover" alt="Foto {{ $user->name }}">
                             </td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
@@ -128,36 +137,54 @@
                                 </div>
 
                                 @php
-                                    $permissions = $user->getAllPermissions()->pluck('name')->toArray();
+                                $directPerms = $user->getDirectPermissions()->pluck('name')->toArray();
+                                $rolePerms   = $user->getPermissionsViaRoles()->pluck('name')->toArray();
                                 @endphp
 
-                                @if (!$user->hasRole('superadmin') && $permissions)
-                                    <button class="btn btn-sm btn-outline-secondary collapsed" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#perm-{{ $user->id }}" aria-expanded="false"
-                                        aria-controls="perm-{{ $user->id }}">
-                                        <i class="bi bi-eye me-1"></i> Tampilkan Akses
-                                    </button>
-                                    <div class="collapse mt-2" id="perm-{{ $user->id }}">
-                                        <div class="border rounded p-2 bg-light">
-                                            @foreach ($permissions as $permission)
-                                                <span class="badge bg-secondary text-light me-1 mb-1">
-                                                    {{ str_replace('_', ' ', $permission) }}
-                                                </span>
-                                            @endforeach
-                                        </div>
+                                @if (!$user->hasRole('superadmin') && (!empty($rolePerms) || !empty($directPerms)))
+                                <button class="btn btn-sm btn-outline-secondary collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#perm-{{ $user->id }}">
+                                    <i class="bi bi-eye me-1"></i> Tampilkan Akses
+                                </button>
+                                <div class="collapse mt-2" id="perm-{{ $user->id }}">
+                                    <div class="border rounded p-2 bg-light">
+                                    @if(!empty($rolePerms))
+                                        <div class="mb-1"><small class="text-muted">Via Role</small></div>
+                                        @foreach ($rolePerms as $p)
+                                        <span class="badge bg-secondary text-light me-1 mb-1">{{ str_replace('_',' ',$p) }}</span>
+                                        @endforeach
+                                    @endif
+
+                                    @if(!empty($directPerms))
+                                        <div class="mt-2 mb-1"><small class="text-muted">Direct</small></div>
+                                        @foreach ($directPerms as $p)
+                                        <span class="badge bg-info text-dark me-1 mb-1">{{ str_replace('_',' ',$p) }}</span>
+                                        @endforeach
+                                    @endif
                                     </div>
+                                </div>
                                 @endif
-                            </td>
+                                                            </td>
                             <td>{{ $user->created_at->timezone('Asia/Jakarta')->format('d-m-Y H:i') }}</td>
                             <td class="text-center">
-                                @if (!($user->is_superadmin && auth()->id() !== $user->id))
+                                {{-- Edit: disembunyikan untuk student, dan tetap melindungi superadmin lain --}}
+                                @if (!($user->is_superadmin && auth()->id() !== $user->id) && !$user->hasRole('student'))
                                     <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-warning me-1"
                                         data-bs-toggle="tooltip" title="Edit User">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                 @endif
 
-                                @unless ($user->is_superadmin)
+                                {{-- Modal Profil khusus student --}}
+                                @if ($user->hasRole('student'))
+                                    <button type="button" class="btn btn-sm btn-info me-1"
+                                        data-bs-toggle="modal" data-bs-target="#profileModal-{{ $user->id }}">
+                                        <i class="bi bi-person-badge"></i> Profil
+                                    </button>
+                                @endif
+
+                                {{-- Hapus: diblokir untuk student, tetap nonaktif untuk superadmin --}}
+                                @unless ($user->is_superadmin || $user->hasRole('student'))
                                     <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
                                         class="d-inline form-delete" data-nama="{{ $user->name }}">
                                         @csrf
@@ -170,6 +197,66 @@
                                 @endunless
                             </td>
                         </tr>
+
+                        {{-- Modal Profil Student --}}
+                        @if ($user->hasRole('student'))
+                            @php $p = $user->profile; @endphp
+                            <div class="modal fade" id="profileModal-{{ $user->id }}" tabindex="-1"
+                                 aria-labelledby="profileModalLabel-{{ $user->id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                    <div class="modal-content border-0 rounded-4 shadow">
+                                        <div class="modal-header bg-light border-0 rounded-top-4">
+                                            <h5 class="modal-title fw-bold" id="profileModalLabel-{{ $user->id }}">
+                                                Profil Student — {{ $user->name }}
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row g-3 align-items-center">
+                                                <div class="col-auto">
+                                                    <img src="{{ $p?->avatar_url ?? 'https://ui-avatars.com/api/?rounded=true&name='.urlencode($user->name) }}"
+                                                         alt="Avatar" width="96" height="96"
+                                                         class="rounded border object-fit-cover">
+                                                </div>
+                                                <div class="col">
+                                                    <div class="row mb-2">
+                                                        <div class="col-sm-4 text-muted">Email</div>
+                                                        <div class="col-sm-8">{{ $user->email }}</div>
+                                                    </div>
+                                                    <div class="row mb-2">
+                                                        <div class="col-sm-4 text-muted">Jenis Kelamin</div>
+                                                        <div class="col-sm-8">{{ $p?->jenis_kelamin ?? '-' }}</div>
+                                                    </div>
+                                                    <div class="row mb-2">
+                                                        <div class="col-sm-4 text-muted">Status</div>
+                                                        <div class="col-sm-8">{{ $p?->status ?? '-' }}</div>
+                                                    </div>
+                                                    <div class="row mb-2">
+                                                        <div class="col-sm-4 text-muted">Tanggal Lahir</div>
+                                                        <div class="col-sm-8">
+                                                            {{ optional($p?->tgl_lahir)->format('d M Y') ?? '-' }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-2">
+                                                        <div class="col-sm-4 text-muted">Dibuat</div>
+                                                        <div class="col-sm-8">{{ $user->created_at->timezone('Asia/Jakarta')->format('d-m-Y H:i') }}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            @if(!$p)
+                                                <div class="alert alert-warning mt-3 mb-0">
+                                                    Data profil student belum lengkap/tersedia.
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="modal-footer border-0">
+                                            <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Tutup</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                     @empty
                         <tr>
                             <td colspan="7" class="text-center text-muted">Belum ada user</td>

@@ -68,40 +68,58 @@
                                 <label class="form-label fw-bold">Akses / Permissions</label>
                                 <div class="row">
                                     <?php
-                                        $grouped = [];
-                                        foreach ($permissions as $permission) {
-                                            $parts = explode('_', $permission->name);
-                                            $fitur = end($parts);
-                                            $grouped[$fitur][] = $permission;
-                                        }
+                                    // $permissions, $userDirectPerms, $userRolePerms tersedia dari controller
+                                    $grouped = [];
+                                    foreach ($permissions as $permission) {
+                                        $parts = explode('_', $permission->name);
+                                        $fitur = end($parts);
+                                        $grouped[$fitur][] = $permission;
+                                    }
                                     ?>
 
                                     <?php $__currentLoopData = $grouped; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $fitur => $perms): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <div class="col-md-4 mb-3">
-                                            <div class="border rounded p-3 bg-light">
-                                                <strong class="text-uppercase small text-muted d-block mb-2">
-                                                    <?php echo e(ucfirst($fitur)); ?>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="border rounded p-3 bg-light">
+                                        <strong class="text-uppercase small text-muted d-block mb-2">
+                                            <?php echo e(ucfirst($fitur)); ?>
 
-                                                </strong>
-                                                <?php $__currentLoopData = $perms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $permission): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                    <div class="form-check mb-2">
-                                                        <input type="checkbox"
-                                                               name="permissions[]"
-                                                               value="<?php echo e($permission->name); ?>"
-                                                               class="form-check-input"
-                                                               id="perm_<?php echo e($permission->name); ?>"
-                                                               <?php echo e($user->hasPermissionTo($permission->name) ? 'checked' : ''); ?>>
-                                                        <label class="form-check-label small"
-                                                               for="perm_<?php echo e($permission->name); ?>">
-                                                            <?php echo e(ucwords(str_replace('_', ' ', $permission->name))); ?>
+                                        </strong>
 
-                                                        </label>
-                                                    </div>
-                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        <?php $__currentLoopData = $perms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $permission): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <?php
+                                            $name = $permission->name;
+                                            $isViaRole   = in_array($name, $userRolePerms, true);
+                                            $isDirect    = in_array($name, $userDirectPerms, true);
+                                            ?>
+
+                                            <div class="form-check mb-2 d-flex align-items-center gap-2">
+                                            <?php if($isViaRole): ?>
+                                                
+                                                <input type="checkbox" class="form-check-input" checked disabled>
+                                                <label class="form-check-label small text-muted">
+                                                <?php echo e(ucwords(str_replace('_', ' ', $name))); ?>
+
+                                                <span class="badge bg-secondary ms-1">via role</span>
+                                                </label>
+                                            <?php else: ?>
+                                                
+                                                <input type="checkbox"
+                                                    name="permissions[]"
+                                                    value="<?php echo e($name); ?>"
+                                                    id="perm_<?php echo e($name); ?>"
+                                                    class="form-check-input"
+                                                    <?php echo e($isDirect ? 'checked' : ''); ?>>
+                                                <label class="form-check-label small" for="perm_<?php echo e($name); ?>">
+                                                <?php echo e(ucwords(str_replace('_', ' ', $name))); ?>
+
+                                                </label>
+                                            <?php endif; ?>
                                             </div>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </div>
+                                    </div>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </div>
+                                                                    </div>
                             </div>
                         <?php endif; ?>
 

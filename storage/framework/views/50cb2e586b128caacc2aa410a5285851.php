@@ -1,6 +1,8 @@
 <?php $__env->startSection('title', 'User Management'); ?>
 
 <?php $__env->startSection('content'); ?>
+    <?php use Illuminate\Support\Facades\Storage; ?>
+
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
             <h4 class="fw-bold mb-0 d-flex align-items-center">
@@ -94,10 +96,17 @@
                 </thead>
                 <tbody>
                     <?php $__empty_1 = true; $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <?php
+                            // Tentukan avatar: student → profile, lainnya → users.foto, fallback ke UI-Avatars
+                            $avatar = $user->hasRole('student')
+                                ? ($user->profile?->avatar_url ?? 'https://ui-avatars.com/api/?rounded=true&name='.urlencode($user->name))
+                                : ($user->foto ? Storage::url($user->foto) : 'https://ui-avatars.com/api/?rounded=true&name='.urlencode($user->name));
+                        ?>
+
                         <tr>
                             <td class="text-center"><?php echo e(($users->currentPage() - 1) * $users->perPage() + $index + 1); ?></td>
                             <td>
-                                <img src="<?php echo e(asset('storage/' . $user->foto)); ?>" width="50" height="50" class="rounded-circle">
+                                <img src="<?php echo e($avatar); ?>" width="50" height="50" class="rounded-circle object-fit-cover" alt="Foto <?php echo e($user->name); ?>">
                             </td>
                             <td><?php echo e($user->name); ?></td>
                             <td><?php echo e($user->email); ?></td>
@@ -129,37 +138,54 @@
                                 </div>
 
                                 <?php
-                                    $permissions = $user->getAllPermissions()->pluck('name')->toArray();
+                                $directPerms = $user->getDirectPermissions()->pluck('name')->toArray();
+                                $rolePerms   = $user->getPermissionsViaRoles()->pluck('name')->toArray();
                                 ?>
 
-                                <?php if(!$user->hasRole('superadmin') && $permissions): ?>
-                                    <button class="btn btn-sm btn-outline-secondary collapsed" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#perm-<?php echo e($user->id); ?>" aria-expanded="false"
-                                        aria-controls="perm-<?php echo e($user->id); ?>">
-                                        <i class="bi bi-eye me-1"></i> Tampilkan Akses
-                                    </button>
-                                    <div class="collapse mt-2" id="perm-<?php echo e($user->id); ?>">
-                                        <div class="border rounded p-2 bg-light">
-                                            <?php $__currentLoopData = $permissions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $permission): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <span class="badge bg-secondary text-light me-1 mb-1">
-                                                    <?php echo e(str_replace('_', ' ', $permission)); ?>
+                                <?php if(!$user->hasRole('superadmin') && (!empty($rolePerms) || !empty($directPerms))): ?>
+                                <button class="btn btn-sm btn-outline-secondary collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#perm-<?php echo e($user->id); ?>">
+                                    <i class="bi bi-eye me-1"></i> Tampilkan Akses
+                                </button>
+                                <div class="collapse mt-2" id="perm-<?php echo e($user->id); ?>">
+                                    <div class="border rounded p-2 bg-light">
+                                    <?php if(!empty($rolePerms)): ?>
+                                        <div class="mb-1"><small class="text-muted">Via Role</small></div>
+                                        <?php $__currentLoopData = $rolePerms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <span class="badge bg-secondary text-light me-1 mb-1"><?php echo e(str_replace('_',' ',$p)); ?></span>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php endif; ?>
 
-                                                </span>
-                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                        </div>
+                                    <?php if(!empty($directPerms)): ?>
+                                        <div class="mt-2 mb-1"><small class="text-muted">Direct</small></div>
+                                        <?php $__currentLoopData = $directPerms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <span class="badge bg-info text-dark me-1 mb-1"><?php echo e(str_replace('_',' ',$p)); ?></span>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php endif; ?>
                                     </div>
+                                </div>
                                 <?php endif; ?>
-                            </td>
+                                                            </td>
                             <td><?php echo e($user->created_at->timezone('Asia/Jakarta')->format('d-m-Y H:i')); ?></td>
                             <td class="text-center">
-                                <?php if(!($user->is_superadmin && auth()->id() !== $user->id)): ?>
+                                
+                                <?php if(!($user->is_superadmin && auth()->id() !== $user->id) && !$user->hasRole('student')): ?>
                                     <a href="<?php echo e(route('admin.users.edit', $user->id)); ?>" class="btn btn-sm btn-warning me-1"
                                         data-bs-toggle="tooltip" title="Edit User">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                 <?php endif; ?>
 
-                                <?php if (! ($user->is_superadmin)): ?>
+                                
+                                <?php if($user->hasRole('student')): ?>
+                                    <button type="button" class="btn btn-sm btn-info me-1"
+                                        data-bs-toggle="modal" data-bs-target="#profileModal-<?php echo e($user->id); ?>">
+                                        <i class="bi bi-person-badge"></i> Profil
+                                    </button>
+                                <?php endif; ?>
+
+                                
+                                <?php if (! ($user->is_superadmin || $user->hasRole('student'))): ?>
                                     <form action="<?php echo e(route('admin.users.destroy', $user->id)); ?>" method="POST"
                                         class="d-inline form-delete" data-nama="<?php echo e($user->name); ?>">
                                         <?php echo csrf_field(); ?>
@@ -172,6 +198,68 @@
                                 <?php endif; ?>
                             </td>
                         </tr>
+
+                        
+                        <?php if($user->hasRole('student')): ?>
+                            <?php $p = $user->profile; ?>
+                            <div class="modal fade" id="profileModal-<?php echo e($user->id); ?>" tabindex="-1"
+                                 aria-labelledby="profileModalLabel-<?php echo e($user->id); ?>" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                    <div class="modal-content border-0 rounded-4 shadow">
+                                        <div class="modal-header bg-light border-0 rounded-top-4">
+                                            <h5 class="modal-title fw-bold" id="profileModalLabel-<?php echo e($user->id); ?>">
+                                                Profil Student — <?php echo e($user->name); ?>
+
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row g-3 align-items-center">
+                                                <div class="col-auto">
+                                                    <img src="<?php echo e($p?->avatar_url ?? 'https://ui-avatars.com/api/?rounded=true&name='.urlencode($user->name)); ?>"
+                                                         alt="Avatar" width="96" height="96"
+                                                         class="rounded border object-fit-cover">
+                                                </div>
+                                                <div class="col">
+                                                    <div class="row mb-2">
+                                                        <div class="col-sm-4 text-muted">Email</div>
+                                                        <div class="col-sm-8"><?php echo e($user->email); ?></div>
+                                                    </div>
+                                                    <div class="row mb-2">
+                                                        <div class="col-sm-4 text-muted">Jenis Kelamin</div>
+                                                        <div class="col-sm-8"><?php echo e($p?->jenis_kelamin ?? '-'); ?></div>
+                                                    </div>
+                                                    <div class="row mb-2">
+                                                        <div class="col-sm-4 text-muted">Status</div>
+                                                        <div class="col-sm-8"><?php echo e($p?->status ?? '-'); ?></div>
+                                                    </div>
+                                                    <div class="row mb-2">
+                                                        <div class="col-sm-4 text-muted">Tanggal Lahir</div>
+                                                        <div class="col-sm-8">
+                                                            <?php echo e(optional($p?->tgl_lahir)->format('d M Y') ?? '-'); ?>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-2">
+                                                        <div class="col-sm-4 text-muted">Dibuat</div>
+                                                        <div class="col-sm-8"><?php echo e($user->created_at->timezone('Asia/Jakarta')->format('d-m-Y H:i')); ?></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <?php if(!$p): ?>
+                                                <div class="alert alert-warning mt-3 mb-0">
+                                                    Data profil student belum lengkap/tersedia.
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                        <div class="modal-footer border-0">
+                                            <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Tutup</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endif; ?>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
                             <td colspan="7" class="text-center text-muted">Belum ada user</td>

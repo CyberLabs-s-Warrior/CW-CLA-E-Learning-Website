@@ -293,47 +293,46 @@
               </li>
         <?php endif; ?>
 
-        
-<?php if (\Illuminate\Support\Facades\Blade::check('role', 'admin|superadmin')): ?>
-  <li class="nav-item has-treeview <?php echo e(request()->routeIs('admin.forum.*') ? 'active' : ''); ?>">
-    <a href="#" class="nav-link">
-      <i class="fa-solid fa-comments me-2"></i> Forum
-      <i class="fa-solid fa-caret-right ms-auto icon-collapsed"></i>
-      <i class="fa-solid fa-caret-down ms-auto icon-expanded"></i>
-    </a>
-
-    <ul class="nav nav-treeview">
-      <li class="nav-item">
-        <a href="<?php echo e(route('admin.forum.categories.index')); ?>"
-           class="nav-link <?php echo e(request()->routeIs('admin.forum.categories.*') ? 'active' : ''); ?>">
-          <i class="fa-solid fa-folder-tree me-2 text-secondary"></i> Kategori
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a href="<?php echo e(route('admin.forum.threads.index')); ?>"
-           class="nav-link <?php echo e(request()->routeIs('admin.forum.threads.*') ? 'active' : ''); ?>">
-          <i class="fa-solid fa-comments me-2 text-secondary"></i> Threads
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a href="<?php echo e(route('admin.forum.posts.index')); ?>"
-           class="nav-link <?php echo e(request()->routeIs('admin.forum.posts.*') ? 'active' : ''); ?>">
-          <i class="fa-solid fa-reply me-2 text-secondary"></i> Posts
-        </a>
-      </li>
-
       
+      <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('kelola_forum')): ?>
+        <li class="nav-item has-treeview <?php echo e(request()->routeIs('admin.forum.*') ? 'active' : ''); ?>">
+          <a href="#" class="nav-link">
+            <i class="fa-solid fa-comments me-2"></i> Forum
+            <i class="fa-solid fa-caret-right ms-auto icon-collapsed"></i>
+            <i class="fa-solid fa-caret-down ms-auto icon-expanded"></i>
+          </a>
 
-      <li class="nav-item">
-        <a href="<?php echo e(route('forum.index')); ?>" class="nav-link" target="_blank">
-          <i class="fa-solid fa-up-right-from-square me-2 text-secondary"></i> Buka Forum Publik
-        </a>
-      </li>
-    </ul>
-  </li>
-<?php endif; ?>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="<?php echo e(route('admin.forum.categories.index')); ?>"
+                class="nav-link <?php echo e(request()->routeIs('admin.forum.categories.*') ? 'active' : ''); ?>">
+                <i class="fa-solid fa-folder-tree me-2 text-secondary"></i> Kategori
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="<?php echo e(route('admin.forum.threads.index')); ?>"
+                class="nav-link <?php echo e(request()->routeIs('admin.forum.threads.*') ? 'active' : ''); ?>">
+                <i class="fa-solid fa-comments me-2 text-secondary"></i> Threads
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="<?php echo e(route('admin.forum.posts.index')); ?>"
+                class="nav-link <?php echo e(request()->routeIs('admin.forum.posts.*') ? 'active' : ''); ?>">
+                <i class="fa-solid fa-reply me-2 text-secondary"></i> Posts
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="<?php echo e(route('forum.index')); ?>" class="nav-link" target="_blank">
+                <i class="fa-solid fa-up-right-from-square me-2 text-secondary"></i> Buka Forum Publik
+              </a>
+            </li>
+          </ul>
+        </li>
+      <?php endif; ?>
+
 
       </ul>
 

@@ -19,8 +19,10 @@
   $heroImageItem = $getFirst('hero_image');
 
   $heroTitle = $heroTitleItem?->title ?? 'ABOUT US';
-  // Kalau admin upload gambar di hero_image->image, pakai itu; kalau tidak, fallback ke banner bawaan
-  $heroImage = $heroImageItem?->image ? asset('storage/'.$heroImageItem->image) : asset('image/banner.jpg');
+
+  // Resolusi hero image aman (pakai placeholder jika kosong)
+  $heroImagePath = $heroImageItem?->image ? 'storage/'.$heroImageItem->image : 'image/banner.jpg';
+  $heroImage = asset($heroImagePath);
 @endphp
 
 <!-- ===== HERO ===== -->
@@ -43,8 +45,12 @@
     @endif
   </div>
   <div class="about-intro__media">
-    <img class="img-card" src="{{ $intro->image ? asset('storage/'.$intro->image) : asset('image/si-imut.png') }}"
-         alt="{{ $intro->title ?? 'Tentang Kami' }}">
+    @php
+      $introImg = $intro->image ? asset('storage/'.$intro->image) : asset('image/placeholder-landscape.jpg');
+    @endphp
+    <div class="media">
+      <img loading="lazy" src="{{ $introImg }}" alt="{{ $intro->title ?? 'Tentang Kami' }}">
+    </div>
   </div>
 </section>
 @endif
@@ -59,7 +65,9 @@
   @if($visi)
     <div class="vm__row">
       <div class="vm__media">
-        <img class="img-soft" src="{{ asset('image/laptop1.png') }}" alt="Visi">
+        <div class="media media--blob">
+          <img loading="lazy" src="{{ asset('image/laptop1.png') }}" alt="Visi">
+        </div>
       </div>
       <div class="vm__content">
         <h3 class="section-subtitle">VISI</h3>
@@ -71,7 +79,9 @@
   @if($misi)
     <div class="vm__row vm__row--reverse">
       <div class="vm__media">
-        <img class="img-soft" src="{{ asset('image/laptop2.png') }}" alt="Misi">
+        <div class="media media--blob">
+          <img loading="lazy" src="{{ asset('image/laptop2.png') }}" alt="Misi">
+        </div>
       </div>
       <div class="vm__content">
         <h3 class="section-subtitle">MISI</h3>
@@ -87,18 +97,25 @@
 <section class="history">
   <div class="container">
     <h3 class="section-title center">Sejarah Singkat</h3>
-    <div class="history__stack">
+    <div class="cards cards--auto">
       @foreach($contents->get('sejarah') as $row)
-        <article class="history__item card">
-          @if(!empty($row->title))
-            <h4 class="card__title">{{ $row->title }}</h4>
-          @endif
-          @if(!empty($row->description))
-            <div class="card__body rich-text">{!! $row->description !!}</div>
-          @endif
-          @if(!empty($row->image))
-            <img class="card__image" src="{{ asset('storage/'.$row->image) }}" alt="{{ $row->title ?? 'Sejarah' }}">
-          @endif
+        <article class="card" data-animate>
+          <div class="card__media">
+            @php
+              $img = !empty($row->image) ? asset('storage/'.$row->image) : asset('image/placeholder-landscape.jpg');
+            @endphp
+            <div class="media media--ratio">
+              <img loading="lazy" src="{{ $img }}" alt="{{ $row->title ?? 'Sejarah' }}">
+            </div>
+          </div>
+          <div class="card__content">
+            @if(!empty($row->title))
+              <h4 class="card__title">{{ $row->title }}</h4>
+            @endif
+            @if(!empty($row->description))
+              <div class="card__body rich-text">{!! $row->description !!}</div>
+            @endif
+          </div>
         </article>
       @endforeach
     </div>
@@ -114,34 +131,51 @@
 @foreach($contents as $section => $items)
   @continue($reserved->contains($section))
 
+  @php
+    // Judul section rapi
+    $sectionTitle = \Illuminate\Support\Str::of($section)->replace('_',' ')->title();
+  @endphp
+
   <section class="generic">
     <div class="container">
-      <h3 class="section-title center">{{ Str::of($section)->upper() }}</h3>
+      <h3 class="section-title center">{{ $sectionTitle }}</h3>
 
       @if($items->count() > 1)
         <!-- Grid bila item banyak -->
-        <div class="grid">
+        <div class="cards cards--auto">
           @foreach($items as $item)
-            <article class="card">
-              @if(!empty($item->image))
-                <img class="card__image" src="{{ asset('storage/'.$item->image) }}" alt="{{ $item->title ?? $section }}">
-              @endif
-              @if(!empty($item->title))
-                <h4 class="card__title">{{ $item->title }}</h4>
-              @endif
-              @if(!empty($item->description))
-                <div class="card__body rich-text">{!! $item->description !!}</div>
-              @endif
+            @php
+              $img = !empty($item->image) ? asset('storage/'.$item->image) : asset('image/placeholder-landscape.jpg');
+            @endphp
+            <article class="card" data-animate>
+              <div class="card__media">
+                <div class="media media--ratio">
+                  <img loading="lazy" src="{{ $img }}" alt="{{ $item->title ?? $sectionTitle }}">
+                </div>
+              </div>
+              <div class="card__content">
+                @if(!empty($item->title))
+                  <h4 class="card__title">{{ $item->title }}</h4>
+                @endif
+                @if(!empty($item->description))
+                  <div class="card__body rich-text">{!! $item->description !!}</div>
+                @endif
+              </div>
             </article>
           @endforeach
         </div>
       @else
         <!-- Satu item: layout lebar -->
-        @php $item = $items->first(); @endphp
-        <article class="card card--wide">
-          @if(!empty($item->image))
-            <img class="card__image" src="{{ asset('storage/'.$item->image) }}" alt="{{ $item->title ?? $section }}">
-          @endif
+        @php
+          $item = $items->first();
+          $img = !empty($item->image) ? asset('storage/'.$item->image) : asset('image/placeholder-landscape.jpg');
+        @endphp
+        <article class="card card--wide" data-animate>
+          <div class="card__media">
+            <div class="media media--ratio">
+              <img loading="lazy" src="{{ $img }}" alt="{{ $item->title ?? $sectionTitle }}">
+            </div>
+          </div>
           <div class="card__content">
             @if(!empty($item->title))
               <h4 class="card__title">{{ $item->title }}</h4>
@@ -156,13 +190,13 @@
   </section>
 @endforeach
 
-<!-- ===== EMPTY STATE (kalau benar-benar belum ada konten sama sekali) ===== -->
+<!-- ===== EMPTY STATE ===== -->
 @if($contents->isEmpty())
 <section class="empty">
   <div class="container">
     <div class="empty__box">
       <h3>Tidak ada konten About.</h3>
-      <p>Silakan tambahkan konten dari panel Admin &rarr; About.</p>
+      <p>Silakan tambahkan konten dari panel Admin → About.</p>
     </div>
   </div>
 </section>
