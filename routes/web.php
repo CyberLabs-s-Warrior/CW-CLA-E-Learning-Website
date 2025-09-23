@@ -343,35 +343,46 @@ Route::middleware(['auth', 'role:admin|superadmin|instructor'])
 
        
        
-        Route::prefix('forum')
-            ->name('forum.')
-            ->middleware('can:kelola_forum')
-            ->group(function () {
-                // Kategori (resource standar)
-                Route::resource('/categories', \App\Http\Controllers\Admin\Forum\CategoryController::class);
+       // routes/web.php
+Route::prefix('forum')
+    ->name('forum.')
+    ->middleware('can:kelola_forum')
+    ->group(function () {
 
-                // ===== Threads (Admin) =====
-                Route::get('/threads',                           [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'index'])->name('threads.index');
-                Route::delete('/threads/{id}',                   [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'destroy'])->name('threads.destroy');           // soft delete
-                Route::post('/threads/{id}/restore',             [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'restore'])->name('threads.restore');           // restore
-                Route::post('/threads/{id}/force-delete',        [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'forceDelete'])->name('threads.forceDelete');   // hard delete
+        // ===== Kategori (resource) =====
+        Route::resource('/categories', \App\Http\Controllers\Admin\Forum\CategoryController::class);
 
-                // Modal "Tong Sampah" + Bulk (AJAX)
-                Route::get('/threads/trashed/list',              [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'trashedList'])->name('threads.trashedList');
-                Route::post('/threads/bulk/restore',             [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'bulkRestore'])->name('threads.bulkRestore');
-                Route::post('/threads/bulk/force-delete',        [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'bulkForceDelete'])->name('threads.bulkForceDelete');
+        // ===== Threads (Admin) =====
+        // -- Modal "Tong Sampah" + Bulk (AJAX) lebih dulu supaya tidak ketabrak {id}
+        Route::get('/threads/trashed/list',       [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'trashedList'])->name('threads.trashedList');
+        Route::post('/threads/bulk/restore',      [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'bulkRestore'])->name('threads.bulkRestore');
+        Route::post('/threads/bulk/force-delete', [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'bulkForceDelete'])->name('threads.bulkForceDelete');
 
-                // ===== Posts (Admin) =====
-                Route::get('/posts',                             [\App\Http\Controllers\Admin\Forum\PostController::class, 'index'])->name('posts.index');
-                Route::delete('/posts/{id}',                     [\App\Http\Controllers\Admin\Forum\PostController::class, 'destroy'])->name('posts.destroy');               // soft delete
-                Route::post('/posts/{id}/restore',               [\App\Http\Controllers\Admin\Forum\PostController::class, 'restore'])->name('posts.restore');               // restore
-                Route::post('/posts/{id}/force-delete',          [\App\Http\Controllers\Admin\Forum\PostController::class, 'forceDelete'])->name('posts.forceDelete');       // hard delete
+        // -- Non-bulk (pakai constraint angka)
+        Route::get('/threads',                [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'index'])->name('threads.index');
+        Route::delete('/threads/{id}',        [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'destroy'])
+            ->whereNumber('id')->name('threads.destroy');            // soft delete
+        Route::post('/threads/{id}/restore',  [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'restore'])
+            ->whereNumber('id')->name('threads.restore');            // restore
+        Route::post('/threads/{id}/force-delete', [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'forceDelete'])
+            ->whereNumber('id')->name('threads.forceDelete');        // hard delete
 
-                // Modal "Tong Sampah" + Bulk (AJAX)
-                Route::get('/posts/trashed/list',                [\App\Http\Controllers\Admin\Forum\PostController::class, 'trashedList'])->name('posts.trashedList');
-                Route::post('/posts/bulk/restore',               [\App\Http\Controllers\Admin\Forum\PostController::class, 'bulkRestore'])->name('posts.bulkRestore');
-                Route::post('/posts/bulk/force-delete',          [\App\Http\Controllers\Admin\Forum\PostController::class, 'bulkForceDelete'])->name('posts.bulkForceDelete');
-            });
+        // ===== Posts (Admin) =====
+        // -- Bulk dulu (hindari tabrakan {id})
+        Route::get('/posts/trashed/list',         [\App\Http\Controllers\Admin\Forum\PostController::class, 'trashedList'])->name('posts.trashedList');
+        Route::post('/posts/bulk/restore',        [\App\Http\Controllers\Admin\Forum\PostController::class, 'bulkRestore'])->name('posts.bulkRestore');
+        Route::post('/posts/bulk/force-delete',   [\App\Http\Controllers\Admin\Forum\PostController::class, 'bulkForceDelete'])->name('posts.bulkForceDelete');
+
+        // -- Non-bulk (pakai constraint angka)
+        Route::get('/posts',                  [\App\Http\Controllers\Admin\Forum\PostController::class, 'index'])->name('posts.index');
+        Route::delete('/posts/{id}',          [\App\Http\Controllers\Admin\Forum\PostController::class, 'destroy'])
+            ->whereNumber('id')->name('posts.destroy');              // soft delete
+        Route::post('/posts/{id}/restore',    [\App\Http\Controllers\Admin\Forum\PostController::class, 'restore'])
+            ->whereNumber('id')->name('posts.restore');              // restore
+        Route::post('/posts/{id}/force-delete', [\App\Http\Controllers\Admin\Forum\PostController::class, 'forceDelete'])
+            ->whereNumber('id')->name('posts.forceDelete');          // hard delete
+    });
+
      });
 
 /*

@@ -1,7 +1,6 @@
 {{-- Footer Modern + Kontak Dinamis --}}
 @php
-  // Ambil data kontak yang sudah kamu kirim dari controller (mis. $contact)
-  // Fallback aman bila null
+  // Ambil data kontak dari composer (AppServiceProvider)
   $email = trim($contact->email ?? '');
   $tel   = trim($contact->telepon ?? '');
   $addr  = trim($contact->alamat ?? '');
@@ -9,14 +8,21 @@
   $lng   = $contact->longitude ?? null;
   $link  = trim($contact->link_maps ?? '');
 
+  // Sosial media (dinamis)
+  $fb = trim($contact->social_facebook ?? '');
+  $ig = trim($contact->social_instagram ?? '');
+  $tt = trim($contact->social_tiktok ?? '');
+  $xx = trim($contact->social_x ?? '');
+  $hasSocial = $fb || $ig || $tt || $xx;
+
   // Normalisasi tel untuk href
   $telHref = $tel ? preg_replace('/[^0-9+]/','',$tel) : null;
 
-  // Buat tautan Google Maps (tanpa embed)
-  $gmapsLink = null;
-  // buang shortlink app (biasanya tak bisa di-embed / dibuka konsisten)
+  // Buang shortlink app (tak konsisten untuk klik/embed)
   if ($link && str_contains($link, 'maps.app.goo.gl')) { $link = ''; }
 
+  // Buat tautan Google Maps (klik biasa, bukan embed)
+  $gmapsLink = null;
   if ($link && preg_match('~^https?://(www\.)?google\.[^/]+/maps/~i', $link)) {
     $gmapsLink = $link;
   }
@@ -41,36 +47,83 @@
       </a>
       <p class="brand-copy">Belajar lebih mudah dan fleksibel di platform kami. Materi terstruktur, proyek nyata, dan komunitas suportif.</p>
 
-      <div class="social-icons" aria-label="Sosial media">
-        <a href="#" target="_blank" aria-label="Facebook" class="soc">
-          <i class="fab fa-facebook"></i>
-        </a>
-        <a href="#" target="_blank" aria-label="Instagram" class="soc">
-          <i class="fab fa-instagram"></i>
-        </a>
-        <a href="#" target="_blank" aria-label="TikTok" class="soc">
-          <i class="fab fa-tiktok"></i>
-        </a>
-        <a href="#" target="_blank" aria-label="X (Twitter)" class="soc">
-          <i class="fab fa-x-twitter"></i>
-        </a>
-      </div>
+      {{-- Sosial media dinamis (tampilkan hanya yang ada) --}}
+      @if($hasSocial)
+        <div class="social-icons" aria-label="Sosial media">
+          @if($fb)
+            <a href="{{ $fb }}" target="_blank" rel="noopener" aria-label="Facebook" class="soc">
+              <i class="fab fa-facebook"></i>
+            </a>
+          @endif
+          @if($ig)
+            <a href="{{ $ig }}" target="_blank" rel="noopener" aria-label="Instagram" class="soc">
+              <i class="fab fa-instagram"></i>
+            </a>
+          @endif
+          @if($tt)
+            <a href="{{ $tt }}" target="_blank" rel="noopener" aria-label="TikTok" class="soc">
+              <i class="fab fa-tiktok"></i>
+            </a>
+          @endif
+          @if($xx)
+            {{-- NOTE: jika FA5 gunakan fa-twitter; FA6+ bisa fa-x-twitter --}}
+            <a href="{{ $xx }}" target="_blank" rel="noopener" aria-label="X (Twitter)" class="soc">
+              <i class="fab fa-x-twitter"></i>
+            </a>
+          @endif
+        </div>
+      @endif
     </div>
 
-    {{-- Menu cepat --}}
-    <nav class="footer-links" aria-label="Tautan utama">
-      <h4>Menu</h4>
-      <ul>
-        <li><a href="{{ route('home.index') }}">Home</a></li>
-        <li><a href="{{ route('course.index') }}">Categories</a></li>
-        <li><a href="{{ route('about.index') }}">About</a></li>
-        @isset($extraLinks)
-          @foreach($extraLinks as $text => $url)
-            <li><a href="{{ $url }}">{{ $text }}</a></li>
-          @endforeach
-        @endisset
-      </ul>
-    </nav>
+    {{-- Menu cepat (compact pills + icon, collapsible di mobile) --}}
+<nav class="footer-links" aria-label="Tautan utama">
+  <div class="mnav" data-collapsible>
+    <div class="mnav-head">
+      <h4 class="mnav-title">Menu</h4>
+      <button class="mnav-toggle" type="button" aria-expanded="false" aria-controls="footerMainMenu">
+        <span class="mnav-toggle__label">Lihat Menu</span>
+        <i class="fas fa-chevron-down" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <ul id="footerMainMenu" class="mnav-list" role="list">
+      <li class="mnav-item">
+        <a class="mnav-link" href="{{ route('home.index') }}"><i class="fas fa-home"></i><span>Home</span></a>
+      </li>
+      <li class="mnav-item">
+        <a class="mnav-link" href="{{ route('katalog.index') }}"><i class="fas fa-folder-open"></i><span>Katalog</span></a>
+      </li>
+      <li class="mnav-item">
+        <a class="mnav-link" href="{{ route('testimoni.index') }}"><i class="fas fa-comments"></i><span>Testimoni</span></a>
+      </li>
+      <li class="mnav-item">
+        <a class="mnav-link" href="{{ route('forum.index') }}"><i class="fas fa-message"></i><span>Forum</span></a>
+      </li>
+      <li class="mnav-item">
+        <a class="mnav-link" href="{{ route('instruktur.index') }}"><i class="fas fa-chalkboard-teacher"></i><span>Instruktur</span></a>
+      </li>
+      <li class="mnav-item">
+        <a class="mnav-link" href="{{ route('about.index') }}"><i class="fas fa-circle-info"></i><span>About</span></a>
+      </li>
+      <li class="mnav-item">
+        <a class="mnav-link" href="{{ route('contact.index') }}"><i class="fas fa-envelope"></i><span>Contact</span></a>
+      </li>
+      <li class="mnav-item">
+        <a class="mnav-link" href="{{ route('showcase.index') }}"><i class="fas fa-star"></i><span>Showcase</span></a>
+      </li>
+
+      @isset($extraLinks)
+        @foreach($extraLinks as $text => $url)
+          <li class="mnav-item">
+            <a class="mnav-link" href="{{ $url }}"><i class="fas fa-link"></i><span>{{ $text }}</span></a>
+          </li>
+        @endforeach
+      @endisset
+    </ul>
+  </div>
+</nav>
+
+
 
     {{-- Kontak dinamis --}}
     <div class="footer-contact">
@@ -120,29 +173,51 @@
     <p>&copy; {{ date('Y') }} {{ $appName }}. All rights reserved.</p>
     <a href="#top" class="backTop" aria-label="Kembali ke atas"><i class="fas fa-arrow-up"></i></a>
   </div>
-
- 
 </footer>
 
 @push('scripts')
+
+<script>
+  (function(){
+    const mnav = document.querySelector('.footer-links .mnav[data-collapsible]');
+    const btn  = mnav?.querySelector('.mnav-toggle');
+    if(!mnav || !btn) return;
+
+    // default: tertutup di mobile
+    const setExpanded = (val) => {
+      mnav.setAttribute('aria-expanded', val ? 'true' : 'false');
+      btn.setAttribute('aria-expanded', val ? 'true' : 'false');
+      btn.querySelector('.mnav-toggle__label').textContent = val ? 'Tutup Menu' : 'Lihat Menu';
+    };
+    setExpanded(false);
+
+    btn.addEventListener('click', () => {
+      const isOpen = mnav.getAttribute('aria-expanded') === 'true';
+      setExpanded(!isOpen);
+    });
+
+    // jika berpindah ke desktop, paksa open
+    const mq = window.matchMedia('(min-width: 721px)');
+    const sync = () => { if (mq.matches) setExpanded(true); else setExpanded(false); };
+    mq.addEventListener ? mq.addEventListener('change', sync) : mq.addListener(sync);
+    sync();
+  })();
+</script>
+
 <script>
   (function(){
     const toggle = document.getElementById('chatToggle');
     const close  = document.getElementById('chatClose');
     const box    = document.getElementById('chatBox');
 
-    function openChat(){
-      box.classList.add('active');
-      toggle.setAttribute('aria-expanded','true');
-    }
     function closeChat(){
-      box.classList.remove('active');
-      toggle.setAttribute('aria-expanded','false');
+      box?.classList.remove('active');
+      toggle?.setAttribute('aria-expanded','false');
     }
 
     toggle?.addEventListener('click', () => {
-      box.classList.toggle('active');
-      toggle.setAttribute('aria-expanded', box.classList.contains('active') ? 'true' : 'false');
+      const active = box?.classList.toggle('active');
+      toggle?.setAttribute('aria-expanded', active ? 'true' : 'false');
     });
     close?.addEventListener('click', closeChat);
   })();

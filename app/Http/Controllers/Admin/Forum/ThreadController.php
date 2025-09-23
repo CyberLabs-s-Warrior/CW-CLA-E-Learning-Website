@@ -7,6 +7,8 @@ use App\Models\ForumThread;
 use App\Models\ForumCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+
 use Illuminate\Support\Facades\Storage;
 
 class ThreadController extends Controller
@@ -79,18 +81,28 @@ class ThreadController extends Controller
     public function forceDelete(Request $request, $id)
     {
         $this->authorizeAdmin($request);
+
         $thread = ForumThread::withTrashed()->findOrFail($id);
 
-        if ($thread->image_path) {
-            Storage::disk('public')->delete($thread->image_path);
-        }
-        foreach ($thread->posts()->withTrashed()->get() as $post) {
-            if ($post->image_path) {
-                Storage::disk('public')->delete($post->image_path);
+        DB::transaction(function () use ($thread) {
+            // HAPUS SEMUA POST ANAK (permanen)
+            $posts = $thread->posts()->withTrashed()->get();
+            foreach ($posts as $post) {
+                if ($post->image_path) {
+                    Storage::disk('public')->delete($post->image_path);
+                }
+                $post->forceDelete();
             }
-        }
 
-        $thread->forceDelete();
+            // Hapus file gambar thread (kalau ada)
+            if ($thread->image_path) {
+                Storage::disk('public')->delete($thread->image_path);
+            }
+
+            // Terakhir: hapus thread
+            $thread->forceDelete();
+        });
+
         return back()->with('success','Thread dihapus permanen.');
     }
 
@@ -130,27 +142,37 @@ class ThreadController extends Controller
         return response()->json(['ok' => true, 'message' => 'Dipulihkan.']);
     }
 
-    public function bulkForceDelete(Request $request)
+     public function bulkForceDelete(Request $request)
     {
         $this->authorizeAdmin($request);
+
         $data = $request->validate([
             'ids'   => 'required|array|min:1',
             'ids.*' => 'integer',
         ]);
 
-        $threads = ForumThread::withTrashed()->whereIn('id', $data['ids'])->get();
+        DB::transaction(function () use ($data) {
+            $threads = ForumThread::withTrashed()->whereIn('id', $data['ids'])->get();
 
-        foreach ($threads as $thread) {
-            if ($thread->image_path) {
-                Storage::disk('public')->delete($thread->image_path);
-            }
-            foreach ($thread->posts()->withTrashed()->get() as $post) {
-                if ($post->image_path) Storage::disk('public')->delete($post->image_path);
-            }
-            $thread->forceDelete();
-        }
+            foreach ($threads as $thread) {
+                // Hapus semua post anak (permanen)
+                $posts = $thread->posts()->withTrashed()->get();
+                foreach ($posts as $post) {
+                    if ($post->image_path) {
+                        Storage::disk('public')->delete($post->image_path);
+                    }
+                    $post->forceDelete();
+                }
 
-        return response()->json(['ok' => true, 'message' => 'Dihapus permanen.']);
+                if ($thread->image_path) {
+                    Storage::disk('public')->delete($thread->image_path);
+                }
+
+                $thread->forceDelete();
+            }
+        });
+
+        return response()->json(['ok' => true, 'message' => 'Thread dihapus permanen.']);
     }
 
     private function authorizeAdmin(Request $request): void

@@ -9,10 +9,7 @@ class About extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'section',
-        'title',
-        'description',
-        'image',
-    ];
+    // App/Models/About.php
+protected $fillable = ['section','title','description','image','display_order'];
+
 }

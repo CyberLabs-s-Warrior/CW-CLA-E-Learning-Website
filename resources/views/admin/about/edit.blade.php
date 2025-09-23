@@ -89,6 +89,13 @@
             </small>
           @enderror
         </div>
+        <div class="mb-4">
+  <label class="form-label fw-semibold">Urutan Tampil <span class="text-muted">(opsional)</span></label>
+  <input type="number" name="display_order" class="form-control rounded-3"
+         value="{{ old('display_order', $content->display_order ?? null) }}" placeholder="Contoh: 1">
+  <div class="form-text">Angka kecil tampil lebih atas. Kosongkan bila tidak perlu.</div>
+</div>
+
 
         <div class="d-flex justify-content-end mt-4">
           <button type="submit" id="submitBtn" class="btn btn-success rounded-pill px-4 me-2 d-flex align-items-center gap-2">

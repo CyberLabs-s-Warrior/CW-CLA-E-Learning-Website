@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\ForumPost;
 use App\Models\ForumThread;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
@@ -107,19 +109,27 @@ class PostController extends Controller
         return response()->json(['ok' => true, 'message' => 'Dipulihkan.']);
     }
 
-    public function bulkForceDelete(Request $request)
+     public function bulkForceDelete(Request $request)
     {
         $this->authorizeAdmin($request);
+
         $data = $request->validate([
             'ids'   => 'required|array|min:1',
             'ids.*' => 'integer',
         ]);
 
-        $posts = ForumPost::withTrashed()->whereIn('id', $data['ids'])->get();
-        foreach ($posts as $post) {
-            if ($post->image_path) Storage::disk('public')->delete($post->image_path);
-            $post->forceDelete();
-        }
+        DB::transaction(function () use ($data) {
+            $posts = ForumPost::withTrashed()->whereIn('id', $data['ids'])->get();
+
+            foreach ($posts as $post) {
+                if ($post->image_path) {
+                    Storage::disk('public')->delete($post->image_path);
+                }
+                // TODO (opsional): detach likes/votes/attachments lain di sini kalau ada relasi lain
+                $post->forceDelete();
+            }
+        });
+
         return response()->json(['ok' => true, 'message' => 'Dihapus permanen.']);
     }
 

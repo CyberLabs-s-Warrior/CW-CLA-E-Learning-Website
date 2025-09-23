@@ -1,7 +1,7 @@
-{{-- Font Awesome --}}
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
   crossorigin="anonymous" />
-{{-- Inter Font --}}
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
 <!-- Custom Style -->
@@ -156,7 +156,7 @@
 
 <aside class="app-sidebar" data-bs-theme="dark">
   <div class="sidebar-brand p-3">
-    <a href="{{ url('/') }}" class="text-decoration-none d-flex align-items-center">
+    <a href="<?php echo e(url('/')); ?>" class="text-decoration-none d-flex align-items-center">
       <i class="fa-solid fa-graduation-cap me-2 text-primary"></i>
       <span class="fw-semibold">e-Learning</span>
     </a>
@@ -166,34 +166,34 @@
   <div class="sidebar-wrapper p-3">
     <nav>
       <ul class="nav nav-pills nav-sidebar flex-column" role="menu" data-accordion="false">
-        {{-- Dashboard --}}
+        
         <li class="nav-item">
-          <a href="{{ route('admin.dashboard.index') }}"
-            class="nav-link {{ request()->routeIs('admin.dashboard.index') ? 'active' : '' }}">
+          <a href="<?php echo e(route('admin.dashboard.index')); ?>"
+            class="nav-link <?php echo e(request()->routeIs('admin.dashboard.index') ? 'active' : ''); ?>">
             <i class="fa-solid fa-gauge-high me-2"></i> Dashboard
           </a>
         </li>
 
-        {{-- User Management --}}
-        @role('superadmin')
+        
+        <?php if (\Illuminate\Support\Facades\Blade::check('role', 'superadmin')): ?>
         <li class="nav-item">
-          <a href="{{ route('admin.users.index') }}"
-            class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+          <a href="<?php echo e(route('admin.users.index')); ?>"
+            class="nav-link <?php echo e(request()->routeIs('admin.users.*') ? 'active' : ''); ?>">
             <i class="fa-solid fa-users me-2"></i> User Management
           </a>
         </li>
-        @endrole
+        <?php endif; ?>
 
-        {{-- Landing Page (CRUD) --}}
-        @canany(['kelola_about', 'kelola_contact', 'kelola_showcase', 'kelola_testimoni'])
+        
+        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['kelola_about', 'kelola_contact', 'kelola_showcase', 'kelola_testimoni'])): ?>
               <li class="nav-item has-treeview
-              {{ request()->routeIs('admin.about.*')
+              <?php echo e(request()->routeIs('admin.about.*')
           || request()->routeIs('admin.contact.*')
           || request()->routeIs('admin.showcase.*')   /* perbaiki dari showcases -> showcase */
           || request()->routeIs('admin.testimoni.*')  /* perbaiki active check */
-          ? 'active' : '' }}">
+          ? 'active' : ''); ?>">
                 <a href="#" class="nav-link"
-                  aria-expanded="{{ request()->routeIs('admin.about.*') || request()->routeIs('admin.contact.*') || request()->routeIs('admin.showcase.*') || request()->routeIs('admin.testimoni.*') ? 'true' : 'false' }}">
+                  aria-expanded="<?php echo e(request()->routeIs('admin.about.*') || request()->routeIs('admin.contact.*') || request()->routeIs('admin.showcase.*') || request()->routeIs('admin.testimoni.*') ? 'true' : 'false'); ?>">
                   <i class="fa-solid fa-layer-group me-2"></i>
                   Landing Page
                   <i class="fa-solid fa-caret-right ms-auto icon-collapsed"></i>
@@ -201,64 +201,64 @@
                 </a>
 
                 <ul class="nav nav-treeview">
-                  @can('kelola_about')
+                  <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('kelola_about')): ?>
                     <li class="nav-item">
-                      <a href="{{ route('admin.about.index') }}"
-                        class="nav-link {{ request()->routeIs('admin.about.*') ? 'active' : '' }}">
+                      <a href="<?php echo e(route('admin.about.index')); ?>"
+                        class="nav-link <?php echo e(request()->routeIs('admin.about.*') ? 'active' : ''); ?>">
                         <i class="fa-solid fa-circle-info me-2 text-secondary"></i> About
                       </a>
                     </li>
-                  @endcan
+                  <?php endif; ?>
 
-                  @can('kelola_contact')
+                  <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('kelola_contact')): ?>
                     <li class="nav-item">
-                      <a href="{{ route('admin.contact.index') }}"
-                        class="nav-link {{ request()->routeIs('admin.contact.*') ? 'active' : '' }}">
+                      <a href="<?php echo e(route('admin.contact.index')); ?>"
+                        class="nav-link <?php echo e(request()->routeIs('admin.contact.*') ? 'active' : ''); ?>">
                         <i class="fa-solid fa-envelope me-2 text-secondary"></i> Contact
                       </a>
                     </li>
-                  @endcan
+                  <?php endif; ?>
 
-                  @can('kelola_showcase')
+                  <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('kelola_showcase')): ?>
                     <li class="nav-item">
-                      <a href="{{ route('admin.showcase.index') }}"
-                        class="nav-link {{ request()->routeIs('admin.showcase.*') ? 'active' : '' }}">
+                      <a href="<?php echo e(route('admin.showcase.index')); ?>"
+                        class="nav-link <?php echo e(request()->routeIs('admin.showcase.*') ? 'active' : ''); ?>">
                         <i class="fa-solid fa-lightbulb me-2 text-secondary"></i> Showcase
                       </a>
                     </li>
-                  @endcan
+                  <?php endif; ?>
 
-                  @can('kelola_testimoni')
+                  <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('kelola_testimoni')): ?>
                     <li class="nav-item">
-                      <a href="{{ route('admin.testimoni.index') }}"
-                        class="nav-link {{ request()->routeIs('admin.testimoni.*') ? 'active' : '' }}">
+                      <a href="<?php echo e(route('admin.testimoni.index')); ?>"
+                        class="nav-link <?php echo e(request()->routeIs('admin.testimoni.*') ? 'active' : ''); ?>">
                         <i class="fa-solid fa-comment me-2 text-secondary"></i> Testimoni
                       </a>
                     </li>
-                  @endcan
+                  <?php endif; ?>
 
-                  {{-- contoh di dalam dropdown Landing Page --}}
-                  @can('kelola_instructor')
+                  
+                  <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('kelola_instructor')): ?>
                     <li class="nav-item">
-                      <a href="{{ route('admin.instruktur.index') }}"
-                        class="nav-link {{ request()->routeIs('admin.instruktur.*') ? 'active' : '' }}">
+                      <a href="<?php echo e(route('admin.instruktur.index')); ?>"
+                        class="nav-link <?php echo e(request()->routeIs('admin.instruktur.*') ? 'active' : ''); ?>">
                         <i class="fa-solid fa-chalkboard-user me-2"></i> Instructors
                       </a>
                     </li>
-                  @endcan
+                  <?php endif; ?>
 
                 </ul>
               </li>
-        @endcanany
+        <?php endif; ?>
 
 
-        {{-- Course (treeview) --}}
-        @can('kelola_course')
+        
+        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('kelola_course')): ?>
               <li class="nav-item has-treeview
-                  {{ request()->routeIs('admin.course.*')
+                  <?php echo e(request()->routeIs('admin.course.*')
           || request()->routeIs('admin.course-categories.*')
           || request()->routeIs('admin.detail.*')
-          || request()->routeIs('admin.lessons.*') ? 'active' : '' }}">
+          || request()->routeIs('admin.lessons.*') ? 'active' : ''); ?>">
                 <a href="#" class="nav-link">
                   <i class="fa-solid fa-book-open-reader me-2"></i> Course
                   <i class="fa-solid fa-caret-right ms-auto icon-collapsed"></i>
@@ -266,36 +266,36 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="{{ route('admin.course-categories.index') }}"
-                      class="nav-link {{ request()->routeIs('admin.course-categories.index') ? 'active' : '' }}">
+                    <a href="<?php echo e(route('admin.course-categories.index')); ?>"
+                      class="nav-link <?php echo e(request()->routeIs('admin.course-categories.index') ? 'active' : ''); ?>">
                       <i class="fa-solid fa-layer-group me-2 text-secondary"></i> Category
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="{{ route('admin.course.index') }}"
-                      class="nav-link {{ request()->routeIs('admin.course.index') ? 'active' : '' }}">
+                    <a href="<?php echo e(route('admin.course.index')); ?>"
+                      class="nav-link <?php echo e(request()->routeIs('admin.course.index') ? 'active' : ''); ?>">
                       <i class="fa-solid fa-list-ul me-2 text-secondary"></i> List
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="{{ route('admin.lessons.index') }}"
-                      class="nav-link {{ request()->routeIs('admin.lessons.*') ? 'active' : '' }}">
+                    <a href="<?php echo e(route('admin.lessons.index')); ?>"
+                      class="nav-link <?php echo e(request()->routeIs('admin.lessons.*') ? 'active' : ''); ?>">
                       <i class="fa-solid fa-chalkboard-user me-2 text-secondary"></i> Lessons
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="{{ route('admin.detail.index') }}"
-                      class="nav-link {{ request()->routeIs('admin.detail.*') ? 'active' : '' }}">
+                    <a href="<?php echo e(route('admin.detail.index')); ?>"
+                      class="nav-link <?php echo e(request()->routeIs('admin.detail.*') ? 'active' : ''); ?>">
                       <i class="fa-solid fa-file-lines me-2 text-secondary"></i> Detail Course
                     </a>
                   </li>
                 </ul>
               </li>
-        @endcan
+        <?php endif; ?>
 
-        {{-- Forum (treeview) --}}
-@role('admin|superadmin')
-  <li class="nav-item has-treeview {{ request()->routeIs('admin.forum.*') ? 'active' : '' }}">
+        
+<?php if (\Illuminate\Support\Facades\Blade::check('role', 'admin|superadmin')): ?>
+  <li class="nav-item has-treeview <?php echo e(request()->routeIs('admin.forum.*') ? 'active' : ''); ?>">
     <a href="#" class="nav-link">
       <i class="fa-solid fa-comments me-2"></i> Forum
       <i class="fa-solid fa-caret-right ms-auto icon-collapsed"></i>
@@ -304,43 +304,36 @@
 
     <ul class="nav nav-treeview">
       <li class="nav-item">
-        <a href="{{ route('admin.forum.categories.index') }}"
-           class="nav-link {{ request()->routeIs('admin.forum.categories.*') ? 'active' : '' }}">
+        <a href="<?php echo e(route('admin.forum.categories.index')); ?>"
+           class="nav-link <?php echo e(request()->routeIs('admin.forum.categories.*') ? 'active' : ''); ?>">
           <i class="fa-solid fa-folder-tree me-2 text-secondary"></i> Kategori
         </a>
       </li>
 
       <li class="nav-item">
-        <a href="{{ route('admin.forum.threads.index') }}"
-           class="nav-link {{ request()->routeIs('admin.forum.threads.*') ? 'active' : '' }}">
+        <a href="<?php echo e(route('admin.forum.threads.index')); ?>"
+           class="nav-link <?php echo e(request()->routeIs('admin.forum.threads.*') ? 'active' : ''); ?>">
           <i class="fa-solid fa-comments me-2 text-secondary"></i> Threads
         </a>
       </li>
 
       <li class="nav-item">
-        <a href="{{ route('admin.forum.posts.index') }}"
-           class="nav-link {{ request()->routeIs('admin.forum.posts.*') ? 'active' : '' }}">
+        <a href="<?php echo e(route('admin.forum.posts.index')); ?>"
+           class="nav-link <?php echo e(request()->routeIs('admin.forum.posts.*') ? 'active' : ''); ?>">
           <i class="fa-solid fa-reply me-2 text-secondary"></i> Posts
         </a>
       </li>
 
-      {{-- (Opsional, nanti saat fitur Laporan siap)
-      <li class="nav-item">
-        <a href="{{ route('admin.forum.reports.index') }}"
-           class="nav-link {{ request()->routeIs('admin.forum.reports.*') ? 'active' : '' }}">
-          <i class="fa-solid fa-flag me-2 text-secondary"></i> Laporan
-        </a>
-      </li>
-      --}}
+      
 
       <li class="nav-item">
-        <a href="{{ route('forum.index') }}" class="nav-link" target="_blank">
+        <a href="<?php echo e(route('forum.index')); ?>" class="nav-link" target="_blank">
           <i class="fa-solid fa-up-right-from-square me-2 text-secondary"></i> Buka Forum Publik
         </a>
       </li>
     </ul>
   </li>
-@endrole
+<?php endif; ?>
 
       </ul>
 
@@ -361,3 +354,4 @@
     });
   });
 </script>
+<?php /**PATH D:\PKL\CW-CLA-E-Learning-Website\resources\views/templates/sidebar.blade.php ENDPATH**/ ?>

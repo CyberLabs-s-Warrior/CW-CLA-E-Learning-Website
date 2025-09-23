@@ -7,27 +7,32 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Middleware\IsSuperadmin;
-use App\Models\Contact;  
+use App\Models\Contact;
 
 class AppServiceProvider extends ServiceProvider
 {
-    public function register(): void {}
+    public function register(): void
+    {
+        //
+    }
 
     public function boot(): void
     {
+        // Bootstrap 5 untuk pagination bawaan Laravel
         Paginator::useBootstrapFive();
 
+        // Alias middleware (jika dipakai)
         app('router')->aliasMiddleware('is_superadmin', IsSuperadmin::class);
 
+        // Supply data kontak ke komponen footer (cached)
         View::composer('components.footer', function ($view) {
             $contact = Cache::remember(
-                'footer_contact',
-                now()->addMinutes(30),  
+                // gunakan key baru supaya tidak bentrok dengan cache lama
+                'footer_contact_v2',
+                now()->addMinutes(30),
                 function () {
-                    return Contact::query()
-                        ->select('email','telepon','alamat','latitude','longitude','link_maps','updated_at')
-                        ->latest('updated_at')
-                        ->first();
+                    // Ambil satu record terbaru (tanpa select kolom) agar semua field termasuk sosial tersedia
+                    return Contact::latest('updated_at')->first();
                 }
             );
 

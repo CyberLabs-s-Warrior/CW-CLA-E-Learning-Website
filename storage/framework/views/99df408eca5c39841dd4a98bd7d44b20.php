@@ -1,7 +1,7 @@
-@extends('templates.app')
-@section('title','Forum — Threads')
 
-@section('content')
+<?php $__env->startSection('title','Forum — Threads'); ?>
+
+<?php $__env->startSection('content'); ?>
 <style>
   .chip{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:999px;font-size:11px;font-weight:800}
   .chip-pin{background:rgba(245,158,11,.15);color:#92400e;border:1px solid rgba(245,158,11,.35)}
@@ -15,7 +15,7 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
   <h1 class="mb-0 fw-bold">Threads</h1>
   <div class="d-flex gap-2">
-    <a href="{{ route('forum.index') }}" class="btn btn-outline-primary" target="_blank">
+    <a href="<?php echo e(route('forum.index')); ?>" class="btn btn-outline-primary" target="_blank">
       <i class="fa fa-external-link-alt me-1"></i> Lihat Forum Publik
     </a>
     <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#trashThreadsModal">
@@ -24,37 +24,37 @@
   </div>
 </div>
 
-@if(session('success')) <div class="alert alert-success">{{ session('success') }}</div> @endif
+<?php if(session('success')): ?> <div class="alert alert-success"><?php echo e(session('success')); ?></div> <?php endif; ?>
 
 <div class="card mb-3">
   <div class="card-body">
     <form method="GET" class="row g-2 align-items-end filters">
       <div class="col-12 col-md-auto">
         <label class="form-label">Cari</label>
-        <input type="text" name="q" value="{{ request('q') }}" class="form-control" placeholder="judul / isi">
+        <input type="text" name="q" value="<?php echo e(request('q')); ?>" class="form-control" placeholder="judul / isi">
       </div>
       <div class="col-12 col-md-auto">
         <label class="form-label">Kategori</label>
         <select name="category_id" class="form-select">
           <option value="">Semua</option>
-          @foreach($categories as $c)
-            <option value="{{ $c->id }}" @selected(request('category_id')==$c->id)>{{ $c->name }}</option>
-          @endforeach
+          <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $c): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <option value="<?php echo e($c->id); ?>" <?php if(request('category_id')==$c->id): echo 'selected'; endif; ?>><?php echo e($c->name); ?></option>
+          <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </select>
       </div>
       <div class="col-12 col-md-auto">
         <label class="form-label">Status</label>
         <select name="status" class="form-select">
           <option value="">Semua</option>
-          <option value="pinned" @selected(request('status')=='pinned')>Pinned</option>
-          <option value="locked" @selected(request('status')=='locked')>Locked</option>
-          <option value="trashed" @selected(request('status')=='trashed')>Trashed</option>
-          <option value="all" @selected(request('status')=='all')>All (+trashed)</option>
+          <option value="pinned" <?php if(request('status')=='pinned'): echo 'selected'; endif; ?>>Pinned</option>
+          <option value="locked" <?php if(request('status')=='locked'): echo 'selected'; endif; ?>>Locked</option>
+          <option value="trashed" <?php if(request('status')=='trashed'): echo 'selected'; endif; ?>>Trashed</option>
+          <option value="all" <?php if(request('status')=='all'): echo 'selected'; endif; ?>>All (+trashed)</option>
         </select>
       </div>
       <div class="col-12 col-md-auto">
         <button class="btn btn-primary">Filter</button>
-        <a href="{{ route('admin.forum.threads.index') }}" class="btn btn-outline-secondary">Reset</a>
+        <a href="<?php echo e(route('admin.forum.threads.index')); ?>" class="btn btn-outline-secondary">Reset</a>
       </div>
     </form>
   </div>
@@ -75,69 +75,72 @@
         </tr>
       </thead>
       <tbody>
-      @forelse($threads as $t)
-        <tr @if($t->trashed()) class="table-warning" @endif>
+      <?php $__empty_1 = true; $__currentLoopData = $threads; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $t): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+        <tr <?php if($t->trashed()): ?> class="table-warning" <?php endif; ?>>
           <td>
-            <div class="fw-semibold">{{ $t->title }}</div>
-            <div class="text-muted small ellipsis">{{ Str::limit($t->body, 120) }}</div>
+            <div class="fw-semibold"><?php echo e($t->title); ?></div>
+            <div class="text-muted small ellipsis"><?php echo e(Str::limit($t->body, 120)); ?></div>
           </td>
-          <td>{{ $t->category->name ?? '-' }}</td>
-          <td>{{ $t->user->name ?? '-' }}</td>
-          <td>{{ $t->posts_count }}</td>
-          <td class="text-muted small">{{ $t->updated_at->format('d M Y H:i') }}</td>
+          <td><?php echo e($t->category->name ?? '-'); ?></td>
+          <td><?php echo e($t->user->name ?? '-'); ?></td>
+          <td><?php echo e($t->posts_count); ?></td>
+          <td class="text-muted small"><?php echo e($t->updated_at->format('d M Y H:i')); ?></td>
           <td>
-            @if($t->pinned_at)<span class="chip chip-pin me-1">Pinned</span>@endif
-            @if($t->is_locked)<span class="chip chip-lock">Locked</span>@endif
-            @if($t->trashed())<span class="badge text-bg-secondary ms-1">Deleted</span>@endif
+            <?php if($t->pinned_at): ?><span class="chip chip-pin me-1">Pinned</span><?php endif; ?>
+            <?php if($t->is_locked): ?><span class="chip chip-lock">Locked</span><?php endif; ?>
+            <?php if($t->trashed()): ?><span class="badge text-bg-secondary ms-1">Deleted</span><?php endif; ?>
           </td>
           <td>
             <div class="d-flex flex-wrap gap-2">
               <a class="btn btn-sm btn-outline-primary"
-                 href="{{ route('forum.thread.show',['id'=>$t->id,'slug'=>\Illuminate\Support\Str::slug($t->title)]) }}"
+                 href="<?php echo e(route('forum.thread.show',['id'=>$t->id,'slug'=>\Illuminate\Support\Str::slug($t->title)])); ?>"
                  target="_blank">View</a>
 
-              {{-- Pin/Unpin (moderator routes) --}}
-              <form method="POST" action="{{ $t->pinned_at ? route('forum.mod.unpin',$t->id) : route('forum.mod.pin',$t->id) }}">
-                @csrf
-                <button class="btn btn-sm {{ $t->pinned_at ? 'btn-outline-warning':'btn-warning' }}">
-                  {{ $t->pinned_at ? 'Unpin':'Pin' }}
+              
+              <form method="POST" action="<?php echo e($t->pinned_at ? route('forum.mod.unpin',$t->id) : route('forum.mod.pin',$t->id)); ?>">
+                <?php echo csrf_field(); ?>
+                <button class="btn btn-sm <?php echo e($t->pinned_at ? 'btn-outline-warning':'btn-warning'); ?>">
+                  <?php echo e($t->pinned_at ? 'Unpin':'Pin'); ?>
+
                 </button>
               </form>
 
-              {{-- Lock/Unlock --}}
-              <form method="POST" action="{{ $t->is_locked ? route('forum.mod.unlock',$t->id) : route('forum.mod.lock',$t->id) }}">
-                @csrf
-                <button class="btn btn-sm {{ $t->is_locked ? 'btn-outline-secondary':'btn-secondary' }}">
-                  {{ $t->is_locked ? 'Unlock':'Lock' }}
+              
+              <form method="POST" action="<?php echo e($t->is_locked ? route('forum.mod.unlock',$t->id) : route('forum.mod.lock',$t->id)); ?>">
+                <?php echo csrf_field(); ?>
+                <button class="btn btn-sm <?php echo e($t->is_locked ? 'btn-outline-secondary':'btn-secondary'); ?>">
+                  <?php echo e($t->is_locked ? 'Unlock':'Lock'); ?>
+
                 </button>
               </form>
 
-              {{-- Delete / Restore --}}
-              @if(!$t->trashed())
-                <form method="POST" action="{{ route('admin.forum.threads.destroy',$t->id) }}"
+              
+              <?php if(!$t->trashed()): ?>
+                <form method="POST" action="<?php echo e(route('admin.forum.threads.destroy',$t->id)); ?>"
                       onsubmit="return confirm('Arsipkan thread ini?')">
-                  @csrf @method('DELETE')
+                  <?php echo csrf_field(); ?> <?php echo method_field('DELETE'); ?>
                   <button class="btn btn-sm btn-outline-danger"><i class="fa fa-trash me-1"></i> Hapus</button>
                 </form>
-              @else
-                <form method="POST" action="{{ route('admin.forum.threads.restore',$t->id) }}">
-                  @csrf
+              <?php else: ?>
+                <form method="POST" action="<?php echo e(route('admin.forum.threads.restore',$t->id)); ?>">
+                  <?php echo csrf_field(); ?>
                   <button class="btn btn-sm btn-success">Pulihkan</button>
                 </form>
-              @endif
+              <?php endif; ?>
             </div>
           </td>
         </tr>
-      @empty
+      <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
         <tr><td colspan="7" class="text-muted">Belum ada thread.</td></tr>
-      @endforelse
+      <?php endif; ?>
       </tbody>
     </table>
-    {{ $threads->links() }}
+    <?php echo e($threads->links()); ?>
+
   </div>
 </div>
 
-{{-- ========== Modal Tong Sampah (Threads) ========== --}}
+
 <div class="modal fade" id="trashThreadsModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
@@ -178,7 +181,7 @@
   </div>
 </div>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 (function(){
   const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
@@ -195,7 +198,7 @@
   async function loadTrashedThreads(){
     tbody.innerHTML = `<tr><td colspan="5" class="text-muted py-4 text-center">Memuat…</td></tr>`;
     try{
-      const res = await fetch(`{{ route('admin.forum.threads.trashedList') }}`);
+      const res = await fetch(`<?php echo e(route('admin.forum.threads.trashedList')); ?>`);
       const json = await res.json();
       renderTrashed(json.data || []);
     }catch(e){
@@ -226,15 +229,15 @@
 
   btnRes?.addEventListener('click', () =>
   bulkAction('restore', '#tt-body', {
-    restore: `{{ route('admin.forum.threads.bulkRestore') }}`,
-    force:   `{{ route('admin.forum.threads.bulkForceDelete') }}`
+    restore: `<?php echo e(route('admin.forum.threads.bulkRestore')); ?>`,
+    force:   `<?php echo e(route('admin.forum.threads.bulkForceDelete')); ?>`
   })
 );
   btnForce?.addEventListener('click', () => {
   if (confirm('Hapus permanen item terpilih? Tindakan ini tidak bisa dibatalkan.')) {
     bulkAction('force', '#tt-body', {
-      restore: `{{ route('admin.forum.threads.bulkRestore') }}`,
-      force:   `{{ route('admin.forum.threads.bulkForceDelete') }}`
+      restore: `<?php echo e(route('admin.forum.threads.bulkRestore')); ?>`,
+      force:   `<?php echo e(route('admin.forum.threads.bulkForceDelete')); ?>`
     });
   }
 });
@@ -289,5 +292,7 @@ async function bulkAction(kind, bodySelector, urls) {
   }
 })();
 </script>
-@endpush
-@endsection
+<?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('templates.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\PKL\CW-CLA-E-Learning-Website\resources\views/admin/forum/threads/index.blade.php ENDPATH**/ ?>

@@ -115,14 +115,14 @@ public function update(Request $request, InstructorProfile $instruktur)
 }
 
 
-    public function destroy(InstructorProfile $instructor)
+    public function destroy(InstructorProfile $instruktur)
 {
     // HAPUS file hanya jika ADA path-nya
-    if (is_string($instructor->avatar_path) && $instructor->avatar_path !== '') {
-        Storage::disk('public')->delete($instructor->avatar_path);
+    if (is_string($instruktur->avatar_path) && $instruktur->avatar_path !== '') {
+        Storage::disk('public')->delete($instruktur->avatar_path);
     }
 
-    $instructor->delete();
+    $instruktur->delete();
 
     return to_route('admin.instruktur.index')->with('success','Profil dihapus.');
 }

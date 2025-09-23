@@ -1,7 +1,7 @@
-@extends('templates.app')
-@section('title','Forum — Posts')
 
-@section('content')
+<?php $__env->startSection('title','Forum — Posts'); ?>
+
+<?php $__env->startSection('content'); ?>
 <style>
   .filters .form-control, .filters .form-select { min-width: 220px; }
   .table td { vertical-align: middle; }
@@ -14,7 +14,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h1 class="h3 mb-0 fw-bold text-dark">Posts</h1>
   <div class="d-flex gap-2">
-    <a href="{{ route('forum.index') }}" class="btn btn-outline-primary shadow-sm" target="_blank">
+    <a href="<?php echo e(route('forum.index')); ?>" class="btn btn-outline-primary shadow-sm" target="_blank">
       <i class="fa fa-external-link-alt me-1"></i> Lihat Forum Publik
     </a>
     <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#trashPostsModal">
@@ -23,47 +23,48 @@
   </div>
 </div>
 
-@if(session('success'))
+<?php if(session('success')): ?>
   <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
-    <i class="fa fa-check-circle me-2"></i>{{ session('success') }}
+    <i class="fa fa-check-circle me-2"></i><?php echo e(session('success')); ?>
+
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
   </div>
-@endif
+<?php endif; ?>
 
-{{-- Filter --}}
+
 <div class="card mb-3 shadow-sm border-0">
   <div class="card-body">
     <form method="GET" class="row g-3 align-items-end filters">
       <div class="col-12 col-md-auto">
         <label class="form-label">Cari</label>
-        <input type="text" name="q" value="{{ request('q') }}" class="form-control" placeholder="isi balasan">
+        <input type="text" name="q" value="<?php echo e(request('q')); ?>" class="form-control" placeholder="isi balasan">
       </div>
       <div class="col-12 col-md-auto">
         <label class="form-label">Status</label>
         <select name="status" class="form-select">
           <option value="">Semua</option>
-          <option value="trashed" @selected(request('status')=='trashed')>Trashed</option>
-          <option value="all" @selected(request('status')=='all')>All (+trashed)</option>
+          <option value="trashed" <?php if(request('status')=='trashed'): echo 'selected'; endif; ?>>Trashed</option>
+          <option value="all" <?php if(request('status')=='all'): echo 'selected'; endif; ?>>All (+trashed)</option>
         </select>
       </div>
       <div class="col-12 col-md-auto">
         <button class="btn btn-primary"><i class="fa fa-filter me-1"></i> Filter</button>
-        <a href="{{ route('admin.forum.posts.index') }}" class="btn btn-outline-secondary">Reset</a>
+        <a href="<?php echo e(route('admin.forum.posts.index')); ?>" class="btn btn-outline-secondary">Reset</a>
       </div>
-      @if(request('q') || request('status'))
+      <?php if(request('q') || request('status')): ?>
         <div class="col-12">
           <div class="small text-muted">
             Menampilkan hasil untuk:
-            @if(request('q')) <span class="badge text-bg-light me-1">q: “{{ request('q') }}”</span>@endif
-            @if(request('status')) <span class="badge text-bg-light">status: {{ request('status') }}</span>@endif
+            <?php if(request('q')): ?> <span class="badge text-bg-light me-1">q: “<?php echo e(request('q')); ?>”</span><?php endif; ?>
+            <?php if(request('status')): ?> <span class="badge text-bg-light">status: <?php echo e(request('status')); ?></span><?php endif; ?>
           </div>
         </div>
-      @endif
+      <?php endif; ?>
     </form>
   </div>
 </div>
 
-{{-- Tabel --}}
+
 <div class="card shadow-sm border-0">
   <div class="card-header bg-light fw-semibold">Daftar Post</div>
   <div class="card-body p-0">
@@ -80,55 +81,56 @@
           </tr>
         </thead>
         <tbody>
-          @forelse($posts as $p)
-            @php
+          <?php $__empty_1 = true; $__currentLoopData = $posts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+            <?php
               $threadUrl = $p->thread
                 ? route('forum.thread.show', ['id'=>$p->thread->id, 'slug'=>\Illuminate\Support\Str::slug($p->thread->title)])
                 : null;
-            @endphp
-            <tr class="{{ $p->trashed() ? 'table-warning row-deleted' : '' }}">
-              <td><div class="ellipsis">{{ Str::limit($p->body, 200) }}</div></td>
+            ?>
+            <tr class="<?php echo e($p->trashed() ? 'table-warning row-deleted' : ''); ?>">
+              <td><div class="ellipsis"><?php echo e(Str::limit($p->body, 200)); ?></div></td>
               <td>
-                @if($p->thread)
-                  <a href="{{ $threadUrl }}" target="_blank" class="text-decoration-none">
-                    {{ Str::limit($p->thread->title, 70) }}
+                <?php if($p->thread): ?>
+                  <a href="<?php echo e($threadUrl); ?>" target="_blank" class="text-decoration-none">
+                    <?php echo e(Str::limit($p->thread->title, 70)); ?>
+
                     <i class="fa fa-external-link-alt ms-1 small text-muted"></i>
                   </a>
-                @else <span class="text-muted">-</span> @endif
+                <?php else: ?> <span class="text-muted">-</span> <?php endif; ?>
               </td>
-              <td>{{ $p->user->name ?? '-' }}</td>
-              <td class="text-muted small"><i class="fa fa-clock me-1"></i>{{ $p->created_at->format('d M Y H:i') }}</td>
+              <td><?php echo e($p->user->name ?? '-'); ?></td>
+              <td class="text-muted small"><i class="fa fa-clock me-1"></i><?php echo e($p->created_at->format('d M Y H:i')); ?></td>
               <td>
-                @if($p->trashed())
+                <?php if($p->trashed()): ?>
                   <span class="badge text-bg-secondary">Deleted</span>
-                @else
+                <?php else: ?>
                   <span class="badge text-bg-success">Aktif</span>
-                @endif
+                <?php endif; ?>
               </td>
               <td class="text-center">
                 <div class="d-flex flex-wrap gap-2 justify-content-center">
-                  @if($p->thread)
-                    <a class="btn btn-sm btn-outline-primary" href="{{ $threadUrl }}" target="_blank">
+                  <?php if($p->thread): ?>
+                    <a class="btn btn-sm btn-outline-primary" href="<?php echo e($threadUrl); ?>" target="_blank">
                       <i class="fa fa-eye me-1"></i> Lihat
                     </a>
                     <button type="button" class="btn btn-sm btn-outline-dark"
-                            data-copy="{{ $threadUrl }}" onclick="copyLink(this)">
+                            data-copy="<?php echo e($threadUrl); ?>" onclick="copyLink(this)">
                       <i class="fa fa-link me-1"></i> Copy Link
                     </button>
-                  @endif
+                  <?php endif; ?>
 
-                  @if(!$p->trashed())
-                    <form method="POST" action="{{ route('admin.forum.posts.destroy',$p->id) }}"
+                  <?php if(!$p->trashed()): ?>
+                    <form method="POST" action="<?php echo e(route('admin.forum.posts.destroy',$p->id)); ?>"
                           onsubmit="return confirm('Arsipkan balasan ini?')"
                           class="inline-action">
-                      @csrf @method('DELETE')
+                      <?php echo csrf_field(); ?> <?php echo method_field('DELETE'); ?>
                       <button class="btn btn-sm btn-outline-danger">
                         <i class="fa fa-trash me-1"></i> Hapus
                       </button>
                     </form>
-                  @else
-                    <form method="POST" action="{{ route('admin.forum.posts.restore',$p->id) }}" class="inline-action">
-                      @csrf
+                  <?php else: ?>
+                    <form method="POST" action="<?php echo e(route('admin.forum.posts.restore',$p->id)); ?>" class="inline-action">
+                      <?php echo csrf_field(); ?>
                       <button class="btn btn-sm btn-success">
                         <span class="action-label"><i class="fa fa-undo me-1"></i> Pulihkan</span>
                         <span class="action-loading d-none">
@@ -136,27 +138,28 @@
                         </span>
                       </button>
                     </form>
-                  @endif
+                  <?php endif; ?>
                 </div>
               </td>
             </tr>
-          @empty
+          <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
             <tr>
               <td colspan="6" class="text-center text-muted py-5">
                 <i class="fa fa-comments me-2"></i> Belum ada post.
               </td>
             </tr>
-          @endforelse
+          <?php endif; ?>
         </tbody>
       </table>
     </div>
   </div>
   <div class="card-footer">
-    {{ $posts->links() }}
+    <?php echo e($posts->links()); ?>
+
   </div>
 </div>
 
-{{-- ========== Modal Tong Sampah (Posts) ========== --}}
+
 <div class="modal fade" id="trashPostsModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
@@ -197,7 +200,7 @@
   </div>
 </div>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
   // Copy to clipboard
   function copyLink(btn) {
@@ -237,7 +240,7 @@
     async function loadTrashedPosts(){
       tbody.innerHTML = `<tr><td colspan="5" class="text-muted py-4 text-center">Memuat…</td></tr>`;
       try{
-        const res = await fetch(`{{ route('admin.forum.posts.trashedList') }}`);
+        const res = await fetch(`<?php echo e(route('admin.forum.posts.trashedList')); ?>`);
         const json = await res.json();
         renderTrashed(json.data || []);
       }catch(e){
@@ -268,15 +271,15 @@
 
     btnRes?.addEventListener('click', () =>
   bulkAction('restore', '#tp-body', {
-    restore: `{{ route('admin.forum.posts.bulkRestore') }}`,
-    force:   `{{ route('admin.forum.posts.bulkForceDelete') }}`
+    restore: `<?php echo e(route('admin.forum.posts.bulkRestore')); ?>`,
+    force:   `<?php echo e(route('admin.forum.posts.bulkForceDelete')); ?>`
   })
 );
     btnForce?.addEventListener('click', () => {
   if (confirm('Hapus permanen item terpilih? Tindakan ini tidak bisa dibatalkan.')) {
     bulkAction('force', '#tp-body', {
-      restore: `{{ route('admin.forum.posts.bulkRestore') }}`,
-      force:   `{{ route('admin.forum.posts.bulkForceDelete') }}`
+      restore: `<?php echo e(route('admin.forum.posts.bulkRestore')); ?>`,
+      force:   `<?php echo e(route('admin.forum.posts.bulkForceDelete')); ?>`
     });
   }
 });
@@ -332,5 +335,7 @@ async function bulkAction(kind, bodySelector, urls) {
     }
   })();
 </script>
-@endpush
-@endsection
+<?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('templates.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\PKL\CW-CLA-E-Learning-Website\resources\views/admin/forum/posts/index.blade.php ENDPATH**/ ?>

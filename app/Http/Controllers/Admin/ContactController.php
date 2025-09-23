@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ContactController extends Controller
 {
@@ -33,7 +34,6 @@ class ContactController extends Controller
             'url_telepon' => 'nullable|string',
             'url_alamat'  => 'nullable|string',
 
-            // social media (opsional)
             'social_facebook'  => 'nullable|url|max:255',
             'social_instagram' => 'nullable|url|max:255',
             'social_tiktok'    => 'nullable|url|max:255',
@@ -53,6 +53,8 @@ class ContactController extends Controller
         } else {
             Contact::create($validated);
         }
+        Cache::forget('footer_contact');
+        Cache::forget('footer_contact_v2');
 
         return redirect()->route('admin.contact.index')->with('success', 'Kontak berhasil diperbarui.');
     }
