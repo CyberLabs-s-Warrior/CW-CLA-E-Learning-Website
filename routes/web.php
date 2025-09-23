@@ -284,6 +284,30 @@ Route::get('/test-midtrans', function () {
     ];
 });
 
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\PaymentController;
+
+Route::middleware('auth')->group(function () {
+
+    // Tombol Beli → bikin transaksi pending
+    Route::post('/checkout/{course}', [CheckoutController::class, 'start'])->name('checkout.start');
+    Route::get('/checkout/{course}', [CheckoutController::class, 'showForm'])->name('student.checkout.form');
+
+
+    // Tampilkan halaman checkout
+    Route::get('/checkout/{transaction}/show', [CheckoutController::class, 'show'])
+        ->name('student.checkout.show');
+
+    // Proses pembayaran Midtrans
+    Route::post('/payment/{transaction}', [PaymentController::class, 'process'])
+        ->name('payment.process');
+});
+
+// routes/web.php
+// Route::post('/midtrans/notification', [App\Http\Controllers\MidtransController::class, 'notification']);
+
+
+
 /*
 |--------------------------------------------------------------------------
 | Laravel Default Auth (Breeze/Fortify/etc)
