@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pembayaran Kelas</title>
-    <link rel="stylesheet" href="client/payment.css">
+    {{-- <link rel="stylesheet" href="client/payment.css">   --}}
 </head>
 
 <body>
