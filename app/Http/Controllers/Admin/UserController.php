@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Validation\Rule;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -22,7 +24,7 @@ class UserController extends Controller
         $permission = $request->permission;
         $search = $request->search; // Tambahan
 
-        $query = User::with(['roles', 'permissions']);
+        $query = User::with(['roles', 'permissions', 'profile']);
 
         if ($search) {
             $query->where('name', 'like', '%' . $search . '%');
@@ -79,7 +81,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            'role' => 'required|exists:roles,name',
+            'role' => ['required', Rule::in(['admin','instructor'])],
             'permissions' => 'array',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -114,11 +116,19 @@ class UserController extends Controller
             abort(403, 'Anda tidak diizinkan mengedit superadmin.');
         }
 
+         if ($user->hasRole('student')) {
+        abort(403, 'Akun student tidak dapat diedit dari panel admin.');
+    }
+
         $roles = Role::whereIn('name', ['admin', 'instructor'])->pluck('name');
         $permissions = Permission::all();
-        $userPermissions = $user->permissions->pluck('name')->toArray();
+        $userDirectPerms = $user->getDirectPermissions()->pluck('name')->toArray();
+        $userRolePerms   = $user->getPermissionsViaRoles()->pluck('name')->toArray();
 
-        return view('admin.users.edit', compact('user', 'roles', 'permissions', 'userPermissions'));
+
+        return view('admin.users.edit', compact(
+    'user', 'roles', 'permissions', 'userDirectPerms', 'userRolePerms'
+        ));
     }
 
 
@@ -132,6 +142,9 @@ class UserController extends Controller
         if ($user->hasRole('superadmin') && !auth()->user()->hasRole('superadmin')) {
             abort(403, 'Anda tidak diizinkan mengedit superadmin.');
         }
+           if ($user->hasRole('student')) {
+        abort(403, 'Akun student tidak dapat diedit dari panel admin.');
+    }
 
         $rules = [
             'name' => 'required|string|max:255',
@@ -140,10 +153,11 @@ class UserController extends Controller
             'permissions' => 'array',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
+        
 
-        if (!$user->hasRole('superadmin')) {
-            $rules['role'] = 'required|string|exists:roles,name';
-        }
+         if (!$user->hasRole('superadmin')) {
+        $rules['role'] = ['required', Rule::in(['admin','instructor'])];
+    }
 
         $validated = $request->validate($rules);
 
@@ -183,6 +197,9 @@ class UserController extends Controller
         if ($user->is_superadmin) {
             return back()->with('error', 'Tidak bisa menghapus superadmin.');
         }
+           if ($user->hasRole('student')) {
+        return back()->with('error', 'Akun student tidak dapat dihapus dari panel admin.');
+    }
         if ($user->foto && Storage::disk('public')->exists($user->foto)) {
             Storage::disk('public')->delete($user->foto);
         }

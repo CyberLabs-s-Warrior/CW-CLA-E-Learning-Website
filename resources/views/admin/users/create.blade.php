@@ -87,33 +87,47 @@
                         <div class="mb-4" id="permission-wrapper" style="display: none;">
                             <label class="form-label fw-bold">Akses / Permissions</label>
                             <div class="row">
-                                @php
-                                    $grouped = [];
-                                    foreach ($permissions as $permission) {
-                                        $parts = explode('_', $permission->name);
-                                        $fitur = end($parts);
-                                        $grouped[$fitur][] = $permission;
-                                    }
-                                @endphp
+                               @php
+  $grouped = [];
+  foreach ($permissions as $permission) {
+      $parts = explode('_', $permission->name);
+      $fitur = end($parts);
+      $grouped[$fitur][] = $permission;
+  }
+@endphp
 
-                                @foreach ($grouped as $fitur => $perms)
-                                    <div class="col-md-4 mb-3">
-                                        <div class="border rounded p-3 bg-light">
-                                            <strong class="text-uppercase small text-muted d-block mb-2">
-                                                {{ ucfirst($fitur) }}
-                                            </strong>
-                                            @foreach ($perms as $permission)
-                                                <div class="form-check mb-2">
-                                                    <input type="checkbox" name="permissions[]" value="{{ $permission->name }}"
-                                                        class="form-check-input" id="perm_{{ $permission->name }}">
-                                                    <label class="form-check-label small" for="perm_{{ $permission->name }}">
-                                                        {{ ucwords(str_replace('_', ' ', $permission->name)) }}
-                                                    </label>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                @endforeach
+<div class="row">
+@foreach ($grouped as $fitur => $perms)
+  <div class="col-md-4 mb-3">
+    <div class="border rounded p-3 bg-light">
+      <strong class="text-uppercase small text-muted d-block mb-2">{{ ucfirst($fitur) }}</strong>
+
+      @foreach ($perms as $permission)
+        @php $name = $permission->name; @endphp
+        <div class="form-check mb-2 d-flex align-items-center gap-2">
+          <input type="checkbox"
+                 name="permissions[]"
+                 value="{{ $name }}"
+                 id="perm_{{ $name }}"
+                 class="form-check-input">
+          <label class="form-check-label small d-flex align-items-center gap-1" for="perm_{{ $name }}">
+            {{ ucwords(str_replace('_', ' ', $name)) }}
+            {{-- badge info via role (disembunyikan default, ditampilkan via JS) --}}
+            <span class="badge bg-secondary text-light ms-1 via-role-badge d-none">via role</span>
+          </label>
+        </div>
+      @endforeach
+    </div>
+  </div>
+@endforeach
+</div>
+
+<small class="text-muted d-block mt-2">
+  Catatan: centang di sini menambahkan <em>direct permission</em> ke akun. 
+  Permission yang berasal dari <strong>role</strong> tetap berlaku meski kotak ini tidak dicentang.
+  Untuk mencabut akses yang datang dari role, ubah permission di Role-nya.
+</small>
+
                             </div>
                         </div>
 
@@ -187,6 +201,51 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const roleSelect = document.getElementById('role');
+  const permissionWrapper = document.getElementById('permission-wrapper');
+  const rolePermissions = @json($rolePermissions); // { admin: [...], instructor: [...] }
+
+  function togglePermissions() {
+    const selectedRole = roleSelect.value;
+    const viaRole = new Set(rolePermissions[selectedRole] || []);
+
+    if (!selectedRole) {
+      permissionWrapper.style.display = 'none';
+      return;
+    }
+
+    permissionWrapper.style.display = 'block';
+
+    // Iterasi semua checkbox
+    permissionWrapper.querySelectorAll('input[type="checkbox"][name="permissions[]"]').forEach(cb => {
+      const name = cb.value;
+
+      // 1) JANGAN dikunci: semua checkbox tetap bisa diklik
+      cb.disabled = false;
+
+      // 2) Default state: pre-check yang via role supaya admin paham defaultnya
+      //    (kalau mau: kamu bisa set false agar hanya info badge yang tampil)
+      cb.checked = viaRole.has(name);
+
+      // 3) Tampilkan/hilangkan badge "via role" untuk transparansi
+      const badge = cb.closest('.form-check')?.querySelector('.via-role-badge');
+      if (badge) {
+        if (viaRole.has(name)) {
+          badge.classList.remove('d-none');
+        } else {
+          badge.classList.add('d-none');
+        }
+      }
+    });
+  }
+
+  togglePermissions();
+  roleSelect.addEventListener('change', togglePermissions);
+});
+</script>
+
 
 {{-- Bootstrap Icons --}}
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">

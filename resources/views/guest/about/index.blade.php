@@ -6,122 +6,200 @@
 
 @section('content')
 
-  <!-- Hero Header About -->
-  <section class="about-hero" style="background-image:url('{{ asset('image/banner.jpg') }}')">
-    <div class="about-hero-overlay">
-      <h1>ABOUT US</h1>
-    </div>
-  </section>
+@php
+  // Helper untuk ambil item pertama dari section tertentu
+  $getFirst = function($key) use ($contents) {
+      return $contents->has($key) && $contents->get($key)->isNotEmpty()
+          ? $contents->get($key)->first()
+          : null;
+  };
 
-  <!-- Tentang Kami -->
-  <section class="about-section">
-    <div class="about-text">
-      <h2>Tentang E-Learning Kami</h2>
-      <p>
-        Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin
-        literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at
-        Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem
-        Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable
-        source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes
-        of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular
-        during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in
-        section 1.10.32.
-      </p>
-    </div>
-    <div class="about-image">
-      <img src="{{ asset('image/si-imut.png') }}" alt="Tentang Kami">
-    </div>
-  </section>
+  // Data HERO (opsional dari DB): section = hero_title (title), hero_image (image)
+  $heroTitleItem = $getFirst('hero_title');
+  $heroImageItem = $getFirst('hero_image');
 
-  <!-- VISI & MISI (dibersihkan dari inline style) -->
-  <section class="visi-misi">
-    <!-- VISI -->
-    <div class="vm-row">
-      <img class="vm-image" src="{{ asset('image/laptop1.png') }}" alt="Visi">
-      <div class="vm-text">
-        <h3>VISI</h3>
-        <p>{!! $visi->description ?? '-' !!}</p>
+  $heroTitle = $heroTitleItem?->title ?? 'ABOUT US';
+
+  // Resolusi hero image aman (pakai placeholder jika kosong)
+  $heroImagePath = $heroImageItem?->image ? 'storage/'.$heroImageItem->image : 'image/banner.jpg';
+  $heroImage = asset($heroImagePath);
+@endphp
+
+<!-- ===== HERO ===== -->
+<section class="about-hero" style="--hero-bg:url('{{ $heroImage }}')">
+  <div class="about-hero__overlay">
+    <h1 class="about-hero__title">{{ $heroTitle }}</h1>
+  </div>
+</section>
+
+<!-- ===== INTRO (opsional) | section: about_intro ===== -->
+@php
+  $intro = $getFirst('about_intro');
+@endphp
+@if($intro)
+<section class="about-intro container">
+  <div class="about-intro__text">
+    <h2 class="section-title">{{ $intro->title ?? 'Tentang E-Learning Kami' }}</h2>
+    @if(!empty($intro->description))
+      <div class="rich-text">{!! $intro->description !!}</div>
+    @endif
+  </div>
+  <div class="about-intro__media">
+    @php
+      $introImg = $intro->image ? asset('storage/'.$intro->image) : asset('image/placeholder-landscape.jpg');
+    @endphp
+    <div class="media">
+      <img loading="lazy" src="{{ $introImg }}" alt="{{ $intro->title ?? 'Tentang Kami' }}">
+    </div>
+  </div>
+</section>
+@endif
+
+<!-- ===== VISI & MISI (opsional) | section: visi, misi ===== -->
+@php
+  $visi = $getFirst('visi');
+  $misi = $getFirst('misi');
+@endphp
+@if($visi || $misi)
+<section class="vm container">
+  @if($visi)
+    <div class="vm__row">
+      <div class="vm__media">
+        <div class="media media--blob">
+          <img loading="lazy" src="{{ asset('image/laptop1.png') }}" alt="Visi">
+        </div>
+      </div>
+      <div class="vm__content">
+        <h3 class="section-subtitle">VISI</h3>
+        @if(!empty($visi->description)) <div class="rich-text">{!! $visi->description !!}</div> @endif
       </div>
     </div>
+  @endif
 
-    <!-- MISI -->
-    <div class="vm-row vm-row--reverse">
-      <img class="vm-image" src="{{ asset('image/laptop2.png') }}" alt="Misi">
-      <div class="vm-text">
-        <h3>MISI</h3>
-        <p>{{ $misi->description ?? '-' }}</p>
+  @if($misi)
+    <div class="vm__row vm__row--reverse">
+      <div class="vm__media">
+        <div class="media media--blob">
+          <img loading="lazy" src="{{ asset('image/laptop2.png') }}" alt="Misi">
+        </div>
+      </div>
+      <div class="vm__content">
+        <h3 class="section-subtitle">MISI</h3>
+        @if(!empty($misi->description)) <div class="rich-text">{!! $misi->description !!}</div> @endif
       </div>
     </div>
-  </section>
+  @endif
+</section>
+@endif
 
-  <!-- Sejarah -->
-  <section class="sejarah-section">
-    <div class="sejarah-content">
-      <h3>📜 Sejarah Singkat</h3>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin tincidunt, justo vel vehicula dignissim,
-        lorem justo volutpat nulla, ac dignissim massa magna sed velit. Vestibulum tincidunt diam ut risus gravida,
-        at facilisis enim luctus. Sed convallis sagittis orci, sed pulvinar sapien. Curabitur feugiat, felis non
-        porttitor vestibulum, ex risus vulputate neque, sit amet posuere est nunc vel justo, jsdlkafjpasjfj,
-        fsfspajfopsdfjdsaf, kfgjs aogjsdgjsj ogaopjopjasopjgpa, gangoisdjgopajg,gsa ghsidjgpdosj,gsdng shgkds,g,,jgsd gjopdsjgopsj.
-      </p>
+<!-- ===== SEJARAH (opsional, bisa banyak item) | section: sejarah ===== -->
+@if($contents->has('sejarah') && $contents->get('sejarah')->isNotEmpty())
+<section class="history">
+  <div class="container">
+    <h3 class="section-title center">Sejarah Singkat</h3>
+    <div class="cards cards--auto">
+      @foreach($contents->get('sejarah') as $row)
+        <article class="card" data-animate>
+          <div class="card__media">
+            @php
+              $img = !empty($row->image) ? asset('storage/'.$row->image) : asset('image/placeholder-landscape.jpg');
+            @endphp
+            <div class="media media--ratio">
+              <img loading="lazy" src="{{ $img }}" alt="{{ $row->title ?? 'Sejarah' }}">
+            </div>
+          </div>
+          <div class="card__content">
+            @if(!empty($row->title))
+              <h4 class="card__title">{{ $row->title }}</h4>
+            @endif
+            @if(!empty($row->description))
+              <div class="card__body rich-text">{!! $row->description !!}</div>
+            @endif
+          </div>
+        </article>
+      @endforeach
+    </div>
+  </div>
+</section>
+@endif
+
+<!-- ===== GENERIC RENDER untuk SEMUA SECTION lain (otomatis) ===== -->
+@php
+  $reserved = collect(['hero_title','hero_image','about_intro','visi','misi','sejarah']);
+@endphp
+
+@foreach($contents as $section => $items)
+  @continue($reserved->contains($section))
+
+  @php
+    // Judul section rapi
+    $sectionTitle = \Illuminate\Support\Str::of($section)->replace('_',' ')->title();
+  @endphp
+
+  <section class="generic">
+    <div class="container">
+      <h3 class="section-title center">{{ $sectionTitle }}</h3>
+
+      @if($items->count() > 1)
+        <!-- Grid bila item banyak -->
+        <div class="cards cards--auto">
+          @foreach($items as $item)
+            @php
+              $img = !empty($item->image) ? asset('storage/'.$item->image) : asset('image/placeholder-landscape.jpg');
+            @endphp
+            <article class="card" data-animate>
+              <div class="card__media">
+                <div class="media media--ratio">
+                  <img loading="lazy" src="{{ $img }}" alt="{{ $item->title ?? $sectionTitle }}">
+                </div>
+              </div>
+              <div class="card__content">
+                @if(!empty($item->title))
+                  <h4 class="card__title">{{ $item->title }}</h4>
+                @endif
+                @if(!empty($item->description))
+                  <div class="card__body rich-text">{!! $item->description !!}</div>
+                @endif
+              </div>
+            </article>
+          @endforeach
+        </div>
+      @else
+        <!-- Satu item: layout lebar -->
+        @php
+          $item = $items->first();
+          $img = !empty($item->image) ? asset('storage/'.$item->image) : asset('image/placeholder-landscape.jpg');
+        @endphp
+        <article class="card card--wide" data-animate>
+          <div class="card__media">
+            <div class="media media--ratio">
+              <img loading="lazy" src="{{ $img }}" alt="{{ $item->title ?? $sectionTitle }}">
+            </div>
+          </div>
+          <div class="card__content">
+            @if(!empty($item->title))
+              <h4 class="card__title">{{ $item->title }}</h4>
+            @endif
+            @if(!empty($item->description))
+              <div class="card__body rich-text">{!! $item->description !!}</div>
+            @endif
+          </div>
+        </article>
+      @endif
     </div>
   </section>
+@endforeach
 
-  <!-- Tim Kami + Pagination -->
-  <section class="timkami-section">
-    <h3>Tim Kami</h3>
-    <p>Kami terdiri dari pengajar berpengalaman dan tim kreatif yang berdedikasi pada pendidikan online berkualitas.</p>
-
-    <div id="timkami-container" class="timkami-grid">
-      <img src="{{ asset('image/galeri1.jpeg') }}" alt="Tim 1">
-      <img src="{{ asset('image/galeri2.jpeg') }}" alt="Tim 2">
-      <img src="{{ asset('image/galeri3.jpeg') }}" alt="Tim 3">
-      <img src="{{ asset('image/galeri1.jpeg') }}" alt="Tim 4">
-      <img src="{{ asset('image/galeri2.jpeg') }}" alt="Tim 5">
-      <img src="{{ asset('image/galeri3.jpeg') }}" alt="Tim 6">
-      <img src="{{ asset('image/galeri1.jpeg') }}" alt="Tim 7">
-      <img src="{{ asset('image/galeri2.jpeg') }}" alt="Tim 8">
-      <img src="{{ asset('image/galeri3.jpeg') }}" alt="Tim 9">
-      <img src="{{ asset('image/galeri1.jpeg') }}" alt="Tim 10">
-      <img src="{{ asset('image/galeri2.jpeg') }}" alt="Tim 11">
-      <img src="{{ asset('image/galeri3.jpeg') }}" alt="Tim 12">
+<!-- ===== EMPTY STATE ===== -->
+@if($contents->isEmpty())
+<section class="empty">
+  <div class="container">
+    <div class="empty__box">
+      <h3>Tidak ada konten About.</h3>
+      <p>Silakan tambahkan konten dari panel Admin → About.</p>
     </div>
-
-    <div id="pagination" class="pagination-nav"></div>
-  </section>
-
-  @push('scripts')
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const itemsPerPage = 9;
-      const gridItems = Array.from(document.querySelectorAll('#timkami-container img'));
-      const totalPages = Math.ceil(gridItems.length / itemsPerPage);
-      const pagination = document.getElementById("pagination");
-
-      function showPage(page) {
-        gridItems.forEach((img, index) => {
-          img.style.display = (index >= (page - 1) * itemsPerPage && index < page * itemsPerPage) ? 'block' : 'none';
-        });
-        [...pagination.querySelectorAll('button')].forEach((btn, idx) => {
-          btn.classList.toggle('active', idx + 1 === page);
-        });
-      }
-
-      function createPagination() {
-        for (let i = 1; i <= totalPages; i++) {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.textContent = i;
-          btn.addEventListener("click", () => showPage(i));
-          pagination.appendChild(btn);
-        }
-      }
-
-      createPagination();
-      showPage(1);
-    });
-  </script>
-  @endpush
+  </div>
+</section>
+@endif
 
 @endsection

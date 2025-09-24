@@ -15,7 +15,9 @@ class DatabaseSeeder extends Seeder
             SuperadminSeeder::class,
             ContactSeeder::class,
             AboutSeeder::class,
-            ShowcaseSeeder::class
+            ShowcaseSeeder::class,
+            ForumCategorySeeder::class,
+
         ]);
 
         $this->command->call('permission:cache-reset');

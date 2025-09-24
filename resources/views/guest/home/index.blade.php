@@ -46,77 +46,183 @@
     </div>
   </main>
 
-  {{-- ============== WHY #1 ============== --}}
-  <section class="why-section soft-1">
-    <div class="container why-split">
-      <div class="why-text">
-        <h2 class="section-title section-title--left">Belajar Terarah, Nggak Bingung Mulai</h2>
-        <p class="section-sub left">
-          Pilih jalur (Web, Mobile, Data/AI) → ikuti modul berurutan → praktik proyek mini. Semua dirancang bertahap.
-        </p>
+{{-- ============== WHY #1 ============== --}}
+<section class="why-section soft-1">
+  <div class="container why-split">
+    <div class="why-text">
+      <span class="why-eyebrow">Learning Path</span>
+      <h2 class="section-title section-title--left">Belajar Terarah, Nggak Bingung Mulai</h2>
+      <p class="section-sub left">
+        Pilih jalur (Web, Mobile, Data/AI) → ikuti modul berurutan → praktik proyek mini. Semua dirancang bertahap.
+      </p>
 
-        <ul class="why-list">
-          <li><span class="bullet">①</span> Roadmap jelas dari dasar sampai mahir.</li>
-          <li><span class="bullet">②</span> Tiap modul singkat & fokus (video + kuis).</li>
-          <li><span class="bullet">③</span> Proyek mini supaya langsung “nempel”.</li>
-        </ul>
+      <ol class="why-steps" role="list">
+        <li class="step">
+          <span class="step__num" aria-hidden="true">01</span>
+          <div class="step__txt">
+            <div class="step__title">Roadmap jelas</div>
+            <div class="step__desc">Materi dari pondasi → intermediate → advanced dengan target skill spesifik.</div>
+          </div>
+        </li>
+        <li class="step">
+          <span class="step__num" aria-hidden="true">02</span>
+          <div class="step__txt">
+            <div class="step__title">Modul singkat & fokus</div>
+            <div class="step__desc">Video padat + kuis cepat supaya ritme belajar tetap konsisten.</div>
+          </div>
+        </li>
+        <li class="step">
+          <span class="step__num" aria-hidden="true">03</span>
+          <div class="step__txt">
+            <div class="step__title">Proyek mini</div>
+            <div class="step__desc">Langsung praktik; hasilnya bisa kamu simpan ke portfolio.</div>
+          </div>
+        </li>
+      </ol>
 
-        <div class="chips mt-12">
-          <a href="{{ route('katalog.index', ['category' => 'web']) }}" class="chip">Web Development</a>
-          <a href="{{ route('katalog.index', ['category' => 'aplikasi']) }}" class="chip">Mobile</a>
-          <a href="{{ route('katalog.index') }}" class="chip">Data & AI</a>
-        </div>
+      <div class="chips mt-12">
+        <a href="{{ route('katalog.index', ['category' => 'web']) }}" class="chip chip--link">
+          <i class="fa-solid fa-code"></i> Web Development
+        </a>
+        <a href="{{ route('katalog.index', ['category' => 'aplikasi']) }}" class="chip chip--link">
+          <i class="fa-solid fa-mobile-screen"></i> Mobile
+        </a>
+        <a href="{{ route('katalog.index') }}" class="chip chip--link">
+          <i class="fa-solid fa-brain"></i> Data &amp; AI
+        </a>
       </div>
 
-      <div class="why-media">
+      <div class="why-metrics">
+        <div class="metric">
+          <div class="metric__num">120+</div>
+          <div class="metric__lbl">Modul terstruktur</div>
+        </div>
+        <div class="metric">
+          <div class="metric__num">30+</div>
+          <div class="metric__lbl">Proyek mini</div>
+        </div>
+        <div class="metric">
+          <div class="metric__num">97%</div>
+          <div class="metric__lbl">Progress terselesaikan</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="why-media">
+      <div class="media-card">
         <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200&auto=format&fit=crop" alt="Learning Path">
-      </div>
-    </div>
-  </section>
-
-  {{-- ============== WHY #2 ============== --}}
-  <section class="why-section soft-2">
-    <div class="container why-split reverse">
-      <div class="why-media">
-        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1200&auto=format&fit=crop" alt="Project Based">
-      </div>
-      <div class="why-text">
-        <h2 class="section-title section-title--left">Relevan dengan Industri & Project-Based</h2>
-        <p class="section-sub left">
-          Materi mengikuti kebutuhan pasar. Output-mu: portfolio yang bisa dipamerkan di CV/LinkedIn.
-        </p>
-
-        <div class="pill-grid">
-          <span class="pill">Best-practice coding</span>
-          <span class="pill">Studi kasus nyata</span>
-          <span class="pill">Checklist skill</span>
-          <span class="pill">Template proyek</span>
+        <div class="media-hint">
+          <i class="fa-solid fa-route"></i> Jalur belajar bertahap
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  {{-- ============== WHY #3 ============== --}}
-  <section class="why-section soft-3">
-    <div class="container why-split">
-      <div class="why-text">
-        <h2 class="section-title section-title--left">Ada yang Bimbing & Komunitas yang Aktif</h2>
-        <p class="section-sub left">
-          Belajar bareng, dapat feedback mentor, dan akses sumber karier seperti resume review & mock interview.
-        </p>
-
-        <ul class="why-list">
-          <li><span class="check">✔</span> Forum/Group diskusi & live Q&A.</li>
-          <li><span class="check">✔</span> Review tugas/portfolio.</li>
-          <li><span class="check">✔</span> Tips karier & job board internal.</li>
-        </ul>
-      </div>
-
-      <div class="why-media">
+{{-- ============== WHY #2 ============== --}}
+<section class="why-section soft-2">
+  <div class="container why-split reverse">
+    <div class="why-media">
+      <div class="media-card tilt">
         <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1200&auto=format&fit=crop" alt="Project Based">
+        <div class="media-hint">
+          <i class="fa-solid fa-briefcase"></i> Proyek ala industri
+        </div>
       </div>
     </div>
-  </section>
+
+    <div class="why-text">
+      <span class="why-eyebrow">Industry Ready</span>
+      <h2 class="section-title section-title--left">Relevan dengan Industri &amp; Project-Based</h2>
+      <p class="section-sub left">
+        Materi mengikuti kebutuhan pasar. Output-mu: portfolio yang bisa dipamerkan di CV/LinkedIn.
+      </p>
+
+      <div class="pill-grid pill-grid--cards">
+        <div class="pill-card">
+          <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+          <div>
+            <div class="pill-title">Best-practice coding</div>
+            <div class="pill-desc">Pattern yang dipakai di perusahaan.</div>
+          </div>
+        </div>
+        <div class="pill-card">
+          <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
+          <div>
+            <div class="pill-title">Studi kasus nyata</div>
+            <div class="pill-desc">Simulasi requirement ala real project.</div>
+          </div>
+        </div>
+        <div class="pill-card">
+          <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+          <div>
+            <div class="pill-title">Checklist skill</div>
+            <div class="pill-desc">Pantau skill gap dan progresmu.</div>
+          </div>
+        </div>
+        <div class="pill-card">
+          <i class="fa-solid fa-file-code" aria-hidden="true"></i>
+          <div>
+            <div class="pill-title">Template proyek</div>
+            <div class="pill-desc">Mulai cepat tanpa setup ribet.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mini-note">
+        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+        Semua proyek bisa di-export jadi repositori publik untuk portfolio.
+      </div>
+    </div>
+  </div>
+</section>
+
+{{-- ============== WHY #3 ============== --}}
+<section class="why-section soft-3">
+  <div class="container why-split">
+    <div class="why-text">
+      <span class="why-eyebrow">Mentoring &amp; Community</span>
+      <h2 class="section-title section-title--left">Ada yang Bimbing &amp; Komunitas yang Aktif</h2>
+      <p class="section-sub left">
+        Belajar bareng, dapat feedback mentor, dan akses sumber karier seperti resume review &amp; mock interview.
+      </p>
+
+      <ul class="why-bullets">
+        <li>
+          <span class="icon-circle"><i class="fa-regular fa-comments"></i></span>
+          Forum/Group diskusi &amp; live Q&amp;A.
+        </li>
+        <li>
+          <span class="icon-circle"><i class="fa-solid fa-clipboard-check"></i></span>
+          Review tugas/portfolio setiap pekan.
+        </li>
+        <li>
+          <span class="icon-circle"><i class="fa-solid fa-user-tie"></i></span>
+          Tips karier, job board internal, dan mock interview.
+        </li>
+      </ul>
+
+      <div class="cta-inline">
+        <a href="{{ route('forum.index') }}" class="btn btn--light">
+          <i class="fa-solid fa-handshake-angle"></i> Gabung Komunitas
+        </a>
+        <a href="{{ route('about.index') }}" class="btn">
+          <i class="fa-solid fa-circle-play"></i> Lihat Cara Kerja
+        </a>
+      </div>
+    </div>
+
+    <div class="why-media">
+      <div class="media-card">
+        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1200&auto=format&fit=crop" alt="Community">
+        <div class="media-hint">
+          <i class="fa-solid fa-users"></i> Komunitas suportif
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
   {{-- ============== INSTRUKTUR (dinamis) ============== --}}
 <section class="instructors-pro">

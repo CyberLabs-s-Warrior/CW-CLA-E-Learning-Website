@@ -33,7 +33,7 @@
           <label class="form-label fw-semibold">Section <span class="text-danger">*</span></label>
           <input list="section-list" name="section" id="section"
                  class="form-control rounded-3 shadow-sm @error('section') is-invalid @enderror"
-                 value="{{ old('section', $content->section) }}" placeholder="Ketik atau pilih section..." required>
+                 value="{{ old('section', $content->section) }}" placeholder="Ketik nama section..." required>
           <datalist id="section-list">
             @foreach ($sections as $section)
               <option value="{{ $section }}">
@@ -44,7 +44,6 @@
               <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
             </small>
           @enderror
-          <div class="form-text text-muted mt-1">Anda bisa memilih dari daftar atau mengetik section baru.</div>
         </div>
 
         <div class="mb-4">
@@ -89,6 +88,13 @@
             </small>
           @enderror
         </div>
+        <div class="mb-4">
+  <label class="form-label fw-semibold">Urutan Tampil <span class="text-muted">(opsional)</span></label>
+  <input type="number" name="display_order" class="form-control rounded-3"
+         value="{{ old('display_order', $content->display_order ?? null) }}" placeholder="Contoh: 1">
+  <div class="form-text">Angka kecil tampil lebih atas. Kosongkan bila tidak perlu.</div>
+</div>
+
 
         <div class="d-flex justify-content-end mt-4">
           <button type="submit" id="submitBtn" class="btn btn-success rounded-pill px-4 me-2 d-flex align-items-center gap-2">
@@ -133,3 +139,4 @@
     });
   </script>
 @endsection
+
