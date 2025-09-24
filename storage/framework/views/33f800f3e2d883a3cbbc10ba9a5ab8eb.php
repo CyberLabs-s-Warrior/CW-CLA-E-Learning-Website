@@ -34,8 +34,8 @@
                 </div>
 
                 <div class="meta-line">
-                    <i class="fa-solid fa-user-group" aria-hidden="true"></i>
-                    <span><?php echo e($students); ?> orang sudah ikut</span>
+                    
+                    
                 </div>
 
                 <?php

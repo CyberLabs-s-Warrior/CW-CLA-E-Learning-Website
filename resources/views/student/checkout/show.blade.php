@@ -55,6 +55,9 @@
                         Bayar Sekarang
                     </button>
                 </form>
+                <a href="{{ route('detail.index', $course->slug) }}" class="btn-back">
+                    ← Kembali ke Detail Kursus
+                </a>
                 <p class="note">Dengan menekan “Bayar Sekarang”, Anda akan diarahkan ke proses pembayaran.</p>
             </div>
 

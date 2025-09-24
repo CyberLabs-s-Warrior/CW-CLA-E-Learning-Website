@@ -36,8 +36,8 @@
                 </div>
 
                 <div class="meta-line">
-                    <i class="fa-solid fa-user-group" aria-hidden="true"></i>
-                    <span>{{ $students }} orang sudah ikut</span>
+                    {{-- <i class="fa-solid fa-user-group" aria-hidden="true"></i> --}}
+                    {{-- <span>{{ $students }} orang sudah ikut</span> --}}
                 </div>
 
                 @php

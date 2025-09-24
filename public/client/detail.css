@@ -103,6 +103,10 @@
   outline: none; border: 0;
 }
 
+.pay-btn {
+  cursor: pointer;
+}
+
 .detail-page .pay-btn {
   background: linear-gradient(180deg, #8cc2ff 0%, #58afff 100%);
   color: #fff;
