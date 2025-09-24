@@ -84,6 +84,9 @@
   cursor: pointer;
 }
 
+.btn-back {
+    padding-top: 1px;
+}
 .btn-pay:hover { transform: translateY(-2px); filter: brightness(0.98); }
 .btn-pay:active { transform: translateY(0); filter: brightness(0.92); }
 

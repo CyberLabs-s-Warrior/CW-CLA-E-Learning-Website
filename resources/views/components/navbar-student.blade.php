@@ -89,12 +89,6 @@
         </a>
       </li>
       @endisset
-
-      <li>
-        <a class="bs-item {{ request()->routeIs('payment.*') ? 'active' : '' }}" href="{{ route('payment.index') }}">
-          <span class="icon"><i class="fa-solid fa-credit-card"></i></span> Payments
-        </a>
-      </li>
       <li>
         <a class="bs-item {{ request()->routeIs('forum.*') ? 'active' : '' }}" href="{{ route('forum.index') }}">
           <span class="icon"><i class="fa-solid fa-comments"></i></span> forum

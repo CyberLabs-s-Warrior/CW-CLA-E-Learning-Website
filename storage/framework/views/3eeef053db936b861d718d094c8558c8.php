@@ -89,12 +89,6 @@
         </a>
       </li>
       <?php endif; ?>
-
-      <li>
-        <a class="bs-item <?php echo e(request()->routeIs('payment.*') ? 'active' : ''); ?>" href="<?php echo e(route('payment.index')); ?>">
-          <span class="icon"><i class="fa-solid fa-credit-card"></i></span> Payments
-        </a>
-      </li>
       <li>
         <a class="bs-item <?php echo e(request()->routeIs('forum.*') ? 'active' : ''); ?>" href="<?php echo e(route('forum.index')); ?>">
           <span class="icon"><i class="fa-solid fa-comments"></i></span> forum
