@@ -1,12 +1,20 @@
 @extends('layouts.student')
 
-@section('content')
-    <div class="container">
-        <h2>Bayar: {{ $transaction->course->name }}</h2>
-        <p>Order ID: {{ $transaction->order_id }}</p>
-        <p>Harga: Rp {{ number_format($transaction->gross_amount, 0, ',', '.') }}</p>
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('client/payment.css') }}">
+@endpush
 
-        <button id="pay-button" class="btn btn-success">Bayar Sekarang</button>
+@section('content')
+        <div class="pay-container">
+        <h2 class="pay-title">Pembayaran Kursus</h2>
+
+        <div class="pay-info">
+            <p><strong>Kursus:</strong> {{ $transaction->course->name }}</p>
+            <p><strong>Order ID:</strong> {{ $transaction->order_id }}</p>
+            <p><strong>Harga:</strong> Rp {{ number_format($transaction->gross_amount, 0, ',', '.') }}</p>
+        </div>
+
+        <button id="pay-button" class="pay-button">Bayar Sekarang</button>
     </div>
 
     {{-- Midtrans Snap JS --}}
@@ -18,7 +26,7 @@
                 snap.pay('{{ $snapToken }}', {
                     onSuccess: function(result) {
                         // setelah bayar sukses, redirect ke lesson
-                        window.location.href = '/lesson/{{ $transaction->course->slug }}';
+                        window.location.href = '/detail/{{ $transaction->course->slug }}';
                     },
                     onPending: function(result) {
                         alert('Pembayaran pending, silakan tunggu konfirmasi.');

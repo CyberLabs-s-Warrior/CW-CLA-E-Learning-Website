@@ -1,10 +1,18 @@
-<?php $__env->startSection('content'); ?>
-    <div class="container">
-        <h2>Bayar: <?php echo e($transaction->course->name); ?></h2>
-        <p>Order ID: <?php echo e($transaction->order_id); ?></p>
-        <p>Harga: Rp <?php echo e(number_format($transaction->gross_amount, 0, ',', '.')); ?></p>
+<?php $__env->startPush('styles'); ?>
+    <link rel="stylesheet" href="<?php echo e(asset('client/payment.css')); ?>">
+<?php $__env->stopPush(); ?>
 
-        <button id="pay-button" class="btn btn-success">Bayar Sekarang</button>
+<?php $__env->startSection('content'); ?>
+        <div class="pay-container">
+        <h2 class="pay-title">Pembayaran Kursus</h2>
+
+        <div class="pay-info">
+            <p><strong>Kursus:</strong> <?php echo e($transaction->course->name); ?></p>
+            <p><strong>Order ID:</strong> <?php echo e($transaction->order_id); ?></p>
+            <p><strong>Harga:</strong> Rp <?php echo e(number_format($transaction->gross_amount, 0, ',', '.')); ?></p>
+        </div>
+
+        <button id="pay-button" class="pay-button">Bayar Sekarang</button>
     </div>
 
     
@@ -16,7 +24,7 @@
                 snap.pay('<?php echo e($snapToken); ?>', {
                     onSuccess: function(result) {
                         // setelah bayar sukses, redirect ke lesson
-                        window.location.href = '/lesson/<?php echo e($transaction->course->slug); ?>';
+                        window.location.href = '/detail/<?php echo e($transaction->course->slug); ?>';
                     },
                     onPending: function(result) {
                         alert('Pembayaran pending, silakan tunggu konfirmasi.');
