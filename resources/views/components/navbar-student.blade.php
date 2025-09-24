@@ -1,4 +1,4 @@
-{{-- Navbar + Bottom Sheet (Soft Blue) --}}
+{{-- components/navbar-student.blade.php --}}
 @push('styles')
   <link rel="stylesheet" href="{{ asset('client/student-navbar.css') }}">
 @endpush
@@ -19,7 +19,7 @@
     </button>
 
     {{-- Center: Brand --}}
-    <a href="{{ route('dashboard.index') }}" class="brand">Learnify</a>
+    <a href="{{ route('dashboard.index') }}" class="brand">e-learning</a>
 
     {{-- Right: Avatar + dropdown --}}
     <div class="nav-right">
@@ -30,20 +30,21 @@
               ?? 'https://ui-avatars.com/api/?rounded=true&name='.urlencode(auth()->user()->name ?? 'User');
           @endphp
           <img src="{{ $avatarUrl }}" alt="Profile" class="avatar-img">
-
         </button>
 
         <div id="profileMenu" class="profile-menu" role="menu" aria-labelledby="profileBtn">
-         <li>
+          <li>
             <a class="bs-item {{ request()->routeIs('student.profile.*') ? 'active' : '' }}"
-              href="{{ route('student.profile.show') }}">
+               href="{{ route('student.profile.show') }}">
               <span class="icon"><i class="fa-solid fa-user"></i></span> Profile
             </a>
           </li>
 
-          <form action="{{ route('logout') }}" method="POST">
+          <form id="logoutForm" action="{{ route('logout') }}" method="POST" role="none">
             @csrf
-            <button class="link-like" type="submit" role="menuitem">Logout</button>
+            <button class="link-like" type="submit" role="menuitem">
+              <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
           </form>
         </div>
       </div>
@@ -88,17 +89,33 @@
         </a>
       </li>
       @endisset
-
       <li>
-        <a class="bs-item {{ request()->routeIs('payment.*') ? 'active' : '' }}" href="{{ route('payment.index') }}">
-          <span class="icon"><i class="fa-solid fa-credit-card"></i></span> Payments
+        <a class="bs-item {{ request()->routeIs('forum.*') ? 'active' : '' }}" href="{{ route('forum.index') }}">
+          <span class="icon"><i class="fa-solid fa-comments"></i></span> forum
         </a>
       </li>
-
 
     </ul>
   </nav>
 </aside>
+
+{{-- === NEW: Modal Konfirmasi Logout (ringan, tidak ganggu UI lain) === --}}
+<div id="confirmLogoutOverlay" class="confirm-overlay" hidden></div>
+<div id="confirmLogout" class="confirm-modal" role="dialog" aria-modal="true"
+     aria-labelledby="confirmLogoutTitle" aria-describedby="confirmLogoutDesc" hidden>
+  <div class="confirm-card" role="document">
+    <div class="confirm-title" id="confirmLogoutTitle">
+      <i class="fa-solid fa-right-from-bracket"></i> Keluar?
+    </div>
+    <p class="confirm-desc" id="confirmLogoutDesc">
+      Kamu akan keluar dari akun. Lanjutkan?
+    </p>
+    <div class="confirm-actions">
+      <button type="button" class="btn btn-ghost" id="cancelLogoutBtn">Batal</button>
+      <button type="button" class="btn btn-danger" id="confirmLogoutBtn">Logout</button>
+    </div>
+  </div>
+</div>
 
 <script>
   (function(){
@@ -152,6 +169,7 @@
     window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') {
       if (bottomSheet.classList.contains('open')) closeSheet();
       if (profileMenu.classList.contains('open')) closeProfileMenu();
+      if (confirmModal.classList.contains('open')) closeConfirm();
     }});
 
     function openProfileMenu(){
@@ -177,6 +195,62 @@
     bottomSheet?.addEventListener('click', (e)=>{
       const target = e.target.closest('a,button');
       if (target) closeSheet();
+    });
+
+    // ====== NEW: Konfirmasi Logout ======
+    const logoutForm   = document.getElementById('logoutForm');
+    const logoutBtn    = logoutForm?.querySelector('button[type="submit"]');
+
+    const confirmOverlay = document.getElementById('confirmLogoutOverlay');
+    const confirmModal   = document.getElementById('confirmLogout');
+    const btnCancel      = document.getElementById('cancelLogoutBtn');
+    const btnConfirm     = document.getElementById('confirmLogoutBtn');
+
+    let prevFocus = null;
+    function openConfirm(){
+      // tutup dropdown profile biar gak dobel layer
+      closeProfileMenu();
+      prevFocus = document.activeElement;
+      confirmOverlay.hidden = false;
+      confirmModal.hidden = false;
+      // next frame biar transition jalan
+      requestAnimationFrame(()=>{
+        confirmOverlay.classList.add('open');
+        confirmModal.classList.add('open');
+        btnConfirm.focus();
+      });
+    }
+    function closeConfirm(){
+      confirmOverlay.classList.remove('open');
+      confirmModal.classList.remove('open');
+      setTimeout(()=>{
+        confirmOverlay.hidden = true;
+        confirmModal.hidden = true;
+        prevFocus?.focus();
+      }, 200);
+    }
+
+    // Trap tab dalam modal
+    function trapKey(e){
+      if(e.key !== 'Tab') return;
+      const list = Array.from(confirmModal.querySelectorAll(focusablesSel));
+      if(!list.length) return;
+      const first = list[0], last = list[list.length-1];
+      if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+      if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+    }
+
+    confirmModal?.addEventListener('keydown', trapKey);
+    confirmOverlay?.addEventListener('click', closeConfirm);
+    btnCancel?.addEventListener('click', closeConfirm);
+    btnConfirm?.addEventListener('click', ()=> {
+      // submit beneran
+      logoutForm?.submit();
+    });
+
+    logoutForm?.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      openConfirm();
     });
   })();
 </script>

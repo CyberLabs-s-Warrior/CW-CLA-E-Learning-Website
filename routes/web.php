@@ -41,6 +41,25 @@ use App\Http\Controllers\Admin\{
 
 /*
 |--------------------------------------------------------------------------
+| FORUM CONTROLLERS (ADMIN)
+|--------------------------------------------------------------------------
+*/
+use App\Http\Controllers\Admin\Forum\CategoryController as AdminForumCategoryController;
+
+/*
+|--------------------------------------------------------------------------
+| FORUM CONTROLLERS (PUBLIK & MODERATOR)  // [FORUM] (baru)
+|--------------------------------------------------------------------------
+*/
+use App\Http\Controllers\Forum\{
+    ForumController,
+    ThreadController,
+    PostController
+};
+use App\Http\Controllers\Forum\Moderator\ThreadModerationController;
+
+/*
+|--------------------------------------------------------------------------
 | GUEST CONTROLLERS (publik)
 |--------------------------------------------------------------------------
 */
@@ -97,6 +116,55 @@ Route::get('/go/course/{slug}', function ($slug) {
 Route::get('/go/lessons/{slug}', function ($slug) {
     return redirect()->route('lesson.index', ['slug' => $slug]);
 })->name('course.lessons');
+
+/*
+|--------------------------------------------------------------------------
+| ==========================
+| [FORUM] RUTE PUBLIK (baru)
+| ==========================
+| Sesuai blueprint: beranda forum, per-kategori, detail thread,
+| buat topik & balas (hanya user login), tandai jawaban terbaik (opsional).
+*/
+Route::prefix('forum')->name('forum.')->group(function () {
+    // Beranda forum (kategori + topik terbaru)
+    Route::get('/', [ForumController::class, 'index'])->name('index');
+
+    // List thread per kategori
+    Route::get('c/{slug}', [ForumController::class, 'category'])->name('category');
+
+    // Detail thread
+    Route::get('t/{id}-{slug?}', [ThreadController::class, 'show'])->name('thread.show');
+
+    // Hanya untuk user login
+    Route::middleware('auth')->group(function () {
+        Route::get('create', [ThreadController::class, 'create'])->name('thread.create');
+        Route::post('store', [ThreadController::class, 'store'])->name('thread.store');
+
+        // Balas thread
+        Route::post('t/{id}/reply', [PostController::class, 'store'])->name('post.store');
+
+        // (Opsional) Tandai jawaban terbaik
+        Route::post('t/{id}/resolve/{postId}', [ThreadController::class, 'resolve'])
+            ->name('thread.resolve');
+    });
+});
+
+/*
+|--------------------------------------------------------------------------
+| ==========================
+| [FORUM] RUTE MODERATOR (baru)
+| ==========================
+| Aksi cepat: Pin/Unpin, Lock/Unlock.
+| Guard role: superadmin|admin|instructor.
+*/
+Route::middleware(['auth','role:superadmin|admin|instructor'])
+    ->prefix('forum/mod')->name('forum.mod.')
+    ->group(function () {
+        Route::post('t/{id}/pin',    [ThreadModerationController::class, 'pin'])->name('pin');
+        Route::post('t/{id}/unpin',  [ThreadModerationController::class, 'unpin'])->name('unpin');
+        Route::post('t/{id}/lock',   [ThreadModerationController::class, 'lock'])->name('lock');
+        Route::post('t/{id}/unlock', [ThreadModerationController::class, 'unlock'])->name('unlock');
+    });
 
 /*
 |--------------------------------------------------------------------------
@@ -262,8 +330,8 @@ Route::middleware(['auth', 'role:admin|superadmin|instructor'])
             ->name('detail.course.info');
 
         // Lessons (ADMIN)
-        Route::resource('/lessons', LessonController::class);
-        Route::get('course/{courseId}/modules', [LessonController::class, 'getModules'])->name('course.modules');
+        Route::resource('/lessons', LessonController::class)->middleware('can:kelola_course');
+        Route::get('course/{courseId}/modules', [LessonController::class, 'getModules'])->middleware('can:kelola_course')->name('course.modules');
 
         // Route::resource('/comments', CommentController::class)->except('show');
         Route::resource('/showcase', ShowcaseController::class)->middleware('can:kelola_showcase');
@@ -272,7 +340,84 @@ Route::middleware(['auth', 'role:admin|superadmin|instructor'])
         Route::resource('/instruktur', InstructorProfileController::class)
         ->except('show')
         ->middleware('can:kelola_instructor');
+
+       
+       
+       // routes/web.php
+Route::prefix('forum')
+    ->name('forum.')
+    ->middleware('can:kelola_forum')
+    ->group(function () {
+
+        // ===== Kategori (resource) =====
+        Route::resource('/categories', \App\Http\Controllers\Admin\Forum\CategoryController::class);
+
+        // ===== Threads (Admin) =====
+        // -- Modal "Tong Sampah" + Bulk (AJAX) lebih dulu supaya tidak ketabrak {id}
+        Route::get('/threads/trashed/list',       [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'trashedList'])->name('threads.trashedList');
+        Route::post('/threads/bulk/restore',      [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'bulkRestore'])->name('threads.bulkRestore');
+        Route::post('/threads/bulk/force-delete', [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'bulkForceDelete'])->name('threads.bulkForceDelete');
+
+        // -- Non-bulk (pakai constraint angka)
+        Route::get('/threads',                [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'index'])->name('threads.index');
+        Route::delete('/threads/{id}',        [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'destroy'])
+            ->whereNumber('id')->name('threads.destroy');            // soft delete
+        Route::post('/threads/{id}/restore',  [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'restore'])
+            ->whereNumber('id')->name('threads.restore');            // restore
+        Route::post('/threads/{id}/force-delete', [\App\Http\Controllers\Admin\Forum\ThreadController::class, 'forceDelete'])
+            ->whereNumber('id')->name('threads.forceDelete');        // hard delete
+
+        // ===== Posts (Admin) =====
+        // -- Bulk dulu (hindari tabrakan {id})
+        Route::get('/posts/trashed/list',         [\App\Http\Controllers\Admin\Forum\PostController::class, 'trashedList'])->name('posts.trashedList');
+        Route::post('/posts/bulk/restore',        [\App\Http\Controllers\Admin\Forum\PostController::class, 'bulkRestore'])->name('posts.bulkRestore');
+        Route::post('/posts/bulk/force-delete',   [\App\Http\Controllers\Admin\Forum\PostController::class, 'bulkForceDelete'])->name('posts.bulkForceDelete');
+
+        // -- Non-bulk (pakai constraint angka)
+        Route::get('/posts',                  [\App\Http\Controllers\Admin\Forum\PostController::class, 'index'])->name('posts.index');
+        Route::delete('/posts/{id}',          [\App\Http\Controllers\Admin\Forum\PostController::class, 'destroy'])
+            ->whereNumber('id')->name('posts.destroy');              // soft delete
+        Route::post('/posts/{id}/restore',    [\App\Http\Controllers\Admin\Forum\PostController::class, 'restore'])
+            ->whereNumber('id')->name('posts.restore');              // restore
+        Route::post('/posts/{id}/force-delete', [\App\Http\Controllers\Admin\Forum\PostController::class, 'forceDelete'])
+            ->whereNumber('id')->name('posts.forceDelete');          // hard delete
+    });
+
      });
+
+// Route Payment Gateaway (Midtrans) - untuk AJAX dari client
+Route::post('/checkout', [App\Http\Controllers\PaymentController::class, 'checkout'])->name('checkout');
+Route::get('/test-midtrans', function () {
+    return [
+        'server' => config('midtrans.serverKey'),
+        'client' => config('midtrans.clientKey'),
+        'prod' => config('midtrans.isProduction'),
+    ];
+});
+
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\PaymentController;
+
+Route::middleware('auth')->group(function () {
+
+    // Tombol Beli → bikin transaksi pending
+    Route::post('/checkout/{course}', [CheckoutController::class, 'start'])->name('checkout.start');
+    Route::get('/checkout/{course}', [CheckoutController::class, 'showForm'])->name('student.checkout.form');
+
+
+    // Tampilkan halaman checkout
+    Route::get('/checkout/{transaction}/show', [CheckoutController::class, 'show'])
+        ->name('student.checkout.show');
+
+    // Proses pembayaran Midtrans
+    Route::post('/payment/{transaction}', [PaymentController::class, 'process'])
+        ->name('payment.process');
+});
+
+// routes/web.php
+// Route::post('/midtrans/notification', [App\Http\Controllers\MidtransController::class, 'notification']);
+
+
 
 /*
 |--------------------------------------------------------------------------

@@ -1,0 +1,104 @@
+/* ===== Card & Layout ===== */
+.checkout-wrap {
+  max-width: 720px;
+  margin: 32px auto;
+  padding: 0 16px;
+  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  padding-top: 10px;
+}
+
+.checkout-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.08);
+  padding: 24px;
+  border: 1px solid #e5e7eb;
+}
+
+.checkout-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.checkout-title {
+  margin: 0;
+  font-size: clamp(20px, 2.2vw, 24px);
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.checkout-meta {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 20px;
+  color: #334155;
+  font-size: 0.95rem;
+}
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.meta-row .label {
+  color: #64748b;
+}
+
+.price {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #0f172a;
+}
+
+/* ===== Status badge (bootstrap-friendly) ===== */
+.badge.rounded {
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-weight: 600;
+  letter-spacing: .2px;
+}
+
+/* ===== Action area ===== */
+.checkout-actions {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.btn-pay {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  color: #fff;
+  font-weight: 700;
+  transition: transform .15s ease, filter .15s ease;
+  cursor: pointer;
+}
+
+.btn-back {
+    padding-top: 1px;
+}
+.btn-pay:hover { transform: translateY(-2px); filter: brightness(0.98); }
+.btn-pay:active { transform: translateY(0); filter: brightness(0.92); }
+
+/* ===== Help / Note ===== */
+.note {
+  font-size: .9rem;
+  color: #64748b;
+  text-align: center;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+  .checkout-card { padding: 18px; }
+  .meta-row { flex-direction: column; align-items: flex-start; }
+}

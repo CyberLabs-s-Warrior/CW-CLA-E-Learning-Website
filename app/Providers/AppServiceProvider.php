@@ -11,12 +11,17 @@ use App\Models\Contact;
 
 class AppServiceProvider extends ServiceProvider
 {
-    public function register(): void {}
+    public function register(): void
+    {
+        //
+    }
 
     public function boot(): void
     {
+        // Bootstrap 5 untuk pagination bawaan Laravel
         Paginator::useBootstrapFive();
 
+        // Alias middleware (jika dipakai)
         app('router')->aliasMiddleware('is_superadmin', IsSuperadmin::class);
 
         // Share data Contact khusus ke footer + cache 30 menit
@@ -42,10 +47,19 @@ class AppServiceProvider extends ServiceProvider
                         )
                         ->latest('updated_at')
                         ->first();
+        // Supply data kontak ke komponen footer (cached)
+        View::composer('components.footer', function ($view) {
+            $contact = Cache::remember(
+                // gunakan key baru supaya tidak bentrok dengan cache lama
+                'footer_contact_v2',
+                now()->addMinutes(30),
+                function () {
+                    // Ambil satu record terbaru (tanpa select kolom) agar semua field termasuk sosial tersedia
+                    return Contact::latest('updated_at')->first();
                 }
             );
 
             $view->with('contact', $contact);
         });
     }
-}
+        }}}

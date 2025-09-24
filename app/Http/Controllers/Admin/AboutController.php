@@ -38,16 +38,16 @@ public function index(Request $request)
 
     public function store(Request $request)
     {
-        $request->validate([
-            'section' => 'required|string|max:255',
-            'title' => 'nullable|string|max:255',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+       $request->validate([
+        'section' => 'required|string|max:255',
+        'title' => 'nullable|string|max:255',
+        'description' => 'nullable|string',
+        'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        'display_order' => 'nullable|integer',
         ]);
 
-        $data = array_filter($request->only(['section', 'title', 'description']), function ($value) {
-            return $value !== null && $value !== '';
-        });
+        $data = array_filter($request->only(['section','title','description','display_order']), fn($v) => $v !== null && $v !== '');
+
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('about_images', 'public');
@@ -70,14 +70,16 @@ public function index(Request $request)
     public function update(Request $request, $id)
     {
         $request->validate([
-            'section' => 'required|string|max:255',
-            'title' => 'nullable|string|max:255',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        'section' => 'required|string|max:255',
+        'title' => 'nullable|string|max:255',
+        'description' => 'nullable|string',
+        'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        'display_order' => 'nullable|integer',
         ]);
 
         $content = About::findOrFail($id);
-        $data = $request->only(['section', 'title', 'description']);
+        $data = array_filter($request->only(['section','title','description','display_order']), fn($v) => $v !== null && $v !== '');
+
 
         if ($request->hasFile('image')) {
             if ($content->image && Storage::disk('public')->exists($content->image)) {

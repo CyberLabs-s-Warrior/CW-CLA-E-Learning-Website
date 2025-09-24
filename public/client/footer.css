@@ -112,7 +112,70 @@
   color:#cbd5e1; text-decoration:none; transition:transform .12s ease, color .12s ease;
 }
 .backTop:hover{ transform:translateY(-2px); color:#fff; }
- 
+ /* ===== Footer Menu Compact (scoped) ===== */
+.footer-links .mnav{display:block}
+.footer-links .mnav-head{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  margin:6px 0 10px;
+}
+.footer-links .mnav-title{margin:0; font-weight:800}
+
+/* Toggle (muncul di mobile) */
+.footer-links .mnav-toggle{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:6px 10px; border-radius:10px;
+  border:1px solid var(--footer-border);
+  background:var(--footer-surface); color:#cbd5e1;
+  font-weight:700; cursor:pointer;
+  transition:background .15s ease, transform .08s ease;
+}
+.footer-links .mnav-toggle:active{transform:translateY(1px)}
+.footer-links .mnav-toggle i{transition:transform .15s ease}
+
+/* List pills grid */
+.footer-links .mnav-list{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap:8px;
+  margin:0; padding:0; list-style:none;
+}
+.footer-links .mnav-item{min-width:0}
+
+.footer-links .mnav-link{
+  display:inline-flex; align-items:center; gap:8px;
+  height:36px; padding:0 12px;
+  border:1px solid var(--footer-border);
+  background: var(--footer-surface);
+  border-radius:999px;
+  color:#cbd5e1; text-decoration:none; font-weight:800;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  transition:background .15s ease, color .15s ease, transform .12s ease, border-color .15s ease;
+}
+.footer-links .mnav-link i{font-size:0.95rem; opacity:.9}
+.footer-links .mnav-link:hover{
+  background:#0f1a31; color:#fff; transform:translateY(-1px);
+  border-color:#2a3b5f;
+}
+
+/* Mobile: collapse default, expand saat toggle aktif */
+@media (max-width: 720px){
+  .footer-links .mnav-toggle{display:inline-flex}
+  .footer-links .mnav[aria-expanded="false"] .mnav-list{
+    max-height:0; opacity:.0; pointer-events:none; overflow:hidden;
+    transition:max-height .18s ease, opacity .12s ease;
+  }
+  .footer-links .mnav[aria-expanded="true"] .mnav-list{
+    max-height:480px; opacity:1; transition:max-height .22s ease, opacity .12s ease;
+  }
+  .footer-links .mnav[aria-expanded="true"] .mnav-toggle i{ transform:rotate(180deg); }
+}
+
+/* Desktop: selalu terbuka, tombol disembunyikan */
+@media (min-width: 721px){
+  .footer-links .mnav{aria-expanded:true}
+  .footer-links .mnav-toggle{display:none}
+}
+
 /* Responsive */
 @media (max-width: 992px){
   .footer-container{ grid-template-columns: 1fr 1fr; }

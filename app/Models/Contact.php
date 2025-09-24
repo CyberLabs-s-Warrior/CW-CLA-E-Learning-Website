@@ -16,13 +16,6 @@ class Contact extends Model
         'url_alamat',
         'latitude',
         'longitude',
-
-        // legacy (biar mass-assign gak error kalau masih dipakai di form lama)
-        'phone_number',
-        'location_label',
-        'location_url',
-
-        // social links
         'social_facebook',
         'social_instagram',
         'social_tiktok',

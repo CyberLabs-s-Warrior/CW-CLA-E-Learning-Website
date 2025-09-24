@@ -28,6 +28,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'phone',
         'email_verified_at',  
+        'foto'
 
     ];
 
@@ -86,6 +87,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function instructorProfile()
     {
         return $this->hasOne(\App\Models\InstructorProfile::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
     }
 
 }

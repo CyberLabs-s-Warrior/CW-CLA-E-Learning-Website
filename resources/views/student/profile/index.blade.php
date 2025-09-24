@@ -25,7 +25,7 @@
         <span aria-hidden="true">•</span>
         <span>{{ $user->email }}</span>
         <span aria-hidden="true">•</span>
-        <span>Member sejak {{ $user->created_at?->format('d M Y') }}</span>
+        <span>Bergabung sejak {{ $user->created_at?->format('d M Y') }}</span>
       </div>
       <a href="{{ route('dashboard.index') }}" class="btn-light">
         <i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard
@@ -149,7 +149,7 @@
       <div class="form-col">
         <label>Email</label>
         <input type="email" class="input" value="{{ $user->email }}" disabled>
-        <small class="helper">Email tidak dapat diubah. Hubungi admin jika perlu pembaruan.</small>
+        <small class="helper">Email tidak dapat diubah.</small>
      </div>
 
 
@@ -288,3 +288,5 @@
 })();
 </script>
 @endsection
+
+{{-- Learnify — Student Profile --}}

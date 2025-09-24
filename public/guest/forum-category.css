@@ -1,0 +1,189 @@
+/* ===========================
+   Forum: Category (Guest) – UI Baru
+   Palette:
+   --text: #0f172a; --muted: #64748b; --primary: #0d6efd;
+   --bg: #ffffff; --page: #f7f8fb; --border: #e2e8f0; --border-strong: #cbd5e1;
+   Shadows soft/elev; radius xl
+=========================== */
+
+:root{
+  --text:#0f172a;
+  --muted:#64748b;
+  --primary:#0d6efd;
+  --bg:#ffffff;
+  --page:#f7f8fb;
+  --border:#e2e8f0;
+  --border-strong:#cbd5e1;
+  --shadow-soft:0 6px 18px rgba(2,8,23,.06);
+  --shadow-elev:0 12px 32px rgba(2,8,23,.08);
+  --radius-xl:16px;
+  --radius-lg:12px;
+  --radius-md:10px;
+}
+
+*{margin: 0; padding: 0;box-sizing:border-box}
+body{
+  font-family:"Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  background:var(--page);
+  color:var(--text);
+}
+
+/* ===== HERO ===== */
+.fc-hero{
+  position:relative; overflow:hidden;
+  padding:40px 0 46px;
+  background:
+    radial-gradient(1200px 300px at 30% -20%, rgba(13,110,253,.18), transparent 60%),
+    radial-gradient(800px 240px at 90% 20%, rgba(99,102,241,.18), transparent 60%),
+    linear-gradient(180deg, #ffffff 0%, #f5f7ff 100%);
+  border-bottom:1px solid var(--border);
+}
+.fc-hero__bg{position:absolute; inset:0; pointer-events:none;}
+.fc-hero__container{
+  max-width:72rem; margin:0 auto; padding:0 1.25rem;
+  display:grid; grid-template-columns:1fr auto; gap:16px; align-items:center;
+}
+.fc-hero__left{min-width:0}
+.fc-crumb{
+  display:inline-flex; align-items:center; gap:8px;
+  text-decoration:none; color:var(--muted); font-weight:700;
+  padding:6px 10px; border-radius:999px; border:1px solid var(--border);
+  background:#fff; transition:background .2s ease, border-color .2s ease, color .2s ease;
+}
+.fc-crumb:hover{background:rgba(15,23,42,.03); border-color:var(--border-strong)}
+.fc-crumb i{font-size:.9rem}
+
+.fc-hero__title-wrap{display:flex; align-items:center; gap:12px; margin-top:10px}
+.fc-hero__avatar{
+  width:44px; height:44px; border-radius:50%;
+  display:grid; place-items:center; font-weight:900;
+  background:linear-gradient(135deg, rgba(13,110,253,.16), rgba(99,102,241,.16));
+  color:#0d6efd; border:1px solid rgba(13,110,253,.25);
+}
+.fc-hero__title{
+  margin:0; font-size:clamp(1.9rem, 2.6vw, 2.3rem);
+  font-weight:900; letter-spacing:-.02em;
+}
+.fc-hero__desc{margin:.4rem 0 0; color:var(--muted); line-height:1.65}
+
+.fc-hero__right{display:flex; gap:10px; align-items:center}
+
+/* ===== CTA BUTTONS ===== */
+.btn-cta{
+  display:inline-flex; align-items:center; gap:10px;
+  height:44px; padding:0 18px; border-radius:999px;
+  border:1px solid transparent; text-decoration:none; font-weight:800;
+  box-shadow:var(--shadow-soft);
+  transition:transform .08s ease, background .2s ease, border-color .2s ease, color .2s ease;
+}
+.btn-cta:active{transform:translateY(1px)}
+.btn-cta i{font-size:.95rem}
+.btn-cta--primary{background:var(--primary); color:#fff; border-color:var(--primary)}
+.btn-cta--primary:hover{background:#0b5ed7; border-color:#0b5ed7}
+.btn-cta--ghost{background:#fff; color:var(--primary); border-color:var(--primary)}
+.btn-cta--ghost:hover{background:rgba(13,110,253,.06)}
+.btn-cta--mini{height:40px; padding:0 16px; font-size:.95rem}
+
+/* ===== WRAP & CONTAINER ===== */
+.fc-wrap{padding:24px 0 40px}
+.fc-container{max-width:72rem; margin:0 auto; padding:0 1.25rem}
+
+/* ===== THREAD LIST ===== */
+.fc-threads{display:grid; gap:10px}
+
+.fc-thread{
+  display:block; text-decoration:none; color:var(--text);
+  background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-xl);
+  padding:14px 16px; box-shadow:var(--shadow-soft);
+  transition:border-color .2s ease, box-shadow .2s ease, transform .12s ease, background .2s ease;
+}
+.fc-thread:hover{border-color:var(--border-strong); box-shadow:var(--shadow-elev); transform:translateY(-1px); background:#fff}
+
+.fc-thread__row{display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center}
+.fc-thread__left{display:flex; align-items:center}
+
+/* NEW: Thumbnail untuk thread yang punya gambar */
+.thread-thumb{
+  width:48px; height:48px; border-radius:12px;
+  object-fit:cover; object-position:center;
+  border:1px solid var(--border-strong);
+  background:#f8fafc;
+  box-shadow:var(--shadow-soft);
+}
+
+/* Avatar huruf (fallback) – samakan ukuran agar layout konsisten */
+.avatar{
+  width:48px; height:48px; border-radius:12px;
+  display:grid; place-items:center; font-weight:900;
+  background:linear-gradient(135deg, rgba(13,110,253,.16), rgba(99,102,241,.16));
+  color:#0d6efd; border:1px solid rgba(13,110,253,.25);
+}
+
+.fc-thread__main{min-width:0}
+.fc-thread__line{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.badges{display:flex; align-items:center; gap:6px; flex-wrap:wrap}
+.fc-thread__title{font-weight:900; letter-spacing:.2px; line-height:1.35}
+
+.fc-thread__meta{
+  display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+  margin-top:4px; color:var(--muted); font-size:.87rem;
+}
+.meta-item{display:inline-flex; align-items:center; gap:6px}
+.meta-dot{opacity:.6}
+
+.fc-thread__right{display:flex; align-items:center}
+.chev{color:#b8c0cc; transition:transform .12s ease}
+.fc-thread:hover .chev{transform:translateX(2px)}
+
+/* Chips */
+.chip{
+  display:inline-flex; align-items:center; gap:6px;
+  height:22px; padding:0 8px; border-radius:999px; font-size:11px; font-weight:800;
+  border:1px solid transparent;
+}
+.chip--pinned{background:rgba(245,158,11,.1); color:#a16207; border-color:rgba(245,158,11,.35)}
+.chip--locked{background:rgba(100,116,139,.12); color:#475569; border-color:rgba(100,116,139,.35)}
+
+/* ===== EMPTY STATE ===== */
+.fc-empty{
+  text-align:center; background:#fff; border:1px dashed var(--border-strong);
+  border-radius:var(--radius-xl); padding:28px 16px; box-shadow:var(--shadow-soft);
+  margin-top:10px;
+}
+.empty-illus{font-size:2.1rem; margin-bottom:4px}
+.empty-text{color:var(--muted)}
+
+/* ===== PAGINATION ===== */
+.fc-pagination{margin-top:14px}
+.fc-pagination .pagination{display:flex; gap:8px; flex-wrap:wrap}
+.fc-pagination .page-link{
+  background:#fff; border:1px solid var(--border); color:var(--text);
+  padding:.5rem .9rem; border-radius:10px;
+  transition:background .2s ease, border-color .2s ease;
+}
+.fc-pagination .page-link:hover{background:rgba(15,23,42,.03)}
+.fc-pagination .page-item.active .page-link{
+  background:var(--primary); border-color:var(--primary); color:#fff;
+}
+
+/* ===== REVEAL ANIM (halus) ===== */
+.reveal-up{opacity:0; transform:translateY(8px); animation:reveal .5s both}
+.reveal-up:nth-child(1){animation-delay:.02s}
+.reveal-up:nth-child(2){animation-delay:.06s}
+.reveal-up:nth-child(3){animation-delay:.1s}
+@keyframes reveal{to{opacity:1; transform:translateY(0)}}
+
+/* ===== A11Y ===== */
+:focus-visible{outline:3px solid rgba(13,110,253,.35); outline-offset:2px; border-radius:10px}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none!important; transition:none!important}
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px){
+  .fc-hero__container{grid-template-columns:1fr; gap:12px}
+  .fc-hero{padding:32px 0 40px}
+}
+@media (max-width: 640px){
+  .fc-thread__row{grid-template-columns:auto 1fr auto; gap:8px}
+}

@@ -1,0 +1,255 @@
+<?php $__env->startSection('title', 'Tambah Kursus Detail'); ?>
+
+<?php $__env->startSection('content'); ?>
+  <div class="container-fluid py-4">
+    <div class="d-flex align-items-center mb-4">
+      <div class="me-2">
+        <div
+          class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center shadow-sm"
+          style="width: 44px; height: 44px;">
+          <i class="fas fa-plus-circle"></i>
+        </div>
+      </div>
+      <h1 class="h4 fw-semibold mb-0">Tambah Kursus Detail</h1>
+    </div>
+
+    
+    <?php if($errors->any()): ?>
+      <div class="alert alert-danger shadow-sm">
+        <ul class="mb-0">
+          <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $err): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <li><?php echo e($err); ?></li>
+          <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        </ul>
+      </div>
+    <?php endif; ?>
+
+    <div class="card border-0 shadow-sm rounded-4">
+      <div class="card-body">
+        <form action="<?php echo e(route('admin.detail.store')); ?>" method="POST" id="course-form">
+          <?php echo csrf_field(); ?>
+
+          
+          <div class="mb-4">
+            <label for="course_id" class="form-label fw-semibold">Pilih Kursus</label>
+            <select name="course_id" id="course_id" class="form-select shadow-sm" required>
+              <option value="">-- Pilih Kursus --</option>
+              <?php $__currentLoopData = $courseList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id => $name): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <option value="<?php echo e($id); ?>" <?php echo e(old('course_id') == $id ? 'selected' : ''); ?>>
+                  <?php echo e($name); ?>
+
+                </option>
+              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </select>
+          </div>
+
+          
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Instruktur</label>
+            <div id="instructor-wrapper">
+              <div class="input-group mb-2 instructor-item">
+                <select name="instructors[]" class="form-select shadow-sm instructor-select" required>
+                  <option value="">-- Pilih Instruktur --</option>
+                  <?php $__currentLoopData = $instructors; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ins): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <option value="<?php echo e($ins->id); ?>"
+                      data-avatar="<?php echo e($ins->avatar_path ? asset('storage/' . $ins->avatar_path) : '/default-avatar.png'); ?>"
+                      data-skill="<?php echo e($ins->primary_skill); ?>">
+                      <?php echo e($ins->user->name); ?>
+
+                    </option>
+                  <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </select>
+                <button type="button" class="btn btn-outline-danger btn-remove-instructor d-none">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+            <button type="button" class="btn btn-outline-success btn-sm mt-2" id="btn-add-instructor">
+              <i class="fas fa-plus"></i> Tambah Instruktur
+            </button>
+            <small class="text-muted d-block mt-1">Anda bisa menambahkan lebih dari satu instruktur.</small>
+          </div>
+
+          
+          <div id="course-preview" class="mb-4 d-none">
+            <div class="border rounded-3 p-3 bg-light">
+              <h5 class="fw-bold mb-3">Preview Data Kursus</h5>
+              <div class="d-flex align-items-center gap-3">
+                <img id="preview-image" src="" alt="cover" class="rounded shadow-sm" style="max-height:100px;">
+                <div>
+                  <h6 id="preview-title" class="fw-bold mb-1"></h6>
+                  <div class="text-muted small">
+                    <span id="preview-levels"></span> |
+                    <span id="preview-duration"></span>
+                  </div>
+                </div>
+              </div>
+
+              <hr>
+              <p class="fw-semibold mb-1">Modul:</p>
+              <ul id="preview-lessons" class="mb-3"></ul>
+
+              <p class="fw-semibold mb-1">Mentor:</p>
+              <ul id="preview-instructors" class="mb-3"></ul>
+            </div>
+          </div>
+
+          
+          <div class="mb-3">
+            <label for="description" class="form-label fw-semibold">Deskripsi</label>
+            <textarea name="description" id="description" class="form-control shadow-sm editor"
+              rows="4"><?php echo e(old('description')); ?></textarea>
+          </div>
+
+          
+          <div class="mb-3">
+            <label for="outcomes" class="form-label fw-semibold">Hasil yang Dicapai</label>
+            <textarea name="outcomes" id="outcomes" class="form-control shadow-sm editor"
+              rows="3"><?php echo e(old('outcomes')); ?></textarea>
+          </div>
+
+          <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm d-flex align-items-center"
+              id="btn-submit">
+              <span id="btn-text"><i class="fas fa-save me-2"></i>Simpan</span>
+              <span id="btn-spinner" class="d-none">
+                <span class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true"></span>
+                Menyimpan...
+              </span>
+            </button>
+            <a href="<?php echo e(route('admin.detail.index')); ?>" class="btn btn-secondary rounded-pill px-4 shadow-sm">
+              <i class="fas fa-arrow-left me-2"></i>Kembali
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startPush('scripts'); ?>
+  
+  <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
+
+  <script>
+    // Init CKEditor
+    document.querySelectorAll('.editor').forEach((el) => {
+      ClassicEditor.create(el).catch(err => console.error(err));
+    });
+
+    // Spinner saat submit
+    const form = document.getElementById('course-form');
+    const btnSubmit = document.getElementById('btn-submit');
+    const btnText = document.getElementById('btn-text');
+    const btnSpinner = document.getElementById('btn-spinner');
+
+    form.addEventListener('submit', function () {
+      btnSubmit.disabled = true;
+      btnText.classList.add('d-none');
+      btnSpinner.classList.remove('d-none');
+    });
+
+    // Fetch info course saat pilih
+    const courseSelect = document.getElementById('course_id');
+    const previewBox = document.getElementById('course-preview');
+    const previewImg = document.getElementById('preview-image');
+    const previewTitle = document.getElementById('preview-title');
+    const previewLevels = document.getElementById('preview-levels');
+    const previewDuration = document.getElementById('preview-duration');
+    const previewLessons = document.getElementById('preview-lessons');
+    const previewInstructors = document.getElementById('preview-instructors');
+
+    courseSelect.addEventListener('change', function () {
+      const courseId = this.value;
+      if (!courseId) {
+        previewBox.classList.add('d-none');
+        return;
+      }
+
+      fetch(/admin/detail/course/${courseId}/info)
+        .then(res => res.json())
+        .then(data => {
+          previewBox.classList.remove('d-none');
+
+          // --- Info Course ---
+          previewTitle.textContent = data.course.name;
+          previewImg.src = data.course.image_url || '/default.jpg';
+          previewLevels.textContent = data.course.level || '';
+          previewDuration.textContent = data.course.duration || '-';
+
+          // --- Lessons/Modules ---
+          previewLessons.innerHTML = '';
+          (data.lessons || []).forEach(l => {
+            previewLessons.innerHTML += `
+                  <li>
+                    <span class="fw-semibold">${l.title}</span> 
+                    <span class="text-muted small">(${l.duration_formatted})</span>
+                  </li>`;
+          });
+
+          // --- Instructors dari Course (informasi tambahan dari server)
+          previewInstructors.innerHTML = '';
+          (data.instructors || []).forEach(i => {
+            previewInstructors.innerHTML += <li>${i.name}</li>;
+          });
+
+          // sinkron instruktur manual (dari form)
+          updatePreviewInstructors();
+        })
+        .catch(err => console.error("Fetch error:", err));
+    });
+
+    // --- Dynamic Instructors ---
+    document.addEventListener("DOMContentLoaded", function () {
+      const wrapper = document.getElementById("instructor-wrapper");
+      const btnAdd = document.getElementById("btn-add-instructor");
+
+      function updatePreviewInstructors() {
+        previewInstructors.innerHTML = "";
+        wrapper.querySelectorAll("select").forEach(select => {
+          let option = select.options[select.selectedIndex];
+          if (option && option.value) {
+            let avatar = option.dataset.avatar || "/default-avatar.png";
+            let skill = option.dataset.skill || "";
+            let name = option.text;
+            previewInstructors.innerHTML += `
+                <li class="d-flex align-items-center mb-1">
+                  <img src="${avatar}" class="rounded-circle me-2" style="width:28px;height:28px;object-fit:cover;">
+                  <div>
+                    <span class="fw-semibold">${name}</span>
+                    <small class="text-muted d-block">${skill}</small>
+                  </div>
+                </li>`;
+          }
+        });
+      }
+
+      // tambah instruktur
+      btnAdd.addEventListener("click", function () {
+        const firstItem = wrapper.querySelector(".instructor-item");
+        const newItem = firstItem.cloneNode(true);
+
+        newItem.querySelector("select").value = "";
+        newItem.querySelector(".btn-remove-instructor").classList.remove("d-none");
+
+        wrapper.appendChild(newItem);
+      });
+
+      // hapus instruktur
+      wrapper.addEventListener("click", function (e) {
+        if (e.target.closest(".btn-remove-instructor")) {
+          e.target.closest(".instructor-item").remove();
+          updatePreviewInstructors();
+        }
+      });
+
+      // update preview saat ganti select
+      wrapper.addEventListener("change", function (e) {
+        if (e.target.tagName === "SELECT") {
+          updatePreviewInstructors();
+        }
+      });
+    });
+  </script>
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('templates.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\PKL\CW-CLA-E-Learning-Website\resources\views/admin/detail/create.blade.php ENDPATH**/ ?>

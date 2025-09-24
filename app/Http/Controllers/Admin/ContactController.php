@@ -33,12 +33,6 @@ class ContactController extends Controller
             'url_email'   => 'nullable|string',
             'url_telepon' => 'nullable|string',
             'url_alamat'  => 'nullable|string',
-
-            // social media (opsional)
-            'social_facebook'  => 'nullable|url|max:255',
-            'social_instagram' => 'nullable|url|max:255',
-            'social_tiktok'    => 'nullable|url|max:255',
-            'social_x'         => 'nullable|url|max:255',
         ]);
 
         // Jika link_maps kosong & koordinat ada → bentuk embed GMaps otomatis
@@ -54,7 +48,6 @@ class ContactController extends Controller
         } else {
             Contact::create($validated);
         }
-        Cache::forget('footer_contact');
 
         return redirect()->route('admin.contact.index')->with('success', 'Kontak berhasil diperbarui.');
     }

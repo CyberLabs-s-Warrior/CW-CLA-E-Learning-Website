@@ -1,0 +1,18 @@
+<footer class="app-footer">
+  <strong>
+    Copyright &copy;2025
+    <a href="" class="text-decoration-none">e-learning</a>.
+  </strong>
+  All rights reserved.
+    <!-- JS -->
+  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"></script>
+  <script src="<?php echo e(asset('dist/js/adminlte.js')); ?>"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/js/jsvectormap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js"></script>
+
+  <?php echo $__env->yieldPushContent('scripts'); ?>
+</footer><?php /**PATH D:\PKL\CW-CLA-E-Learning-Website\resources\views/templates/footer.blade.php ENDPATH**/ ?>

@@ -69,38 +69,55 @@
                                 <label class="form-label fw-bold">Akses / Permissions</label>
                                 <div class="row">
                                     @php
-                                        $grouped = [];
-                                        foreach ($permissions as $permission) {
-                                            $parts = explode('_', $permission->name);
-                                            $fitur = end($parts);
-                                            $grouped[$fitur][] = $permission;
-                                        }
+                                    // $permissions, $userDirectPerms, $userRolePerms tersedia dari controller
+                                    $grouped = [];
+                                    foreach ($permissions as $permission) {
+                                        $parts = explode('_', $permission->name);
+                                        $fitur = end($parts);
+                                        $grouped[$fitur][] = $permission;
+                                    }
                                     @endphp
 
                                     @foreach ($grouped as $fitur => $perms)
-                                        <div class="col-md-4 mb-3">
-                                            <div class="border rounded p-3 bg-light">
-                                                <strong class="text-uppercase small text-muted d-block mb-2">
-                                                    {{ ucfirst($fitur) }}
-                                                </strong>
-                                                @foreach ($perms as $permission)
-                                                    <div class="form-check mb-2">
-                                                        <input type="checkbox"
-                                                               name="permissions[]"
-                                                               value="{{ $permission->name }}"
-                                                               class="form-check-input"
-                                                               id="perm_{{ $permission->name }}"
-                                                               {{ $user->hasPermissionTo($permission->name) ? 'checked' : '' }}>
-                                                        <label class="form-check-label small"
-                                                               for="perm_{{ $permission->name }}">
-                                                            {{ ucwords(str_replace('_', ' ', $permission->name)) }}
-                                                        </label>
-                                                    </div>
-                                                @endforeach
+                                    <div class="col-md-4 mb-3">
+                                        <div class="border rounded p-3 bg-light">
+                                        <strong class="text-uppercase small text-muted d-block mb-2">
+                                            {{ ucfirst($fitur) }}
+                                        </strong>
+
+                                        @foreach ($perms as $permission)
+                                            @php
+                                            $name = $permission->name;
+                                            $isViaRole   = in_array($name, $userRolePerms, true);
+                                            $isDirect    = in_array($name, $userDirectPerms, true);
+                                            @endphp
+
+                                            <div class="form-check mb-2 d-flex align-items-center gap-2">
+                                            @if ($isViaRole)
+                                                {{-- via role → kunci, tidak bisa dicabut di sini --}}
+                                                <input type="checkbox" class="form-check-input" checked disabled>
+                                                <label class="form-check-label small text-muted">
+                                                {{ ucwords(str_replace('_', ' ', $name)) }}
+                                                <span class="badge bg-secondary ms-1">via role</span>
+                                                </label>
+                                            @else
+                                                {{-- direct perm → bisa diubah --}}
+                                                <input type="checkbox"
+                                                    name="permissions[]"
+                                                    value="{{ $name }}"
+                                                    id="perm_{{ $name }}"
+                                                    class="form-check-input"
+                                                    {{ $isDirect ? 'checked' : '' }}>
+                                                <label class="form-check-label small" for="perm_{{ $name }}">
+                                                {{ ucwords(str_replace('_', ' ', $name)) }}
+                                                </label>
+                                            @endif
                                             </div>
+                                        @endforeach
                                         </div>
+                                    </div>
                                     @endforeach
-                                </div>
+                                                                    </div>
                             </div>
                         @endif
 

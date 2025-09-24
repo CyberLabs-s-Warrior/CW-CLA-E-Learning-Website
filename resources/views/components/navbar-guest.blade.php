@@ -49,6 +49,8 @@
             class="{{ request()->routeIs('showcase.*') ? 'is-active' : '' }}">Karya member</a>
           <a href="{{ route('testimoni.index') }}" role="menuitem"
             class="{{ request()->routeIs('testimoni.*') ? 'is-active' : '' }}">Testimoni</a>
+             <a href="{{ route('forum.index') }}" role="menuitem"
+            class="{{ request()->routeIs('forum.*') ? 'is-active' : '' }}">forum</a>
         </div>
       </div>
 
