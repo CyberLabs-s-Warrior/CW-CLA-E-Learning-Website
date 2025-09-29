@@ -37,7 +37,6 @@
   <div class="footer__top-accent" aria-hidden="true"></div>
 
   <div class="footer-container">
-    
     <div class="footer-brand">
       <a href="<?php echo e(route('home.index')); ?>" class="footer-logo" aria-label="<?php echo e($appName); ?>">
         <span class="logo-dot"></span><?php echo e($appName); ?>
@@ -180,7 +179,6 @@
 <?php $__env->startPush('scripts'); ?>
 
   <script>
-    // Smooth scroll
     document.querySelector('.backTop').addEventListener('click', function (e) {
       e.preventDefault();
       window.scrollTo({
@@ -189,7 +187,6 @@
       });
     });
 
-    // Show/hide button saat scroll
     window.addEventListener('scroll', function () {
       const btn = document.querySelector('.backTop');
       if (window.scrollY > 300) {
@@ -198,13 +195,12 @@
         btn.classList.remove('show');
       }
     });
-    
+
     (function () {
       const mnav = document.querySelector('.footer-links .mnav[data-collapsible]');
       const btn = mnav?.querySelector('.mnav-toggle');
       if (!mnav || !btn) return;
 
-      // default: tertutup di mobile
       const setExpanded = (val) => {
         mnav.setAttribute('aria-expanded', val ? 'true' : 'false');
         btn.setAttribute('aria-expanded', val ? 'true' : 'false');
@@ -217,7 +213,6 @@
         setExpanded(!isOpen);
       });
 
-      // jika berpindah ke desktop, paksa open
       const mq = window.matchMedia('(min-width: 721px)');
       const sync = () => { if (mq.matches) setExpanded(true); else setExpanded(false); };
       mq.addEventListener ? mq.addEventListener('change', sync) : mq.addListener(sync);

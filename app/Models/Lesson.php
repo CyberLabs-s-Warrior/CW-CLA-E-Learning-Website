@@ -57,5 +57,8 @@ class Lesson extends Model
             return $remainingSeconds . ' detik';
         }
     }
+    // app/Models/Lesson.php
+    public function progresses(){ return $this->hasMany(LessonProgress::class); }
+
 
 }

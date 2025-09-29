@@ -128,4 +128,29 @@ class Course extends Model
     {
         return $this->hasMany(Transaction::class);
     }
+    public function progressPercentFor(\App\Models\User $user): int
+    {
+        $total = $this->lessons()->count();
+        if ($total === 0) return 0;
+
+        $done = \App\Models\LessonProgress::where('user_id', $user->id)
+            ->where('course_id', $this->id)
+            ->count();
+
+        return (int) round(($done / $total) * 100);
+    }
+    public function nextIncompleteLessonFor(\App\Models\User $user): ?\App\Models\Lesson
+    {
+        $doneIds = \App\Models\LessonProgress::where('user_id',$user->id)
+            ->where('course_id',$this->id)
+            ->pluck('lesson_id');
+
+        // urutkan konsisten: module_name lalu order (lihat pola di controller admin)
+        return $this->lessons()
+            ->orderBy('module_name')
+            ->orderBy('order')
+            ->whereNotIn('id', $doneIds)
+            ->first();
+    }
+    
 }

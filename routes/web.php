@@ -237,6 +237,8 @@ Route::middleware([
 /* === DETAIL & LESSONS — RUTE ASLI (JANGAN DIUBAH) === */
     Route::get('/detail/{slug}', [DetailCourseClientController::class, 'index'])->name('detail.index');
     Route::get('/detail/{slug}/lessons', [LessonClientController::class, 'index'])->name('lesson.index');
+      Route::post('/lesson/{lesson}/complete', [LessonClientController::class,'complete'])
+        ->name('lesson.complete');
 
     // Payments (dipindah dari guest ke student)
     Route::get('/payment', [PaymentClientController::class, 'index'])->name('payment.index');

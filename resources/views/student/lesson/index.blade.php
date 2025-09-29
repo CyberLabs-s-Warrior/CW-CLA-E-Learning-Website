@@ -1,13 +1,46 @@
+{{-- resources/views/student/lesson/index.blade.php --}}
 @extends('layouts.student')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('client/lesson.css') }}">
+    {{-- Font Awesome (jika layout belum include) --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 @endpush
 
 {{-- Pakai name kalau title tidak ada --}}
 @section('title', 'Learnify - Lessons of ' . ($course->name ?? $course->title ?? 'Course'))
 
 @section('content')
+@php
+    // Urutkan lesson agar konsisten: module_name ASC, order ASC
+    $orderedLessons = $course->lessons->sortBy([
+        ['module_name','asc'],
+        ['order','asc'],
+    ]);
+
+    // Hitung progress user terhadap course
+    $totalLessons = $orderedLessons->count();
+    $doneCount = \App\Models\LessonProgress::where('user_id', auth()->id())
+        ->where('course_id', $course->id)
+        ->count();
+    $percent = $totalLessons ? (int) round(($doneCount / $totalLessons) * 100) : 0;
+
+    // Cek status lesson aktif (sudah selesai atau belum)
+    $isThisLessonDone = \App\Models\LessonProgress::where('user_id', auth()->id())
+        ->where('lesson_id', $lesson->id)
+        ->exists();
+
+    // Cari next lesson yang belum selesai
+    $doneIds = \App\Models\LessonProgress::where('user_id', auth()->id())
+        ->where('course_id', $course->id)
+        ->pluck('lesson_id')
+        ->all();
+
+    $nextLesson = $orderedLessons->first(function($l) use ($doneIds) {
+        return !in_array($l->id, $doneIds);
+    });
+@endphp
+
 <div class="lesson-page">
     {{-- ======= HEADER / BREADCRUMB ======= --}}
     <section class="lp-header container" aria-label="Course header">
@@ -22,9 +55,15 @@
             <div class="head-text">
                 <h1 class="course-name">{{ $course->name ?? $course->title }}</h1>
                 <div class="sub">
-                    <span class="badge-level"><i class="fa-solid fa-signal"></i> {{ $course->level->level ?? 'Level' }}</span>
+                    <span class="badge-level">
+                        <i class="fa-solid fa-signal"></i>
+                        {{ $course->level->level ?? 'Level' }}
+                    </span>
                     <span class="dot">•</span>
-                    <span><i class="fa-regular fa-clock"></i> {{ $lesson?->duration ? gmdate('i:s', $lesson->duration) : '00:00' }}</span>
+                    <span>
+                        <i class="fa-regular fa-clock"></i>
+                        {{ $lesson?->duration ? gmdate('i:s', $lesson->duration) : '00:00' }}
+                    </span>
                     <span class="dot">•</span>
                     <span>
                         <i class="fa-solid fa-user-tie"></i>
@@ -102,6 +141,17 @@
                 </span>
             </div>
 
+            {{-- MINI PROGRESS BAR (KESIMPULAN PROGRES COURSE) --}}
+            <div class="mini-progress" aria-label="Progress belajar">
+                <div class="bar" aria-hidden="true"><span style="width: {{ $percent }}%"></span></div>
+                <div class="mini-progress-row">
+                    <small>{{ $percent }}% selesai ({{ $doneCount }}/{{ $totalLessons }} modul)</small>
+                    @if($percent >= 100)
+                        <small class="done-badge">Selesai 🎉</small>
+                    @endif
+                </div>
+            </div>
+
             {{-- OVERVIEW --}}
             <article class="lesson-overview">
                 <h3>Lesson Overview</h3>
@@ -110,7 +160,34 @@
                 </div>
             </article>
 
-            {{-- KOMENTAR --}}
+            {{-- TOMBOL PROGRES: "Tandai Selesai" / Navigasi --}}
+            <div class="lesson-actions">
+                @if(!$isThisLessonDone)
+                    <form method="POST" action="{{ route('lesson.complete', $lesson->id) }}" class="la-form">
+                        @csrf
+                        <button type="submit" class="btn brand la-primary">
+                            <i class="fa-regular fa-circle-check"></i>
+                            Tandai Selesai
+                        </button>
+                    </form>
+                @else
+                    <div class="alert success" role="status">
+                        <i class="fa-solid fa-circle-check"></i>
+                        Modul ini sudah selesai
+                    </div>
+                    @if($nextLesson)
+                        <a class="btn ghost la-next" href="{{ route('lesson.index', [$course->slug, 'lesson' => $nextLesson->id]) }}">
+                            Lanjut Modul Berikutnya →
+                        </a>
+                    @else
+                        <a class="btn ghost la-next" href="{{ route('detail.index', $course->slug) }}">
+                            Kembali ke Detail Kursus
+                        </a>
+                    @endif
+                @endif
+            </div>
+
+            {{-- KOMENTAR (demo localStorage) --}}
             <section id="comments" class="comment-card" aria-labelledby="comments-title">
                 <div class="comment-head">
                     <h3 id="comments-title"><i class="fa-regular fa-message"></i> Komentar</h3>
@@ -139,16 +216,18 @@
         <aside class="lp-right" aria-label="Daftar modul">
             <div class="playlist-head">
                 <h3><i class="fa-regular fa-rectangle-list"></i> Course Modules</h3>
-                <span class="count">{{ $course->lessons->count() }} materi</span>
+                <span class="count">{{ $orderedLessons->count() }} materi</span>
             </div>
 
             <ul class="playlist">
-                @forelse ($course->lessons as $item)
+                @forelse ($orderedLessons as $item)
                     @php
                         $mext = $item->media ? strtolower(pathinfo($item->media, PATHINFO_EXTENSION)) : null;
                         $mIsVideo = $mext && in_array($mext, ['mp4','mov','avi','mkv','webm']);
                         $mIsImage = $mext && in_array($mext, ['jpg','jpeg','png','gif','webp']);
                         $isActive = $lesson && $item->id === $lesson->id;
+
+                        $itemDone = in_array($item->id, $doneIds);
                     @endphp
                     <li class="pl-item {{ $isActive ? 'active' : '' }}">
                         <a
@@ -177,8 +256,15 @@
                                 @endif
                             </div>
                             <div class="info">
-                                <p class="title">{{ $item->title }}</p>
-                                <span class="duration">{{ $item->duration ? gmdate('i:s', $item->duration) : '00:00' }}</span>
+                                <p class="title">
+                                    {{ $item->module_name ? $item->module_name . ' · ' : '' }}{{ $item->title }}
+                                </p>
+                                <div class="row-right">
+                                    <span class="duration">{{ $item->duration ? gmdate('i:s', $item->duration) : '00:00' }}</span>
+                                    @if($itemDone)
+                                        <span class="done-ic" title="Selesai" aria-label="Selesai">✔</span>
+                                    @endif
+                                </div>
                             </div>
                         </a>
                     </li>
@@ -200,18 +286,19 @@
 
 @push('scripts')
 <script>
-  // ===== Media protections
+  // ===== Proteksi dasar media (klik kanan)
   document.addEventListener('contextmenu', function(e) {
     if (e.target.closest('.img-protected, video')) e.preventDefault();
   });
   document.querySelectorAll('.img-protected').forEach(el => el.setAttribute('draggable','false'));
 
-  // ===== Comments (localStorage demo)
-  const form = document.getElementById('comment-form');
-  const input = document.getElementById('comment-input');
-  const list  = document.getElementById('comment-list');
-  const wrap  = document.getElementById('comment-wrap');
-  const toggle= document.getElementById('toggle-comments');
+  // ===== Komentar (demo localStorage)
+  const form   = document.getElementById('comment-form');
+  const input  = document.getElementById('comment-input');
+  const list   = document.getElementById('comment-list');
+  const wrap   = document.getElementById('comment-wrap');
+  const toggle = document.getElementById('toggle-comments');
+  const LS_KEY = 'lesson_comments_' + "{{ $course->id }}_{{ $lesson->id }}";
 
   function addComment(text, announce=false){
     const item = document.createElement('div');
@@ -221,7 +308,7 @@
     if (announce) item.setAttribute('aria-live','polite');
   }
   function loadComments(){
-    const saved = JSON.parse(localStorage.getItem('lesson_comments') || '[]');
+    const saved = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
     saved.forEach(t => addComment(t));
   }
   loadComments();
@@ -230,14 +317,14 @@
     e.preventDefault();
     const text = input.value.trim();
     if(!text) return;
-    const saved = JSON.parse(localStorage.getItem('lesson_comments') || '[]');
+    const saved = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
     saved.unshift(text);
-    localStorage.setItem('lesson_comments', JSON.stringify(saved));
+    localStorage.setItem(LS_KEY, JSON.stringify(saved));
     addComment(text, true);
     input.value = '';
   });
 
-  // Toggle comments
+  // ===== Toggle komentar
   toggle?.addEventListener('click', ()=>{
     const open = wrap.style.display !== 'none';
     wrap.style.display = open ? 'none' : '';
@@ -245,7 +332,7 @@
     toggle.setAttribute('aria-expanded', String(!open));
   });
 
-  // Scroll active item into view (playlist)
+  // ===== Scroll active item ke view (playlist)
   const active = document.querySelector('.pl-item.active');
   active?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
 </script>
