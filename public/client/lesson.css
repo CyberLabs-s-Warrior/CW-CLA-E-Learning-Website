@@ -106,7 +106,65 @@
 .lesson-page .lesson-overview h3{ margin:0 0 8px; font-size:18px; }
 .lesson-page .lesson-overview .overview-body{ color:#0f172a; line-height:1.6; }
 
-/* Comments */
+/* ===== Mini Progress (course summary) ===== */
+.lesson-page .mini-progress{
+  margin: 12px 4px 10px;
+  display: grid; gap: 6px;
+}
+.lesson-page .mini-progress .bar{
+  height: 8px; background:#eef2f7; border-radius:999px; overflow:hidden;
+}
+.lesson-page .mini-progress .bar > span{
+  display:block; height:100%; background: linear-gradient(90deg,#60a5fa,var(--brand-600));
+}
+.lesson-page .mini-progress-row{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  color: var(--sub);
+}
+.lesson-page .done-badge{
+  display:inline-flex; align-items:center; gap:8px; background:#ecfdf5; color:#065f46;
+  border:1px solid #a7f3d0; border-radius:999px; padding:2px 8px; font-weight:700;
+}
+
+/* ===== Lesson actions (CTA selesai / navigasi) ===== */
+.lesson-page .lesson-actions{
+  margin-top: 14px;
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+}
+.lesson-page .la-form{ display:inline-flex; }
+.lesson-page .la-primary{
+  padding-inline: 16px;
+  min-height: 42px;
+  box-shadow: 0 8px 18px rgba(37,99,235,.18);
+}
+.lesson-page .la-primary i{ font-size: 1em; }
+.lesson-page .la-next{
+  min-height: 42px;
+  padding-inline: 14px;
+}
+.lesson-page .alert{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  border: 1px solid;
+}
+.lesson-page .alert.success{
+  background: #ecfdf5;
+  color: #065f46;
+  border-color: #a7f3d0;
+}
+
+/* ===== Comments ===== */
 .lesson-page .comment-card{
   margin-top:14px; border:1px solid var(--border); border-radius:12px; background:#fff; padding:12px;
 }
@@ -127,7 +185,7 @@
   animation: lp-slide .25s ease;
 }
 
-/* RIGHT — Playlist */
+/* ===== RIGHT — Playlist ===== */
 .lesson-page .lp-right{
   position:sticky; top:84px;
   background: var(--card); border:1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
@@ -185,6 +243,15 @@
   .lesson-page .head-cta{ width:100%; display:flex; gap:8px; }
   .lesson-page .lesson-layout{ grid-template-columns: 1fr; }
   .lesson-page .lp-right{ position:relative; top:auto; max-height:none; }
+  .lesson-page .lesson-actions{
+    padding: 12px;
+    gap: 10px;
+  }
+  .lesson-page .la-primary,
+  .lesson-page .la-next{
+    width: 100%;
+    justify-content: center;
+  }
 }
 @media (prefers-reduced-motion: reduce){
   .lesson-page *{ animation:none !important; transition:none !important; }

@@ -94,4 +94,29 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Transaction::class);
     }
 
+    public function lessonProgress()
+    {
+        return $this->hasMany(\App\Models\LessonProgress::class);
+    }
+
+    public function activeCoursesQuery()
+    {
+        return \App\Models\Course::query()
+            ->where(function($q){
+                // via transaksi paid
+                $q->whereHas('transactions', function($t){
+                    $t->where('user_id', $this->id)->where('status','paid'); // status paid tersedia di schema transaksi
+                })
+                // atau via enrollment (buat free)
+                ->orWhereHas('enrollments', function($e){
+                    $e->where('user_id', $this->id);
+                });
+            });
+    }
+
+    public function activeCourses()
+    {
+        return $this->activeCoursesQuery()->get();
+    }
+
 }

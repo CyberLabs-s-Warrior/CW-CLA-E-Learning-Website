@@ -9,7 +9,8 @@
 
 @section('content')
 <main class="dashboard-container">
-    {{-- Profile --}}
+
+    {{-- ===== Profile ===== --}}
     <section class="profile-header">
         <img
             src="{{ Auth::user()->profile && Auth::user()->profile->foto
@@ -24,91 +25,288 @@
         </div>
     </section>
 
-    {{-- Statistik ringkas --}}
-    <div class="stat-grid">
-        <div class="stat-card">
-            <p class="stat-label"><i class="fa-solid fa-book-open"></i> Active Courses</p>
-            <p class="stat-value">3</p>
-        </div>
-        <div class="stat-card">
-            <p class="stat-label"><i class="fa-solid fa-bolt"></i> Weekly Streak</p>
-            <p class="stat-value">5d</p>
-        </div>
-        <div class="stat-card">
-            <p class="stat-label"><i class="fa-solid fa-trophy"></i> Points</p>
-            <p class="stat-value">1,240</p>
-        </div>
-    </div>
+    {{-- ===== Progress Belajar (Full-width top) ===== --}}
+    @php
+      // Fallback agar kompatibel dengan controller lama/baru
+      $progressPercent = $overviewPercent
+          ?? $overallProgressPercent
+          ?? 0;
 
-    <div class="dashboard-grid">
-        {{-- Panel kiri: progres & jadwal --}}
-        <section class="left-panel">
-            <div class="overview-card">
-                <p class="overview-label"><i class="fas fa-chart-line"></i> Progress Belajar</p>
-                <p class="overview-value">45%</p>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width:45%"></div>
-                </div>
+      $progressLabel = $overviewLabel
+          ?? 'Progress Belajar';
+
+      // Dropdown data: gunakan $activeCourses jika tersedia; kalau tidak, ambil dari $continueLearning
+      $activeList = (isset($activeCourses) && $activeCourses instanceof \Illuminate\Support\Collection)
+          ? $activeCourses
+          : collect($continueLearning ?? [])->map(fn($it)=>$it['course'] ?? null)->filter()->unique('id')->values();
+
+      $selectedId = (int) ($selectedCourseId ?? request()->integer('course'));
+    @endphp
+
+    <section class="progress-wide card">
+        <div class="pw-left">
+            <div class="pw-head">
+                <h2 class="pw-title"><i class="fas fa-chart-line"></i> {{ $progressLabel }}</h2>
+
+                {{-- Dropdown filter course (opsional). Jika kosong -> semua course --}}
+                @if($activeList->count() > 0)
+                <form method="GET" action="{{ route('dashboard.index') }}" class="progress-filter" aria-label="Filter course untuk progress">
+                  <label for="course" class="sr-only">Pilih course</label>
+                  <div class="select-wrap">
+                    <select id="course" name="course" onchange="this.form.submit()" aria-label="Pilih course untuk menghitung progress">
+                      <option value="">— Semua course aktif —</option>
+                      @foreach($activeList as $ac)
+                        <option value="{{ $ac->id }}" {{ $selectedId === (int)$ac->id ? 'selected' : '' }}>
+                          {{ $ac->name }}
+                        </option>
+                      @endforeach
+                    </select>
+                  </div>
+                </form>
+                @endif
             </div>
 
-            <section class="upcoming">
-                <h3 class="up-title">Upcoming Schedule</h3>
-                <div class="up-list">
-                    <div class="up-item">
-                        <div class="up-date">12<br>Aug</div>
-                        <div>
-                            <strong>Live: Intro to SQL</strong>
-                            <p class="up-meta">10:00–11:00 • Zoom</p>
-                        </div>
-                        <button class="up-goto">Join</button>
-                    </div>
-                    <div class="up-item">
-                        <div class="up-date">14<br>Aug</div>
-                        <div>
-                            <strong>Quiz: Python Loops</strong>
-                            <p class="up-meta">Deadline 23:59</p>
-                        </div>
-                        <button class="up-goto">Open</button>
-                    </div>
+            <div class="pw-meter">
+                <div class="pw-track" aria-label="Progress belajar">
+                    <span class="pw-fill" style="width: {{ max(0, min(100, (int)$progressPercent)) }}%"></span>
                 </div>
-            </section>
+                <div class="pw-meta">
+                    <span class="pw-percent">{{ (int)$progressPercent }}%</span>
+                    @if((int)$progressPercent >= 100)
+                        <span class="pw-note done">Selesai semua 🎉</span>
+                    @else
+                        <span class="pw-note">Tetap semangat! Sedikit lagi 💪</span>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        {{-- Stat Active Courses pindah ke kanan kecil --}}
+        <div class="pw-stat">
+            <p class="stat-label"><i class="fa-solid fa-book-open"></i> Active Courses</p>
+            <p class="stat-value">{{ $activeCoursesCount ?? $activeList->count() }}</p>
+        </div>
+    </section>
+
+    {{-- ===== Row bawah: kiri Active Courses, kanan Continue Learning ===== --}}
+    <div class="below-grid">
+        {{-- ==== LEFT: Active Courses (card list ringkas) ==== --}}
+        <section class="card acard">
+            <div class="card-head">
+                <h3 class="card-title"><i class="fa-solid fa-layer-group"></i> Active Courses</h3>
+            </div>
+
+            @php
+              // Sumber data active courses: prefer $continueLearning (ada progress & nextLesson)
+              $activeItems = collect($continueLearning ?? [])->map(function($it){
+                  $c = $it['course'] ?? null;
+                  if(!$c) return null;
+                  return [
+                      'course' => $c,
+                      'progress' => (int)($it['progress'] ?? 0),
+                      'nextLesson' => $it['nextLesson'] ?? null,
+                      'lessons_count' => (int)($it['lessons_count'] ?? ($c->lessons()->count() ?? 0)),
+                  ];
+              })->filter()->values();
+
+              $doneCount = $activeItems->filter(fn($i) => ((int)$i['progress']) >= 100)->count();
+              $todoCount = max(0, $activeItems->count() - $doneCount);
+            @endphp
+
+            @if($activeItems->isEmpty())
+              <p class="muted">Belum ada kursus aktif.</p>
+            @else
+              {{-- Pill ringkasan status --}}
+              <div class="ac-stat-row">
+                <span class="pill pill-todo"><i class="fa-regular fa-clock"></i> In progress: {{ $todoCount }}</span>
+                <span class="pill pill-done"><i class="fa-solid fa-circle-check"></i> Completed: {{ $doneCount }}</span>
+              </div>
+
+              <ul class="a-list">
+                @foreach($activeItems as $item)
+                  @php
+                    $c = $item['course'];
+                    $p = (int) $item['progress'];
+                    $done = $p >= 100;
+                  @endphp
+                  <li class="a-item">
+                    <div class="a-info">
+                      <h4 class="a-name">{{ $c->name }}</h4>
+                      <div class="a-line">
+                        <div class="a-track"><span style="width: {{ $p }}%"></span></div>
+                        <small class="a-caption">{{ $p }}%</small>
+                      </div>
+                      <span class="badge {{ $done ? 'bdone' : 'bprog' }}">
+                        {{ $done ? 'Completed' : 'In progress' }}
+                      </span>
+                    </div>
+                    <div class="a-cta">
+                      @if($done)
+                        <a class="btn ghost" href="{{ route('detail.index', $c->slug) }}">Review</a>
+                      @else
+                        @php $next = $item['nextLesson']; @endphp
+                        @if($next)
+                          <a class="btn primary" href="{{ route('lesson.index', [$c->slug, 'lesson' => $next->id]) }}">Continue</a>
+                        @else
+                          <a class="btn primary" href="{{ route('detail.index', $c->slug) }}">Lihat</a>
+                        @endif
+                      @endif
+                    </div>
+                  </li>
+                @endforeach
+              </ul>
+            @endif
         </section>
 
-        {{-- Panel kanan: daftar kursus --}}
-        <section class="right-panel">
-            <h2 class="section-title">Continue Learning</h2>
-            <div class="course-grid">
-                <article class="course-card">
-                    <div>
-                        <div class="icon"><i class="fas fa-code"></i></div>
-                        <h3 class="course-title">Programming Basics</h3>
-                        <p class="course-meta">Lesson 2 of 8</p>
-                        <span class="badge">Beginner</span>
-                    </div>
-                    <button class="btn-primary">Continue</button>
-                </article>
-
-                <article class="course-card">
-                    <div>
-                        <div class="icon"><i class="fas fa-database"></i></div>
-                        <h3 class="course-title">Data Science Foundations</h3>
-                        <p class="course-meta">Lesson 12 of 12</p>
-                        <span class="badge">Completed</span>
-                    </div>
-                    <button class="btn-primary">Review</button>
-                </article>
-
-                <article class="course-card">
-                    <div>
-                        <div class="icon"><i class="fas fa-robot"></i></div>
-                        <h3 class="course-title">Machine Learning Intro</h3>
-                        <p class="course-meta">Lesson 3 of 10</p>
-                        <span class="badge">Intermediate</span>
-                    </div>
-                    <button class="btn-primary">Continue</button>
-                </article>
+        {{-- ==== RIGHT: Continue Learning ==== --}}
+        <section class="cl-wrap">
+            <div class="cl-head">
+                <h2 class="section-title">Continue Learning</h2>
             </div>
+
+            @php
+              $cl = collect($continueLearning ?? []);
+              $isSlider = $cl->count() > 3;
+            @endphp
+
+            @if(!$isSlider)
+              {{-- Grid biasa (<=3 items) --}}
+              <div class="course-grid">
+                @forelse($cl as $it)
+                  @php
+                    $c     = $it['course'];
+                    $next  = $it['nextLesson'] ?? null;
+                    $p     = (int)($it['progress'] ?? 0);
+                    $count = (int)($it['lessons_count'] ?? 0);
+                    $done  = $p >= 100;
+                  @endphp
+                  <article class="course-card">
+                    <div>
+                      <div class="icon" aria-hidden="true"><i class="fas fa-book"></i></div>
+                      <h3 class="course-title">{{ $c->name }}</h3>
+                      <p class="course-meta">
+                        @if($done)
+                          {{ $p }}% selesai • Selesai 🎉
+                        @else
+                          {{ $p }}% selesai
+                          @if($next)
+                            • Next: {{ $next->module_name ? $next->module_name.' · ' : '' }}{{ $next->title }}
+                          @endif
+                        @endif
+                      </p>
+                      <span class="badge {{ $done ? 'bdone' : 'bprog' }}">{{ $done ? 'Completed' : 'In progress' }}</span>
+
+                      <div class="mini-line">
+                        <div class="mini-track"><span style="width: {{ $p }}%"></span></div>
+                        <small class="mini-caption">{{ $p }}% • {{ $count }} modul</small>
+                      </div>
+                    </div>
+
+                    @if($done)
+                      <a class="btn-primary" href="{{ route('detail.index', $c->slug) }}">Review</a>
+                    @else
+                      @if($next)
+                        <a class="btn-primary" href="{{ route('lesson.index', [$c->slug, 'lesson' => $next->id]) }}">Continue</a>
+                      @else
+                        <a class="btn-primary" href="{{ route('detail.index', $c->slug) }}">Lihat</a>
+                      @endif
+                    @endif
+                  </article>
+                @empty
+                  <p class="muted">Belum ada kursus untuk dilanjut.</p>
+                @endforelse
+              </div>
+            @else
+              {{-- Slider ( > 3 items ) --}}
+              <div class="cl-slider" id="cl-slider" aria-roledescription="carousel" aria-label="Continue Learning">
+                <div class="cl-track" id="cl-track">
+                  @foreach($cl as $it)
+                    @php
+                      $c     = $it['course'];
+                      $next  = $it['nextLesson'] ?? null;
+                      $p     = (int)($it['progress'] ?? 0);
+                      $count = (int)($it['lessons_count'] ?? 0);
+                      $done  = $p >= 100;
+                    @endphp
+                    <article class="course-card cl-item" role="group">
+                      <div>
+                        <div class="icon" aria-hidden="true"><i class="fas fa-book"></i></div>
+                        <h3 class="course-title">{{ $c->name }}</h3>
+                        <p class="course-meta">
+                          @if($done)
+                            {{ $p }}% selesai • Selesai 🎉
+                          @else
+                            {{ $p }}% selesai
+                            @if($next)
+                              • Next: {{ $next->module_name ? $next->module_name.' · ' : '' }}{{ $next->title }}
+                            @endif
+                          @endif
+                        </p>
+                        <span class="badge {{ $done ? 'bdone' : 'bprog' }}">{{ $done ? 'Completed' : 'In progress' }}</span>
+
+                        <div class="mini-line">
+                          <div class="mini-track"><span style="width: {{ $p }}%"></span></div>
+                          <small class="mini-caption">{{ $p }}% • {{ $count }} modul</small>
+                        </div>
+                      </div>
+
+                      @if($done)
+                        <a class="btn-primary" href="{{ route('detail.index', $c->slug) }}">Review</a>
+                      @else
+                        @if($next)
+                          <a class="btn-primary" href="{{ route('lesson.index', [$c->slug, 'lesson' => $next->id]) }}">Continue</a>
+                        @else
+                          <a class="btn-primary" href="{{ route('detail.index', $c->slug) }}">Lihat</a>
+                        @endif
+                      @endif
+                    </article>
+                  @endforeach
+                </div>
+
+                <div class="cl-nav">
+                  <button class="cl-btn" id="cl-prev" aria-label="Sebelumnya"><i class="fa-solid fa-chevron-left"></i></button>
+                  <button class="cl-btn" id="cl-next" aria-label="Berikutnya"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+              </div>
+            @endif
         </section>
     </div>
 </main>
 @endsection
+
+@push('scripts')
+<script>
+(function(){
+  // Auto slider Continue Learning bila ada track
+  const track = document.getElementById('cl-track');
+  if(!track) return;
+
+  const prevBtn = document.getElementById('cl-prev');
+  const nextBtn = document.getElementById('cl-next');
+  const slider  = document.getElementById('cl-slider');
+
+  // Scroll snap per kartu
+  const CARD_GAP = 16; // match CSS gap
+  const step = () => {
+    const card = track.querySelector('.cl-item');
+    if(!card) return 300;
+    return card.getBoundingClientRect().width + CARD_GAP;
+  }
+
+  function scrollByStep(dir = 1){
+    track.scrollBy({ left: dir * step(), behavior: 'smooth' });
+  }
+
+  prevBtn?.addEventListener('click', ()=>scrollByStep(-1));
+  nextBtn?.addEventListener('click', ()=>scrollByStep(+1));
+
+  // Auto slide tiap 5 detik (pause saat hover)
+  let auto = setInterval(()=>scrollByStep(+1), 5000);
+  slider?.addEventListener('mouseenter', ()=>clearInterval(auto));
+  slider?.addEventListener('mouseleave', ()=>{
+    clearInterval(auto);
+    auto = setInterval(()=>scrollByStep(+1), 5000);
+  });
+})();
+</script>
+@endpush

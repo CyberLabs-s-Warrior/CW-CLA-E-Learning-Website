@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', $thread->title); ?>
 
 <?php $__env->startPush('styles'); ?>
